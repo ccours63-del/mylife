@@ -310,11 +310,11 @@ html[dir=rtl] .page.enter .bar i{transform-origin:right;animation:grow .7s cubic
 .wl.dn{text-decoration:line-through;opacity:.7}
 
 /* ===== habit v4 ===== */
-.hm-wrap{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:14px 12px 12px;margin:10px 0;direction:ltr;overflow:hidden}
-.hm-m{display:grid;grid-template-columns:repeat(22,1fr);gap:3px;font-size:10px;color:var(--muted);height:15px;margin-bottom:4px}
-.hm-m span{white-space:nowrap;grid-row:1;justify-self:start}
-.hm{display:grid;grid-template-columns:repeat(22,1fr);grid-template-rows:repeat(7,auto);grid-auto-flow:column;gap:3px}
-.hm i{display:block;aspect-ratio:1;border-radius:32%;background:color-mix(in srgb,var(--accent) 13%,var(--soft))}
+.hm-wrap{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:14px 12px 12px;margin:10px 0;direction:ltr;overflow:hidden;container-type:inline-size;--hs:calc((100cqw - 63px)/22)}
+.hm-m{display:grid;grid-template-columns:repeat(22,var(--hs));gap:3px;font-size:10px;color:var(--muted);height:15px;margin-bottom:4px}
+.hm-m span{white-space:nowrap;min-width:0;grid-row:1;justify-self:start}
+.hm{display:grid;grid-template-columns:repeat(22,var(--hs));grid-template-rows:repeat(7,var(--hs));grid-auto-flow:column;gap:3px}
+.hm i{display:block;width:var(--hs);height:var(--hs);border-radius:32%;background:color-mix(in srgb,var(--accent) 13%,var(--soft))}
 .hm i.c{background:var(--accent);box-shadow:0 0 8px color-mix(in srgb,var(--accent) 50%,transparent)}
 .hm i.r{background:var(--bad)}
 .hm i.f{opacity:0}
