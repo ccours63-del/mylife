@@ -444,16 +444,135 @@ button.chip:active{transform:scale(.94)}
 .bk .abb i{background:var(--st)}
 .cd[data-act]{cursor:pointer}
 @media (prefers-reduced-motion:reduce){.et,.bk{animation:none!important}}
+
+/* quran option + habit colors */
+.pb{padding:8px 10px}
+.pb.onq{border-color:var(--good);color:var(--good);background:color-mix(in srgb,var(--good) 14%,var(--soft))}
+.qn{text-align:center;font-weight:700;color:var(--good);font-size:13px}
+.cc{position:relative}
+.qd{position:absolute;top:5px;inset-inline-end:5px;width:6px;height:6px;border-radius:50%;background:var(--good);display:block}
+:root{--hcol:#4FC48B;--hink:#0B0D10;--hbadc:#F2726C}
+.hc-row{margin:12px 0}.hc-row>b{display:block;margin-bottom:8px;font-size:14px}
+.swrow{display:flex;flex-wrap:wrap;gap:10px;width:100%;height:auto;border:0;border-radius:0}
+.swb{width:36px;height:36px;border-radius:50%;border:2px solid transparent;position:relative;display:grid;place-items:center;color:var(--ink);font-weight:800;font-size:20px;flex:none}
+.swb.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--surface) inset}
+.swb.cust{background:conic-gradient(#F2726C,#F5B544,#4FC48B,#5B9CF5,#A98BF2,#F2726C);cursor:pointer;overflow:hidden}
+.swb.cust input{position:absolute;inset:0;opacity:0;width:100%;height:100%;padding:0;border:0;cursor:pointer}
+
+/* study: wake card + slot times */
+.wake{display:flex;align-items:center;gap:14px;width:100%;text-align:start;background:linear-gradient(135deg,color-mix(in srgb,var(--st) 18%,var(--surface)),var(--surface))}
+.wake .wk-i{font-size:30px}.wake div{flex:1;display:flex;flex-direction:column;line-height:1.35}
+.wake b{font-size:34px;font-weight:800;letter-spacing:1px;text-align:start}
+.wake small{color:var(--muted);font-size:12.5px}
+.wake em{font-style:normal;font-size:12px;color:var(--st);font-weight:700}
+.thb{color:inherit;font:inherit;font-weight:700;padding:0;white-space:nowrap}
+.fl{display:block;margin:12px 0 6px;color:var(--muted);font-size:13px;font-weight:600}
+.slr{display:grid;grid-template-columns:70px 1fr 1fr;gap:8px;align-items:center;margin-top:8px}
+.slr.slh small{text-align:center;color:var(--muted)}
+
+/* lock screen */
+.tb-btns{display:flex;gap:8px}
+#lock{position:fixed;inset:0;z-index:100;background:var(--bg);display:none;align-items:center;justify-content:center;padding:20px;overflow:auto}
+body.locked #lock{display:flex}
+body.locked #app,body.locked .topbar,body.locked .dock,body.locked #modal,body.locked #editor,body.locked #reader{visibility:hidden}
+.lk-in{width:100%;max-width:340px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.lk-ic{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 16%,var(--surface));color:var(--accent);margin-bottom:12px}
+.lk-in h2{font-size:24px;font-weight:800}
+.lk-dots{display:flex;gap:14px;margin:20px 0 6px;direction:ltr}
+.lk-dots i{width:14px;height:14px;border-radius:50%;border:2px solid var(--muted);transition:all .15s}
+.lk-dots i.on{background:var(--accent);border-color:var(--accent);transform:scale(1.15)}
+.lk-dots.shake{animation:lkshake .4s}
+@keyframes lkshake{20%,60%{transform:translateX(-9px)}40%,80%{transform:translateX(9px)}}
+.lk-msg{min-height:22px;color:var(--bad);font-size:14px;font-weight:600}
+.lk-len{width:200px;margin:8px 0 0}
+.lk-pad{display:grid;grid-template-columns:repeat(3,72px);gap:14px;margin-top:18px;direction:ltr;justify-content:center}
+.lk-pad button{height:72px;border-radius:50%;background:var(--soft);font-size:26px;font-weight:600;display:grid;place-items:center}
+.lk-pad button:active:not(:disabled){background:color-mix(in srgb,var(--accent) 25%,var(--soft))}
+.lk-pad .lk-bio{color:var(--accent)}
+.lk-foot{margin-top:14px;min-height:34px}
+
+/* library + reader */
+.bkw{position:relative}
+.bkf{color:var(--st)!important;font-weight:700}
+.bke{position:absolute;top:8px;inset-inline-end:8px;width:34px;height:34px;border-radius:10px;background:var(--soft);color:var(--muted);font-size:15px}
+#reader{display:none}
+#reader.on{display:block;position:fixed;inset:0;z-index:50}
+.toast{z-index:90!important}
+.rd{position:absolute;inset:0;background:#15181d;display:flex;flex-direction:column;direction:ltr;color:var(--ink)}
+.rd-top,.rd-bar,.rd-colors,.rd-selbar{direction:rtl}
+.rd-top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:max(8px,env(safe-area-inset-top)) 10px 8px;background:#0f1216;border-bottom:1px solid var(--line)}
+.rd-top button{min-width:40px;height:40px;border-radius:12px;background:var(--soft);font-size:20px;font-weight:700}
+.rd-pg{display:flex;align-items:center;gap:4px;direction:ltr}
+.rd-pg input{width:56px;height:40px;text-align:center;border-radius:10px;padding:0 4px;font-weight:700;-moz-appearance:textfield}
+.rd-pg input::-webkit-outer-spin-button,.rd-pg input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.rd-pg span{color:var(--muted);font-size:13px;min-width:34px}
+.rd-z{display:flex;gap:6px}
+.rd-scroll{flex:1;overflow:auto;display:flex;padding:8px;position:relative;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior:contain}
+.rd.zoomed .rd-scroll,.rd.t-select .rd-scroll{touch-action:pan-x pan-y}
+.rd-page{position:relative;margin:auto;flex:none;background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.5);--user-unit:1;--total-scale-factor:calc(var(--scale-factor,1) * var(--user-unit));direction:ltr}
+.rd-c{position:absolute;inset:0;width:100%;height:100%;display:block}
+.rd.night .rd-c{filter:invert(.9) hue-rotate(180deg)}
+.rd-hl{position:absolute;inset:0;pointer-events:none}
+.rd-hl i{position:absolute;display:block}
+.rd-hl i.hl{opacity:.42;mix-blend-mode:multiply;border-radius:2px}
+.rd.night .rd-hl i.hl{mix-blend-mode:normal;opacity:.38}
+.rd-hl i.ul{border-bottom:2.5px solid;background:none!important}
+.rd-ink{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.rd:is(.t-pen,.t-marker,.t-erase,.t-note) .rd-ink{pointer-events:auto;touch-action:none;cursor:crosshair}
+.rd-nts{position:absolute;inset:0;pointer-events:none}
+.rd-n{position:absolute;pointer-events:auto;transform:translate(-50%,-100%);width:30px;height:30px;border-radius:50% 50% 50% 4px;background:var(--c,#F5C84A);font-size:15px;display:grid;place-items:center;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.rd-n.sm{width:22px;height:22px;font-size:11px;transform:translate(-30%,-90%)}
+.rd-bm{position:absolute;top:-4px;inset-inline-end:14px;font-size:26px;pointer-events:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
+.rd-msg{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:30px;color:var(--muted);line-height:1.8;direction:rtl}
+.textLayer{position:absolute;inset:0;overflow:clip;line-height:1;text-size-adjust:none;-webkit-text-size-adjust:none;transform-origin:0 0;z-index:0;pointer-events:none;--min-font-size:1;--text-scale-factor:calc(var(--total-scale-factor) * var(--min-font-size));--min-font-size-inv:calc(1 / var(--min-font-size))}
+.rd.t-select .textLayer{pointer-events:auto}
+.textLayer :is(span,br){color:transparent;position:absolute;white-space:pre;cursor:text;transform-origin:0% 0%;-webkit-user-select:text;user-select:text}
+.textLayer>:not(.markedContent),.textLayer .markedContent span:not(.markedContent){z-index:1;--font-height:0;font-size:calc(var(--text-scale-factor) * var(--font-height));--scale-x:1;--rotate:0deg;transform:rotate(var(--rotate)) scaleX(var(--scale-x)) scale(var(--min-font-size-inv))}
+.textLayer .markedContent{display:contents}
+.textLayer span[role=img]{-webkit-user-select:none;user-select:none;cursor:default}
+.textLayer ::selection{background:rgba(70,130,255,.35)}
+.textLayer .endOfContent{display:block;position:absolute;inset:100% 0 0;z-index:0;cursor:default;-webkit-user-select:none;user-select:none}
+.textLayer.selecting .endOfContent{inset:0}
+.rd-selbar{position:absolute;left:8px;right:8px;top:calc(60px + env(safe-area-inset-top));z-index:5;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;padding:8px 10px;border-radius:16px;background:#232a35;box-shadow:0 8px 28px rgba(0,0,0,.55);border:1px solid var(--line)}
+.rd-selbar[hidden]{display:none}
+.rd-selbar>button:not(.rd-dot){padding:8px 12px;border-radius:10px;background:var(--soft);font-weight:700;font-size:13px}
+.rd-dot{width:30px;height:30px;border-radius:50%;border:2px solid transparent;flex:none}
+.rd-dot.on{border-color:#fff;box-shadow:0 0 0 2px #0f1216 inset}
+.rd-colors{display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 10px;background:#0f1216;border-top:1px solid var(--line)}
+.rd-undo{margin-inline-start:6px;padding:7px 12px;border-radius:10px;background:var(--soft);font-weight:700;font-size:13px}
+.rd-bar{display:flex;background:#0f1216;padding:4px 6px calc(6px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+.rd-bar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 0;border-radius:12px;color:var(--muted)}
+.rd-bar button span{font-size:20px;line-height:1.1}.rd-bar button small{font-size:10.5px;font-weight:700}
+.rd-bar button.on{background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent)}
+.rd-sheet{position:absolute;inset:0;z-index:8;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;direction:rtl}
+.rd-sheet[hidden]{display:none}
+.rd-sh-in{width:100%;max-height:82%;overflow:auto;background:var(--surface);border-radius:20px 20px 0 0;padding:16px 14px calc(16px + env(safe-area-inset-bottom));animation:sheetUp .28s both}
+.rd-sh-in h4{font-size:17px;margin-bottom:10px}.rd-sh-in h5{margin:14px 0 6px;color:var(--muted);font-size:13px}
+.rd-sh-in textarea{min-height:120px}
+.rd-mh{display:flex;align-items:center;justify-content:space-between;gap:10px}.rd-mh h4{margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rd-mh button{width:36px;height:36px;border-radius:10px;background:var(--soft)}
+.rd-mg{display:grid;gap:8px;margin-top:12px}
+.rd-mg button{padding:12px;border-radius:12px;background:var(--soft);font-weight:700;text-align:start}
+.rd-row{display:flex;align-items:stretch;gap:6px;margin-top:6px}
+.rd-row>button:first-child{flex:1;display:flex;align-items:center;gap:8px;text-align:start;padding:9px 10px;border-radius:12px;background:var(--bg);min-width:0}
+.rd-row i{width:10px;height:28px;border-radius:5px;flex:none}
+.rd-row small{color:var(--muted);flex:none}
+.rd-row span{overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:13.5px;white-space:pre-wrap}
+.rd-rb{width:38px;border-radius:12px;background:var(--bg);flex:none}
+body.rd-open{overflow:hidden}body.rd-open #app,body.rd-open .topbar,body.rd-open .dock{visibility:hidden}
 </style>
 </head>
 <body>
-<header class="topbar"><div class="tb-in"><span class="brand">My Life</span><button class="icb" data-act="modal" data-v="backup" aria-label="نسخة احتياطية / استيراد"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10"/><path d="m8 10.5 4 4 4-4"/><path d="M5 19h14"/></svg></button></div></header>
+<header class="topbar"><div class="tb-in"><span class="brand">My Life</span><div class="tb-btns"><button class="icb" data-act="modal" data-v="lock" aria-label="قفل التطبيق"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></button><button class="icb" data-act="modal" data-v="backup" aria-label="نسخة احتياطية / استيراد"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10"/><path d="m8 10.5 4 4 4-4"/><path d="M5 19h14"/></svg></button></div></div></header>
 <main id="app"></main>
 <nav class="dock" id="nav" aria-label="التنقل"></nav>
 <div id="modal"></div>
 <div id="editor"></div>
+<div id="reader"></div>
+<div id="lock" role="dialog" aria-modal="true" aria-label="قفل التطبيق"></div>
 <script>
 const $=s=>document.querySelector(s);
+try{const c=JSON.parse(localStorage.getItem('hayati-lock')||'null');if(c&&c.hash)document.body.classList.add('locked')}catch(e){}
 const pad=n=>String(n).padStart(2,'0');
 const fmt=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const parse=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
@@ -471,7 +590,7 @@ const monthsOfYear=y=>[...Array(12)].map((_,m)=>daysBetween(new Date(y,m,1),new 
 const PR=[['fajr','الفجر'],['dhuhr','الظهر'],['asr','العصر'],['maghrib','المغرب'],['isha','العشاء']];
 const TABS=[['home','الرئيسية'],['prayers','الصلوات'],['habit','العادة'],['study','الدراسة'],['eyes','Eyes']];
 
-let data={prayers:{},habit:{},notes:{},docs:[],days:{},hnotes:{},hgoal:0};
+let data={prayers:{},habit:{},notes:{},docs:[],days:{},hnotes:{},hgoal:0,quran:{},hcol:'#4FC48B',hbad:'#F2726C'};
 let ui={tab:'home',period:'day',anchor:today(),modal:null,confirm:null,focus:null,editing:null,anim:false,pop:null};
 let storageOk=true;
 
@@ -499,6 +618,10 @@ function fixData(){
   if(!data.days||typeof data.days!=='object')data.days={};
   if(!data.hnotes||typeof data.hnotes!=='object'||Array.isArray(data.hnotes))data.hnotes={};
   data.hgoal=+data.hgoal||0;
+  if(!data.quran||typeof data.quran!=='object'||Array.isArray(data.quran))data.quran={};
+  if(!/^#[0-9a-f]{6}$/i.test(data.hcol||''))data.hcol='#4FC48B';
+  if(!/^#[0-9a-f]{6}$/i.test(data.hbad||''))data.hbad='#F2726C';
+  applyHabitColor();
   if(!data.uni||typeof data.uni!=='object'||Array.isArray(data.uni))data.uni={};
   const u=data.uni;
   if(!Array.isArray(u.tt)||u.tt.length!==5)u.tt=DEF_TT.map(r=>r.slice());
@@ -506,6 +629,9 @@ function fixData(){
   if(!Array.isArray(u.exams))u.exams=[];
   if(!u.abs||typeof u.abs!=='object')u.abs={};
   u.lim=+u.lim||3;
+  if(!Array.isArray(u.st)||u.st.length!==5||u.st.some(x=>!x||typeof x!=='object'))u.st=u.slots.map(parseSlot);
+  if(!u.wake||typeof u.wake!=='object'||Array.isArray(u.wake))u.wake={};
+  u.lead=(u.lead===undefined||u.lead===null||u.lead===''||isNaN(+u.lead))?90:Math.max(0,Math.min(300,+u.lead));
   if(!data.eyes||typeof data.eyes!=='object'||Array.isArray(data.eyes))data.eyes={};
   const ey=data.eyes;
   if(!ey.log||typeof ey.log!=='object')ey.log={};
@@ -564,11 +690,15 @@ function calendar(days,cell){
 const getP=(d,k)=>(data.prayers[d]||{})[k]||0;
 const setP=(d,k,v)=>{(data.prayers[d]=data.prayers[d]||{})[k]=v;save()};
 const dayCount=d=>PR.filter(([k])=>getP(d,k)>0).length;
+const getQ=(d,k)=>!!((data.quran[d]||{})[k]);
+const setQ=(d,k)=>{const r=data.quran[d]=data.quran[d]||{};if(r[k])delete r[k];else r[k]=1;if(!Object.keys(r).length)delete data.quran[d];save()};
+const qCount=d=>PR.filter(([k])=>getQ(d,k)).length;
 function prayerStats(days){
   const t=today(),past=days.filter(d=>d<=t);let c=0,full=0,jam=0;
   past.forEach(d=>{const n=dayCount(d);c+=n;if(n===5)full++;PR.forEach(([k])=>{if(getP(d,k)===2)jam++})});
   const tot=past.length*5;
-  return{c,tot,full,jam,pct:tot?Math.round(c/tot*100):0};
+  const q=past.reduce((a,d)=>a+qCount(d),0);
+  return{c,tot,full,jam,q,pct:tot?Math.round(c/tot*100):0};
 }
 function viewPrayers(){
   const{days}=range(),t=today(),st=prayerStats(days);let h=periodBar();
@@ -576,16 +706,17 @@ function viewPrayers(){
     const d=ui.anchor;
     h+=`<div class="card">${PR.map(([k,n])=>{const v=getP(d,k);return`<div class="prow"><span class="pname">${n}</span><div class="pbtns">
 <button class="pb ${v===1?'on1':''}" data-act="pset" data-d="${d}" data-k="${k}" data-v="1" ${d>t?'disabled':''}>صلّيت</button>
-<button class="pb ${v===2?'on2':''}" data-act="pset" data-d="${d}" data-k="${k}" data-v="2" ${d>t?'disabled':''}>جماعة</button></div></div>`}).join('')}</div>
-<div class="card"><div class="big">${dayCount(d)} / 5</div></div>`;
+<button class="pb ${v===2?'on2':''}" data-act="pset" data-d="${d}" data-k="${k}" data-v="2" ${d>t?'disabled':''}>جماعة</button>
+<button class="pb ${getQ(d,k)?'onq':''}" data-act="qset" data-d="${d}" data-k="${k}" ${d>t?'disabled':''}>📖 قرآن</button></div></div>`}).join('')}</div>
+<div class="card"><div class="big"><bdi dir="ltr">${dayCount(d)} / 5</bdi></div><p class="muted" style="text-align:center;margin-top:4px">📖 قراءة القرآن: <bdi dir="ltr">${qCount(d)} / 5</bdi></p></div>`;
   }else{
-    h+=`<div class="grid3"><div class="stat"><b>${st.pct}%</b><span>الالتزام</span></div><div class="stat"><b>${st.full}</b><span>أيام كاملة</span></div><div class="stat"><b>${st.jam}</b><span>في جماعة</span></div></div>`;
+    h+=`<div class="grid3" style="grid-template-columns:repeat(4,1fr)"><div class="stat"><b>${st.pct}%</b><span>الالتزام</span></div><div class="stat"><b>${st.full}</b><span>أيام كاملة</span></div><div class="stat"><b>${st.jam}</b><span>في جماعة</span></div><div class="stat"><b class="good">${st.q}</b><span>قرآن</span></div></div>`;
     if(ui.period==='week'){
       h+=`<div class="card"><div class="wgrid"><div></div>${days.map(d=>`<div class="wh">${parse(d).toLocaleDateString(LOC,{weekday:'short'})}<small>${+d.slice(8)}</small></div>`).join('')}
-${PR.map(([k,n])=>`<div class="wn">${n}</div>`+days.map(d=>`<button class="dot s${getP(d,k)}" data-act="pcycle" data-d="${d}" data-k="${k}" ${d>t?'disabled':''} aria-label="${n}"></button>`).join('')).join('')}</div>
+${PR.map(([k,n])=>`<div class="wn">${n}</div>`+days.map(d=>`<button class="dot s${getP(d,k)}" data-act="pcycle" data-d="${d}" data-k="${k}" ${d>t?'disabled':''} aria-label="${n}"></button>`).join('')).join('')}<div class="wn">📖 قرآن</div>${days.map(d=>`<div class="qn">${qCount(d)||''}</div>`).join('')}</div>
 <p class="muted" style="margin-top:10px">اضغط على الدائرة: صلّيت ← جماعة ← إلغاء</p></div>`;
     }else if(ui.period==='month'){
-      h+=`<div class="card">${calendar(days,d=>{const n=dayCount(d),f=d>t;return`<button class="cc ${d===t?'today':''} ${n>=4?'hi':''}" ${f?'disabled':''} data-act="openday" data-d="${d}" style="background:color-mix(in srgb,var(--accent) ${n*18}%,var(--surface))"><span>${+d.slice(8)}</span><small>${f?'':n+'/5'}</small></button>`})}</div>`;
+      h+=`<div class="card">${calendar(days,d=>{const n=dayCount(d),f=d>t;return`<button class="cc ${d===t?'today':''} ${n>=4?'hi':''}" ${f?'disabled':''} data-act="openday" data-d="${d}" style="background:color-mix(in srgb,var(--accent) ${n*18}%,var(--surface))">${qCount(d)?'<i class="qd"></i>':''}<span>${+d.slice(8)}</span><small>${f?'':n+'/5'}</small></button>`})}<p class="muted" style="margin-top:10px"><i class="qd" style="position:static;display:inline-block;margin-inline-end:6px"></i>يوم فيه قراءة قرآن</p></div>`;
     }else{
       const y=parse(ui.anchor).getFullYear();
       h+=`<div class="card">${monthsOfYear(y).map(ds=>{const s=prayerStats(ds);return`<button class="yrow" data-act="openmonth" data-d="${ds[0]}"><span>${monthName(ds[0])}</span><div class="bar"><i style="width:${s.pct}%"></i></div><b>${s.pct}%</b></button>`}).join('')}</div>`;
@@ -616,6 +747,7 @@ function viewHabit(){
   const cell=d=>{const v=data.habit[d],has=(data.hnotes[d]||'').trim();return`<button class="hc ${v||''} ${d===t?'today':''}" data-act="hcycle" data-d="${d}" ${d>t?'disabled':''}>${+d.slice(8)}${has?hsvg(HI.note,13,2.4):''}</button>`};
   return heatmap()
   +`<div class="chips"><div class="chip ${st.cur?'hot':''}"><span class="flame">${hsvg(HI.flame,22)}</span><b data-count="${st.cur}">${st.cur}</b><span>يوم</span></div><button class="chip goal ${hit?'hot':''}" data-act="hgoal" style="--p:${p}">${hsvg(HI.goal,20)}<span>${g?(hit?'تحقق الهدف ✓ · ':'الهدف ')+g+(hit?'':' يوم'):'بدون هدف'}</span>${g?'<i></i>':''}</button></div>`
+  +`<button class="link" data-act="modal" data-v="hcolor" style="margin:0 0 6px;display:inline-flex;gap:6px;align-items:center">🎨 ألوان العادة</button>`
   +`<div class="grid3"><div class="stat"><b class="good">${cl}</b><span>نجاح هذا الشهر</span></div><div class="stat"><b>${st.best}</b><span>أفضل سلسلة</span></div><div class="stat"><b>${st.since===null?'—':st.since}</b><span>منذ آخر انتكاسة</span></div></div>`
   +`<div class="card ms${ms}"><div class="nav"><button data-act="hmonth" data-v="-1" aria-label="السابق">›</button><div class="nav-l">${a.toLocaleDateString(LOC,{month:'long',year:'numeric'})}</div><button data-act="hmonth" data-v="1" aria-label="التالي">‹</button></div>`
   +calendar(days,cell)
@@ -1035,11 +1167,15 @@ function closeEditor(){
 /* ---------- modal ---------- */
 function modalHtml(){
   if(ui.modal==='hnote')return hnoteModal();
+  if(ui.modal==='hcolor')return hcolorModal();
+  if(ui.modal==='lock')return lockModal();
   if(ui.modal==='tedit')return teditModal();
+  if(ui.modal==='wake')return wakeModal();
+  if(ui.modal==='slots')return slotsModal();
   if(ui.modal==='exam')return examModal();
   if(ui.modal==='doc')return docModal();
   if(ui.modal==='book')return bookModal();
-  const body=`<h3>نسخة احتياطية</h3><p class="muted">انسخ هذا النص واحفظه في مكان آمن. للاستعادة الصقه هنا ثم اضغط «استيراد».</p>
+  const body=`<h3>نسخة احتياطية</h3><p class="muted">انسخ هذا النص واحفظه في مكان آمن. للاستعادة الصقه هنا ثم اضغط «استيراد».<br>ملاحظة: ملفات الكتب (PDF) تبقى على هذا الجهاز ولا تدخل في النسخة، أما تظليلاتك وملاحظاتك فتدخل.</p>
 <textarea id="bk" style="margin-top:10px;min-height:160px;direction:ltr;font-size:12px">${esc(JSON.stringify(data))}</textarea>
 <div class="err" id="err"></div><div class="acts"><button class="btn" data-act="copybk">نسخ</button><button class="btn ghost" data-act="importbk">استيراد</button><button class="btn ghost" data-act="close">إغلاق</button></div>
 <div class="acts"><button class="btn ghost" data-act="exportfile">تنزيل ملف النسخة</button><button class="btn ghost" data-act="importfile">استيراد من ملف</button></div><input id="bkf" type="file" accept=".json,application/json" hidden>`;
@@ -1068,7 +1204,7 @@ function render(){
   const V={home:viewHome,prayers:viewPrayers,habit:viewHabit,study:viewStudy,eyes:viewEyes};
   const anim=ui.anim;ui.anim=false;
   const title=ui.tab==='home'?'':`<h1 class="ptitle">${TABS.find(t=>t[0]===ui.tab)[1]}</h1>`;
-  $('#app').innerHTML=`<div class="page ${anim?'enter':''}">${title}${V[ui.tab]()}</div>`;
+  $('#app').innerHTML=`<div class="page ${anim?'enter':''}"${ui.tab==='habit'?' style="--accent:var(--hcol);--accent-ink:var(--hink);--bad:var(--hbadc)"':''}>${title}${V[ui.tab]()}</div>`;
   updateNav();
   if(ui.tab==='home')mountHome();
   if(ui.tab==='habit')mountHabit();
@@ -1090,12 +1226,19 @@ function handle(a,D){
     case 'openday':ui.anchor=D.d;ui.period='day';break;
     case 'openmonth':ui.anchor=D.d;ui.period='month';break;
     case 'pset':setP(D.d,D.k,getP(D.d,D.k)===+D.v?0:+D.v);break;
+    case 'qset':setQ(D.d,D.k);hVib(10);break;
     case 'pcycle':setP(D.d,D.k,(getP(D.d,D.k)+1)%3);break;
     case 'hset':if(data.habit[D.d]===D.v)delete data.habit[D.d];else data.habit[D.d]=D.v;save();break;
     case 'hcycle':{const c=data.habit[D.d],n=!c?'c':c==='c'?'r':null;if(n)data.habit[D.d]=n;else delete data.habit[D.d];save();hVib(n==='r'?[20,40,20]:12);
       if(n==='c'){const cur=streaks().cur;ui.burst={sel:`[data-act="hcycle"][data-d="${D.d}"]`,cur,big:MILES.includes(cur)}}break}
     case 'hmonth':{const a=parse(ui.hm||today());a.setDate(1);a.setMonth(a.getMonth()+(+D.v));ui.hm=fmt(a);ui.ms=+D.v>0?1:-1;hVib(8);break}
     case 'htoday':ui.hm=today();ui.ms=0;break;
+    case 'hcset':{if(D.w==='r')data.hbad=D.v;else data.hcol=D.v;applyHabitColor();save();hVib(8);break}
+    case 'hcreset':data.hcol='#4FC48B';data.hbad='#F2726C';applyHabitColor();save();break;
+    case 'lkon':case 'lkchange':ui.modal=null;lkShow('setup1');break;
+    case 'lkoff':{if(!confirm('إيقاف قفل التطبيق؟'))return false;lk.cfg={skipped:true};lkSave();ui.modal=null;break}
+    case 'lknow':ui.modal=null;lkShow('unlock');break;
+    case 'lkbio':lkBioToggle();return false;
     case 'hgoal':{const i=GOALS.indexOf(data.hgoal||0);data.hgoal=GOALS[(i+1)%GOALS.length];save();hVib(10);break}
     case 'etab':ui.et=D.v;break;
     case 'eday':ui.ey=D.d;hVib(8);break;
@@ -1110,15 +1253,33 @@ function handle(a,D){
     case 'bfil':ui.bf=D.v;break;
     case 'bknew':ui.modal='book';ui.bid=null;ui.bnf=ui.bf||'reading';ui.focus='#bkt';break;
     case 'bkopen':ui.modal='book';ui.bid=D.id;break;
+    case 'bkread':rdOpen(D.id);return false;
+    case 'bkpick':{const i=$('#bkpdf');if(i)i.click();return false}
     case 'bksave':{const g=i=>$(i).value,t=g('#bkt').trim();if(!t){$('#err').textContent='اكتب عنوان الكتاب.';return false}
       const o={title:t,author:g('#bka').trim(),status:g('#bks'),page:Math.max(0,+g('#bkg')||0),pages:Math.max(0,+g('#bkp')||0),summary:g('#bkm').trim(),points:g('#bkn').trim()};
       if(o.status==='done'&&o.pages)o.page=o.pages;
       const B=data.eyes.books,b=B.find(x=>x.id===ui.bid);if(b)Object.assign(b,o);else B.unshift({id:uid(),...o,created:Date.now()});
       ui.bf=o.status;ui.modal=null;save();break}
-    case 'bkdel':{if(!confirm('حذف الكتاب مع ملخصه ونقاطه؟'))return false;data.eyes.books=data.eyes.books.filter(x=>x.id!==ui.bid);ui.modal=null;save();break}
+    case 'bkdel':{if(!confirm('حذف الكتاب مع ملخصه ونقاطه وملفه وكل تظليلاتك عليه؟'))return false;FDB.del(ui.bid).catch(()=>{});data.eyes.books=data.eyes.books.filter(x=>x.id!==ui.bid);ui.modal=null;save();break}
     case 'stab':ui.st=D.v;break;
     case 'sday':ui.sd=+D.v;hVib(8);break;
     case 'tedit':ui.modal='tedit';ui.td=+D.d;ui.ts=+D.s;ui.focus='#tin';break;
+    case 'wedit':ui.modal='wake';ui.wd=+D.d;break;
+    case 'wauto':delete data.uni.wake[ui.wd];ui.modal=null;save();break;
+    case 'wsave':{const t=$('#wkt').value,l=+$('#wkl').value;
+      if(!/^\d{2}:\d{2}$/.test(t)){$('#err').textContent='حدد وقت النهوض.';return false}
+      if(!(l>=0&&l<=300)){$('#err').textContent='مدة التحضير بين 0 و 300 دقيقة.';return false}
+      const u=data.uni;u.lead=Math.round(l);const f=firstClass(ui.wd);
+      const edited=t!==$('#wkt').dataset.orig;
+      if(edited){if(f&&minStr(toMin(f.a)-u.lead)===t)delete u.wake[ui.wd];else u.wake[ui.wd]=t}
+      ui.modal=null;save();break}
+    case 'slotsedit':ui.modal='slots';break;
+    case 'slotssave':{const R=[];
+      for(let i=0;i<5;i++){const a=$('#sa'+i).value,b=$('#sb'+i).value;
+        if((a&&!b)||(!a&&b)){$('#err').textContent='الحصة '+(i+1)+': حدد البداية والنهاية معاً.';return false}
+        if(a&&b&&toMin(b)<=toMin(a)){$('#err').textContent='الحصة '+(i+1)+': النهاية يجب أن تكون بعد البداية.';return false}
+        R.push({a,b})}
+      const u=data.uni;u.st=R;u.slots=R.map((x,i)=>x.a?x.a+' - '+x.b:'الحصة '+(i+1));ui.modal=null;save();break}
     case 'tsave':{data.uni.tt[ui.td][ui.ts]=($('#tin').value||'').trim();ui.modal=null;save();break}
     case 'exnew':ui.modal='exam';ui.eid=null;ui.focus='#exn';break;
     case 'exedit':ui.modal='exam';ui.eid=D.id;break;
@@ -1155,17 +1316,18 @@ document.addEventListener('click',e=>{
   const a=t.dataset.act;
   if(a==='ovclose'){if(e.target!==t)return;ui.modal=null;render();return}
   if(['tab','period','shift','today','openday','openmonth','hshift','stab','sday','etab','bfil'].includes(a))ui.anim=true;
-  if(['pset','pcycle','hset','hcycle','abadd','absub','etog'].includes(a))
+  if(['pset','pcycle','qset','hset','hcycle','abadd','absub','etog'].includes(a))
     ui.pop=`[data-act="${a}"]`+['d','k','v','id','p','n'].filter(x=>t.dataset[x]!==undefined).map(x=>`[data-${x}="${t.dataset[x]}"]`).join('');
   if(handle(a,t.dataset)!==false)render();
 });
-document.addEventListener('change',e=>{if(e.target.id!=='bkf'||!e.target.files[0])return;const r=new FileReader();r.onload=()=>{$('#bk').value=String(r.result);$('#err').textContent='تم تحميل الملف. اضغط «استيراد» للتأكيد.';$('#err').style.color='var(--good)'};r.readAsText(e.target.files[0])});
+document.addEventListener('change',e=>{if(e.target.id==='bkpdf'){const f=e.target.files[0];e.target.value='';bkImport(f);return}if(e.target.id==='lkd'&&lk.cfg){lk.cfg.delay=+e.target.value;lkSave();return}if(e.target.id!=='bkf'||!e.target.files[0])return;const r=new FileReader();r.onload=()=>{$('#bk').value=String(r.result);$('#err').textContent='تم تحميل الملف. اضغط «استيراد» للتأكيد.';$('#err').style.color='var(--good)'};r.readAsText(e.target.files[0])});
 document.addEventListener('mousedown',e=>{if(e.target.closest('.nav button,.seg button'))e.preventDefault()});
 document.addEventListener('keydown',e=>{
   if(e.key!=='Enter'||!e.target.dataset||!e.target.dataset.enter)return;
   if(handle(e.target.dataset.enter,e.target.dataset)!==false)render();
 });
 document.addEventListener('input',e=>{
+  if(e.target.id==='hcc'||e.target.id==='hcb'){const v=e.target.value;if(/^#[0-9a-f]{6}$/i.test(v)){if(e.target.id==='hcc')data.hcol=v;else data.hbad=v;applyHabitColor();save()}}
   if(e.target.id==='note'){data.notes[ui.anchor]=e.target.value;save()}
 });
 /* ---------- habit v4: heatmap, goal, notes, motion ---------- */
@@ -1184,17 +1346,24 @@ function hnotesCard(){
   const t=today(),ks=Object.keys(data.hnotes).filter(k=>(data.hnotes[k]||'').trim()).sort().reverse();
   return`<div class="card"><div class="hn-h"><b>الملاحظات</b><span class="muted">${ks.length}</span></div>`+(ks.length?ks.slice(0,10).map(k=>`<button class="hn" data-act="hnote" data-d="${k}"><small>${k===t?'اليوم':parse(k).toLocaleDateString(LOC,{weekday:'short',day:'numeric',month:'short'})}${data.habit[k]==='c'?' · نجاح':data.habit[k]==='r'?' · انتكاس':''}</small><span>${esc(data.hnotes[k])}</span></button>`).join(''):empty('اضغط مطولاً على أي يوم في التقويم لإضافة ملاحظة'))+`</div>`;
 }
+const HSW=['#4FC48B','#3CC8C8','#5B9CF5','#A98BF2','#F27CB0','#F2726C','#F59A4A','#F5B544','#ECEFF4'];
+function hInk(h){const n=parseInt(h.slice(1),16),r=n>>16,g=(n>>8)&255,b=n&255;return(0.299*r+0.587*g+0.114*b)>150?'#0B0D10':'#FFFFFF'}
+function applyHabitColor(){const r=document.documentElement.style;r.setProperty('--hcol',data.hcol);r.setProperty('--hink',hInk(data.hcol));r.setProperty('--hbadc',data.hbad)}
+function hcolorModal(){
+  const row=(w,cur,id,t)=>`<div class="hc-row"><b>${t}</b><div class="swrow">${HSW.map(c=>`<button class="swb ${c.toLowerCase()===cur.toLowerCase()?'on':''}" style="background:${c}" data-act="hcset" data-w="${w}" data-v="${c}" aria-label="${c}"></button>`).join('')}<label class="swb cust" title="لون مخصص">+<input type="color" id="${id}" value="${cur}"></label></div></div>`;
+  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>ألوان العادة</h3>${row('c',data.hcol,'hcc','لون النجاح والتقدم')}${row('r',data.hbad,'hcb','لون الانتكاس')}<div class="acts"><button class="btn" data-act="close">تم</button><button class="btn ghost" data-act="hcreset">الأخضر الافتراضي</button></div></div></div>`;
+}
 function hnoteModal(){
   const d=ui.hd,v=data.hnotes[d]||'',dt=parse(d).toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'});
   return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>ملاحظة · ${dt}</h3><textarea id="hnt" dir="auto" placeholder="اكتب ملاحظتك لهذا اليوم…" style="min-height:130px">${esc(v)}</textarea><div class="acts"><button class="btn" data-act="hnsave">حفظ</button>${v?'<button class="btn ghost" data-act="hndel">حذف</button>':''}<button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
 }
-function hToast(t){const e=document.createElement('div');e.className='toast';e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2400)}
+function hToast(t){const e=document.createElement('div');e.className='toast';e.textContent=t;if(ui.tab==='habit'){e.style.background='var(--hcol)';e.style.color='var(--hink)'}document.body.appendChild(e);setTimeout(()=>e.remove(),2400)}
 function hBurst(b){
   const el=document.querySelector(b.sel);if(!el)return;
   const r=el.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,n=b.big?26:9;
   for(let i=0;i<n;i++){
     const p=document.createElement('b'),a=Math.random()*6.283,sp=(b.big?90:44)+Math.random()*(b.big?110:30);
-    p.className='sp';p.style.cssText=`left:${x}px;top:${y}px;--dx:${Math.cos(a)*sp}px;--dy:${Math.sin(a)*sp-(b.big?30:0)}px;background:${i%3?'var(--accent)':'var(--good)'}`;
+    p.className='sp';p.style.cssText=`left:${x}px;top:${y}px;--dx:${Math.cos(a)*sp}px;--dy:${Math.sin(a)*sp-(b.big?30:0)}px;background:${i%3?'var(--hcol)':'var(--good)'}`;
     document.body.appendChild(p);setTimeout(()=>p.remove(),900);
   }
   if(b.big){hToast(b.msg||'🔥 '+b.cur+' يوماً متتالية! استمر');hVib([30,60,30,60,80])}
@@ -1229,8 +1398,35 @@ function stTT(){
   const chips=DN.map((n,i)=>`<button data-act="sday" data-v="${i}" class="dchip ${sd===i?'on':''}">${n}${i===td?'<i></i>':''}</button>`).join('');
   const L=u.tt[sd].map((t,s)=>({t:t.trim(),s})).filter(x=>stType(x.t));
   const cards=L.length?L.map((x,k)=>{const ty=stType(x.t);return`<button class="sc ${ty}" style="--i:${k}" data-act="tedit" data-d="${sd}" data-s="${x.s}"><div class="stime">${esc(u.slots[x.s])}</div><b>${esc(x.t)}</b><em>${stTag[ty]}</em></button>`}).join(''):empty('لا توجد حصص هذا اليوم 🎉');
-  const grid=`<div class="wk-scroll"><table class="wg"><tr><th></th>${u.slots.map(x=>`<th>${esc(x)}</th>`).join('')}</tr>${u.tt.map((r,d)=>`<tr><th>${DN[d]}</th>${r.map((t,s)=>{const ty=stType(t);return`<td><button class="wc ${ty}" data-act="tedit" data-d="${d}" data-s="${s}">${ty?esc(t):'·'}</button></td>`}).join('')}</tr>`).join('')}</table></div>`;
-  return`<div class="dchips">${chips}</div><div class="scs">${cards}</div><div class="card"><div class="hn-h"><b>الأسبوع كاملاً</b><span class="muted">اضغط لتعديل أي خانة</span></div>${grid}</div>`;
+  const grid=`<div class="wk-scroll"><table class="wg"><tr><th></th>${u.slots.map(x=>`<th><button class="thb" data-act="slotsedit">${esc(x)}</button></th>`).join('')}</tr>${u.tt.map((r,d)=>`<tr><th>${DN[d]}</th>${r.map((t,s)=>{const ty=stType(t);return`<td><button class="wc ${ty}" data-act="tedit" data-d="${d}" data-s="${s}">${ty?esc(t):'·'}</button></td>`}).join('')}</tr>`).join('')}</table></div>`;
+  return wakeCard(sd)+`<div class="dchips">${chips}</div><div class="scs">${cards}</div><div class="card"><div class="hn-h"><b>الأسبوع كاملاً</b><button class="chip" data-act="slotsedit">⏱ أوقات الحصص</button></div>${grid}<p class="muted" style="margin-top:8px">اضغط على أي خانة لتعديل المادة، وعلى وقت الحصة لتعديل البداية والنهاية.</p></div>`;
+}
+/* slot times + wake-up time */
+function parseSlot(str){
+  const m=String(str||'').match(/(\d{1,2})\s*[:.hH]\s*(\d{2})\s*[-–—]\s*(\d{1,2})\s*[:.hH]\s*(\d{2})/);
+  if(!m)return{a:'',b:''};
+  let h1=+m[1],h2=+m[3];const m1=+m[2],m2=+m[4];
+  if(h2*60+m2<=h1*60+m1&&h2<12)h2+=12;
+  if(h1>23||h2>23||m1>59||m2>59)return{a:'',b:''};
+  return{a:pad(h1)+':'+pad(m1),b:pad(h2)+':'+pad(m2)};
+}
+const toMin=t=>{const[h,m]=String(t).split(':').map(Number);return h*60+m};
+const minStr=m=>{m=((Math.round(m)%1440)+1440)%1440;return pad(Math.floor(m/60))+':'+pad(m%60)};
+function firstClass(d){const u=data.uni;for(let s=0;s<5;s++){if(stType(u.tt[d][s])&&u.st[s]&&u.st[s].a)return{s,a:u.st[s].a,name:u.tt[d][s].trim()}}return null}
+function wakeFor(d){const u=data.uni,f=firstClass(d);if(u.wake[d])return{t:u.wake[d],auto:false,f};return f?{t:minStr(toMin(f.a)-u.lead),auto:true,f}:null}
+const leadTxt=n=>n%60===0?(n/60)+' ساعة':n>60?Math.floor(n/60)+' س و '+(n%60)+' د':n+' دقيقة';
+function wakeCard(d){
+  const w=wakeFor(d),u=data.uni;
+  const sub=!w?'لا توجد حصص هذا اليوم · اضغط لتحديد وقت يدوي':w.f?`أول حصة ${w.f.a} (${esc(w.f.name)}) · ${w.auto?'قبلها بـ '+leadTxt(u.lead):'وقت مخصص'}`:'وقت مخصص';
+  return`<button class="card wake" data-act="wedit" data-d="${d}"><span class="wk-i">⏰</span><div><small>وقت النهوض · ${DN[d]}</small><b dir="ltr">${w?w.t:'--:--'}</b><small>${sub}</small></div><em>تعديل</em></button>`;
+}
+function wakeModal(){
+  const d=ui.wd,w=wakeFor(d),u=data.uni;
+  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>وقت النهوض · ${DN[d]}</h3><label class="fl">وقت النهوض (ضع المنبه عليه)</label><input id="wkt" type="time" value="${w?w.t:'06:00'}" data-orig="${w?w.t:'06:00'}"><label class="fl">مدة التحضير قبل أول حصة (دقيقة)</label><input id="wkl" type="number" inputmode="numeric" min="0" max="300" value="${u.lead}"><p class="muted" style="margin-top:8px">عند تحديد مدة التحضير يُحسب وقت النهوض تلقائياً لكل الأيام بحسب بداية أول حصة. وإن غيّرت الوقت يدوياً يُحفظ لهذا اليوم فقط.</p><div class="err" id="err"></div><div class="acts"><button class="btn" data-act="wsave">حفظ</button>${u.wake[d]?'<button class="btn ghost" data-act="wauto">تلقائي</button>':''}<button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
+}
+function slotsModal(){
+  const u=data.uni;
+  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>أوقات الحصص</h3><div class="slr slh"><span></span><small>البداية</small><small>النهاية</small></div>${u.st.map((x,i)=>`<div class="slr"><b>الحصة ${i+1}</b><input id="sa${i}" type="time" value="${x.a||''}"><input id="sb${i}" type="time" value="${x.b||''}"></div>`).join('')}<p class="muted" style="margin-top:8px">اترك الخانتين فارغتين إن لم تكن للحصة وقت محدد.</p><div class="err" id="err"></div><div class="acts"><button class="btn" data-act="slotssave">حفظ</button><button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
 }
 function stEX(){
   const now=Date.now(),dt=d=>parse(d).toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'});
@@ -1289,8 +1485,8 @@ function eyLib(){
   const tabs=`<div class="dchips">${BST.map(([k,n])=>`<button class="dchip ${f===k?'on':''}" data-act="bfil" data-v="${k}">${n} · ${B.filter(b=>b.status===k).length}</button>`).join('')}</div>`;
   const L=B.filter(b=>b.status===f);
   const cards=L.length?L.map((b,k)=>{const pct=b.pages?Math.min(100,Math.round((b.page||0)/b.pages*100)):0,np=(b.points||'').split('\n').filter(x=>x.trim()).length;
-    return`<button class="bk" style="--i:${k}" data-act="bkopen" data-id="${b.id}"><b>${esc(b.title)}</b>${b.author?`<small>${esc(b.author)}</small>`:''}${b.pages?`<div class="abb" style="margin-top:10px"><i style="width:${pct}%"></i></div><small>${b.page||0} / ${b.pages} صفحة · ${pct}%</small>`:''}${b.summary?`<p>${esc(b.summary)}</p>`:''}${np?`<small>📝 ${np} نقاط مهمة</small>`:''}</button>`}).join(''):empty(f==='reading'?'لا تقرأ كتاباً الآن. أضف كتابك الحالي 📖':f==='next'?'قائمة قراءاتك المستقبلية فارغة':'لم تنهِ أي كتاب بعد');
-  return tabs+cards+`<button class="btn addb" data-act="bknew">+ إضافة كتاب</button>`;
+    return`<div class="bkw"><button class="bk" style="--i:${k}" data-act="${b.file?'bkread':'bkopen'}" data-id="${b.id}"><b>${esc(b.title)}</b>${b.author?`<small>${esc(b.author)}</small>`:''}${b.file?'<small class="bkf">📖 اضغط للقراءة · PDF</small>':''}${b.pages?`<div class="abb" style="margin-top:10px"><i style="width:${pct}%"></i></div><small>${b.page||0} / ${b.pages} صفحة · ${pct}%</small>`:''}${b.summary?`<p>${esc(b.summary)}</p>`:''}${np?`<small>📝 ${np} نقاط مهمة</small>`:''}</button>${b.file?`<button class="bke" data-act="bkopen" data-id="${b.id}" aria-label="تعديل بيانات الكتاب">✎</button>`:''}</div>`}).join(''):empty(f==='reading'?'لا تقرأ كتاباً الآن. أضف كتابك الحالي 📖':f==='next'?'قائمة قراءاتك المستقبلية فارغة':'لم تنهِ أي كتاب بعد');
+  return tabs+cards+`<button class="btn addb" data-act="bkpick">⬆ رفع كتاب (PDF) إلى المكتبة</button><button class="btn ghost addb" style="margin-top:8px" data-act="bknew">+ إضافة كتاب بدون ملف</button><input id="bkpdf" type="file" accept="application/pdf,.pdf" hidden>`;
 }
 function docModal(){
   const d=data.eyes.doc||{};
@@ -1298,7 +1494,7 @@ function docModal(){
 }
 function bookModal(){
   const b=data.eyes.books.find(x=>x.id===ui.bid)||{status:ui.bnf||'reading'};
-  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>${b.id?'تعديل الكتاب':'كتاب جديد'}</h3><input id="bkt" value="${esc(b.title||'')}" placeholder="عنوان الكتاب" autocomplete="off"><input id="bka" value="${esc(b.author||'')}" placeholder="المؤلف (اختياري)" style="margin-top:8px" autocomplete="off"><select id="bks" style="margin-top:8px">${BST.map(([k,n])=>`<option value="${k}" ${b.status===k?'selected':''}>${n}</option>`).join('')}</select><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px"><input id="bkg" type="number" inputmode="numeric" min="0" value="${b.page||''}" placeholder="الصفحة الحالية"><input id="bkp" type="number" inputmode="numeric" min="0" value="${b.pages||''}" placeholder="عدد الصفحات"></div><textarea id="bkm" dir="auto" placeholder="ملخص الكتاب بكلماتك…" style="margin-top:8px;min-height:110px">${esc(b.summary||'')}</textarea><textarea id="bkn" dir="auto" placeholder="النقاط المهمة — نقطة في كل سطر" style="margin-top:8px;min-height:130px">${esc(b.points||'')}</textarea><div class="err" id="err"></div><div class="acts"><button class="btn" data-act="bksave">حفظ</button>${b.id?'<button class="btn ghost" data-act="bkdel">حذف</button>':''}<button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
+  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>${b.id?'تعديل الكتاب':'كتاب جديد'}</h3>${b.file?`<p class="muted" style="margin:-4px 0 10px">📄 ${esc(b.file.name)} · ${(b.file.size/1048576).toFixed(1)} MB${b.ann&&Object.keys(b.ann).length?' · '+Object.values(b.ann).reduce((a,x)=>a+x.length,0)+' علامة':''}</p>`:''}<input id="bkt" value="${esc(b.title||'')}" placeholder="عنوان الكتاب" autocomplete="off"><input id="bka" value="${esc(b.author||'')}" placeholder="المؤلف (اختياري)" style="margin-top:8px" autocomplete="off"><select id="bks" style="margin-top:8px">${BST.map(([k,n])=>`<option value="${k}" ${b.status===k?'selected':''}>${n}</option>`).join('')}</select><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px"><input id="bkg" type="number" inputmode="numeric" min="0" value="${b.page||''}" placeholder="الصفحة الحالية"><input id="bkp" type="number" inputmode="numeric" min="0" value="${b.pages||''}" placeholder="عدد الصفحات"></div><textarea id="bkm" dir="auto" placeholder="ملخص الكتاب بكلماتك…" style="margin-top:8px;min-height:110px">${esc(b.summary||'')}</textarea><textarea id="bkn" dir="auto" placeholder="النقاط المهمة — نقطة في كل سطر" style="margin-top:8px;min-height:130px">${esc(b.points||'')}</textarea><div class="err" id="err"></div><div class="acts"><button class="btn" data-act="bksave">حفظ</button>${b.id?'<button class="btn ghost" data-act="bkdel">حذف</button>':''}<button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
 }
 let stT=null;
 function tickCD(){
@@ -1307,8 +1503,453 @@ function tickCD(){
   el.querySelectorAll('b').forEach((b,i)=>{const t=String(v[i]).padStart(2,'0');if(b.textContent!==t){b.textContent=t;b.classList.remove('tk');void b.offsetWidth;b.classList.add('tk')}});
 }
 function mountStudy(){clearInterval(stT);stT=null;if(document.querySelector('[data-cd]')){tickCD();stT=setInterval(tickCD,1000)}}
+
+/* ---------- app lock: PIN + fingerprint / Face ID ---------- */
+const LK='hayati-lock';
+const lk={cfg:null,mode:null,buf:'',tmp:'',len:4,busy:false,hiddenAt:0,bioOk:false,msg:'',t:null};
+function lkLoad(){try{lk.cfg=JSON.parse(localStorage.getItem(LK)||'null')}catch(e){lk.cfg=null}}
+function lkSave(){try{localStorage.setItem(LK,JSON.stringify(lk.cfg))}catch(e){}}
+const lkActive=()=>!!(lk.cfg&&lk.cfg.hash);
+const b64=a=>btoa(String.fromCharCode(...new Uint8Array(a)));
+const unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function lkHash(pin,salt){
+  try{if(window.crypto&&crypto.subtle){
+    const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pin),'PBKDF2',false,['deriveBits']);
+    return b64(await crypto.subtle.deriveBits({name:'PBKDF2',salt:unb64(salt),iterations:120000,hash:'SHA-256'},k,256));
+  }}catch(e){}
+  let h=2166136261;const t=salt+':'+pin;for(let i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)}return'f'+(h>>>0).toString(36);
+}
+const lkLen=()=>lk.mode==='setup1'||lk.mode==='setup2'?lk.len:((lk.cfg&&lk.cfg.len)||4);
+const lkWait=()=>Math.max(0,Math.ceil(((lk.cfg&&lk.cfg.until)||0)-Date.now())/1000);
+function lkShow(mode,msg){
+  lk.mode=mode;lk.buf='';lk.msg=msg||'';lk.busy=false;
+  if(mode==='setup1'){lk.tmp='';lk.len=(lk.cfg&&lk.cfg.len)||4}
+  document.body.classList.add('locked');lkRender();
+  if(mode==='unlock'&&lk.cfg&&lk.cfg.bio)setTimeout(()=>{if(lk.mode==='unlock')lkBioUnlock(true)},350);
+}
+function lkHide(){clearTimeout(lk.t);lk.mode=null;lk.buf='';document.body.classList.remove('locked');$('#lock').innerHTML=''}
+function lkRender(){
+  const m=lk.mode;if(!m)return;
+  const len=lkLen(),wait=m==='unlock'?lkWait():0;
+  const T={unlock:['My Life','أدخل الرمز للدخول'],setup1:['قفل التطبيق','اختر رمزاً سرياً'],setup2:['تأكيد الرمز','أعد إدخال الرمز نفسه']}[m];
+  const msg=wait>0?`حاول مرة أخرى بعد ${Math.ceil(wait)} ثانية`:lk.msg;
+  const dots=Array.from({length:len},(_,i)=>`<i class="${i<lk.buf.length?'on':''}"></i>`).join('');
+  const keys=['1','2','3','4','5','6','7','8','9'].map(k=>`<button data-k="${k}" ${wait>0?'disabled':''}>${k}</button>`).join('');
+  const bio=m==='unlock'&&lk.cfg&&lk.cfg.bio?`<button data-k="bio" class="lk-bio" aria-label="بصمة / وجه">${hsvg('<path d="M12 11a3 3 0 0 0-3 3c0 2.2-.6 4-1.6 5.6"/><path d="M12 7a7 7 0 0 0-7 7c0 1.4-.2 2.7-.6 3.8"/><path d="M12 3a11 11 0 0 1 11 11c0 1.3-.1 2.5-.4 3.6" /><path d="M15 14c0 3-.7 5.2-1.8 7"/><path d="M9 3.6A11 11 0 0 0 1 14"/>',30,1.7)}</button>`:'<span></span>';
+  $('#lock').innerHTML=`<div class="lk-in"><div class="lk-ic">${hsvg('<rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',30,1.8)}</div><h2>${T[0]}</h2><p class="muted">${T[1]}</p>
+<div class="lk-dots" id="lkd">${dots}</div><div class="lk-msg" id="lkm">${esc(msg)}</div>
+${m==='setup1'?`<div class="seg lk-len"><button data-k="len4" class="${lk.len===4?'on':''}">4 أرقام</button><button data-k="len6" class="${lk.len===6?'on':''}">6 أرقام</button></div>`:''}
+<div class="lk-pad">${keys}${bio}<button data-k="0" ${wait>0?'disabled':''}>0</button><button data-k="b" aria-label="حذف">⌫</button></div>
+<div class="lk-foot">${m==='unlock'?'<button class="link" data-k="forgot">نسيت الرمز؟</button>':m==='setup1'?`<button class="link" data-k="cancel">${lkActive()?'إلغاء':'لاحقاً'}</button>`:'<button class="link" data-k="back">رجوع</button>'}</div></div>`;
+  clearTimeout(lk.t);if(wait>0)lk.t=setTimeout(lkRender,1000);
+}
+async function lkKey(k){
+  if(lk.busy)return;
+  if(k==='bio')return lkBioUnlock(false);
+  if(k==='forgot')return lkForgot();
+  if(k==='cancel'){if(!lkActive()&&!(lk.cfg&&lk.cfg.skipped)){lk.cfg=Object.assign(lk.cfg||{},{skipped:true});lkSave()}return lkHide()}
+  if(k==='back'){lk.tmp='';return lkShow('setup1')}
+  if(k==='len4'||k==='len6'){lk.len=k==='len4'?4:6;lk.buf='';return lkRender()}
+  if(k==='b'){lk.buf=lk.buf.slice(0,-1);lk.msg='';return lkRender()}
+  if(!/^\d$/.test(k)||(lk.mode==='unlock'&&lkWait()>0))return;
+  const len=lkLen();if(lk.buf.length>=len)return;
+  lk.buf+=k;lk.msg='';lkRender();
+  try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}
+  if(lk.buf.length<len)return;
+  lk.busy=true;
+  try{await lkSubmit()}finally{lk.busy=false}
+}
+function lkBad(msg){lk.buf='';lk.msg=msg;lkRender();const d=$('#lkd');if(d){d.classList.add('shake')}try{navigator.vibrate&&navigator.vibrate([30,40,30])}catch(e){}}
+async function lkSubmit(){
+  const m=lk.mode,pin=lk.buf;
+  if(m==='setup1'){lk.tmp=pin;lk.buf='';lk.mode='setup2';return lkRender()}
+  if(m==='setup2'){
+    if(pin!==lk.tmp){lk.tmp='';lk.mode='setup1';return lkBad('الرمزان غير متطابقين، ابدأ من جديد')}
+    const salt=b64(crypto.getRandomValues(new Uint8Array(16)));
+    const old=lk.cfg||{};
+    lk.cfg={salt,hash:await lkHash(pin,salt),len:lk.len,bio:old.bio||null,delay:old.delay===undefined?30:old.delay,fails:0,until:0};
+    lkSave();lkHide();hToast('🔒 تم تفعيل القفل');return;
+  }
+  if(m==='unlock'){
+    const c=lk.cfg;
+    if(await lkHash(pin,c.salt)===c.hash){c.fails=0;c.until=0;lkSave();lkHide();return}
+    c.fails=(c.fails||0)+1;
+    if(c.fails>=5){c.until=Date.now()+Math.min(600,30*Math.pow(2,c.fails-5))*1000}
+    lkSave();lkBad(c.fails>=5?'':`رمز خاطئ (${c.fails}/5)`);
+  }
+}
+async function lkBioSupported(){try{return !!(window.PublicKeyCredential&&await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable())}catch(e){return false}}
+async function lkBioUnlock(auto){
+  if(!lk.cfg||!lk.cfg.bio||lk.busy)return;
+  lk.busy=true;
+  try{
+    await navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),allowCredentials:[{type:'public-key',id:unb64(lk.cfg.bio),transports:['internal']}],userVerification:'required',timeout:60000}});
+    lk.cfg.fails=0;lk.cfg.until=0;lkSave();lkHide();
+  }catch(e){if(!auto){lk.msg='تعذّر التحقق بالبصمة، استخدم الرمز';lkRender()}}
+  finally{lk.busy=false}
+}
+async function lkBioToggle(){
+  const c=lk.cfg;if(!c||!c.hash)return;
+  if(c.bio){c.bio=null;lkSave();return render()}
+  try{
+    const cred=await navigator.credentials.create({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),rp:{name:'My Life'},user:{id:crypto.getRandomValues(new Uint8Array(16)),name:'my-life',displayName:'My Life'},pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required',residentKey:'discouraged'},timeout:60000,attestation:'none'}});
+    c.bio=b64(cred.rawId);lkSave();hToast('✓ تم تفعيل البصمة / الوجه');
+  }catch(e){hToast('تعذّر تفعيل البصمة على هذا الجهاز')}
+  render();
+}
+async function lkForgot(){
+  if(!confirm('نسيت الرمز؟\n\nلا يمكن استرجاعه. للمتابعة سيتم حذف كل بيانات التطبيق من هذا الجهاز (يمكنك استعادتها لاحقاً من ملف النسخة الاحتياطية إن كان لديك) ثم يُلغى القفل.\n\nهل تريد المتابعة؟'))return;
+  try{Object.keys(localStorage).filter(k=>k.startsWith('hayati-')).forEach(k=>localStorage.removeItem(k))}catch(e){}
+  try{indexedDB.deleteDatabase('mylife-files')}catch(e){}
+  location.reload();
+}
+function lockModal(){
+  const c=lk.cfg||{};
+  if(!lkActive())return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>🔒 قفل التطبيق</h3><p class="muted">اطلب رمزاً سرياً (وبصمة أو Face ID) عند فتح التطبيق، فلا يدخله أحد غيرك.</p><div class="acts"><button class="btn" data-act="lkon">تفعيل القفل</button><button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
+  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>🔒 قفل التطبيق</h3><p class="muted" style="margin-bottom:6px">القفل مفعّل · رمز من ${c.len||4} أرقام</p>
+<label class="fl">البصمة / Face ID</label><button class="btn ghost" style="width:100%" data-act="lkbio" ${lk.bioOk?'':'disabled'}>${c.bio?'✓ مفعّلة · اضغط للإيقاف':lk.bioOk?'تفعيل البصمة / الوجه':'غير مدعومة على هذا الجهاز أو المتصفح'}</button>
+<label class="fl">يُقفل التطبيق</label><select id="lkd"><option value="0" ${c.delay===0?'selected':''}>فوراً عند الخروج منه</option><option value="30" ${c.delay===30?'selected':''}>بعد 30 ثانية من الخروج</option><option value="300" ${c.delay===300?'selected':''}>بعد 5 دقائق من الخروج</option><option value="-1" ${c.delay===-1?'selected':''}>عند فتحه من جديد فقط</option></select>
+<div class="acts"><button class="btn" data-act="lknow">قفل الآن</button><button class="btn ghost" data-act="lkchange">تغيير الرمز</button></div>
+<div class="acts"><button class="btn ghost" data-act="lkoff">إيقاف القفل</button><button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
+}
+$('#lock').addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(b&&!b.disabled)lkKey(b.dataset.k)});
+document.addEventListener('keydown',e=>{if(!lk.mode)return;if(/^\d$/.test(e.key))lkKey(e.key);else if(e.key==='Backspace')lkKey('b')});
+function lkVisibility(){
+  if(document.hidden){lk.hiddenAt=Date.now();return}
+  if(!lkActive()||lk.mode)return;
+  const d=lk.cfg.delay===undefined?30:lk.cfg.delay;
+  if(d>=0&&Date.now()-lk.hiddenAt>=d*1000&&lk.hiddenAt)lkShow('unlock');
+}
+document.addEventListener('visibilitychange',lkVisibility);
+window.addEventListener('pageshow',e=>{if(e.persisted&&lkActive()&&!lk.mode)lkShow('unlock')});
+function lkBoot(){
+  lkLoad();lkBioSupported().then(v=>{lk.bioOk=v});
+  if(lkActive())lkShow('unlock');
+  else if(!lk.cfg)lkShow('setup1');
+}
+
+/* ---------- library: PDF books + reader ---------- */
+const FDB={
+  _p:null,
+  open(){return this._p||(this._p=new Promise((res,rej)=>{try{const r=indexedDB.open('mylife-files',1);r.onupgradeneeded=()=>r.result.createObjectStore('files');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}}))},
+  async tx(mode,fn){const db=await this.open();return new Promise((res,rej)=>{const t=db.transaction('files',mode);const q=fn(t.objectStore('files'));t.oncomplete=()=>res(q&&q.result);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)})},
+  put(k,v){return this.tx('readwrite',s=>s.put(v,k))},
+  get(k){return this.tx('readonly',s=>s.get(k))},
+  del(k){return this.tx('readwrite',s=>s.delete(k))}
+};
+const PDFJS_ROOT='https://cdn.jsdelivr.net/npm/pdfjs-dist@6.2.108/';
+let _pdfp=null;
+function loadPdfJs(){
+  if(_pdfp)return _pdfp;
+  _pdfp=(async()=>{
+    try{
+      const wk=new URL('./pdf.worker.min.mjs',location.href).href;
+      const ok=await fetch(wk,{method:'HEAD'}).then(r=>r.ok).catch(()=>false);
+      if(!ok)throw 0;
+      const lib=await import(new URL('./pdf.min.mjs',location.href).href);
+      lib.GlobalWorkerOptions.workerSrc=wk;return lib;
+    }catch(e){
+      const lib=await import(PDFJS_ROOT+'legacy/build/pdf.min.mjs');
+      lib.GlobalWorkerOptions.workerSrc=PDFJS_ROOT+'legacy/build/pdf.worker.min.mjs';return lib;
+    }
+  })();
+  _pdfp.catch(()=>{_pdfp=null});
+  return _pdfp;
+}
+async function bkImport(file){
+  if(!file)return;
+  if(!/\.pdf$/i.test(file.name)&&file.type!=='application/pdf'){hToast('اختر ملف PDF');return}
+  hToast('جاري إضافة الكتاب…');
+  const id=uid();
+  try{await FDB.put(id,await file.arrayBuffer())}catch(e){hToast('تعذّر حفظ الكتاب: المساحة غير كافية؟');return}
+  data.eyes.books.unshift({id,title:file.name.replace(/\.pdf$/i,'').replace(/[_]+/g,' ').trim()||'كتاب',author:'',status:'reading',page:1,pages:0,summary:'',points:'',created:Date.now(),file:{name:file.name,size:file.size},ann:{},bm:[]});
+  ui.bf='reading';ui.et='bk';save();render();hToast('✓ أُضيف الكتاب إلى المكتبة');
+}
+
+const RC=['#F5C84A','#4FC48B','#5B9CF5','#F27CB0','#F59A4A','#A98BF2'];
+const RD={open:false,lib:null,doc:null,b:null,n:1,z:1,tool:'read',color:RC[0],tok:0,task:null,sel:null,draw:null,asp:1.414,ne:null,hist:0};
+const rdAnn=n=>(RD.b.ann&&RD.b.ann[n])||[];
+function rdAdd(n,it){const b=RD.b;if(!b.ann)b.ann={};(b.ann[n]=b.ann[n]||[]).push(it);save();return it}
+function rdDel(n,id){const a=RD.b.ann&&RD.b.ann[n];if(!a)return;const i=a.findIndex(x=>x.id===id);if(i>=0){a.splice(i,1);if(!a.length)delete RD.b.ann[n];save()}}
+const segDist=(px,py,ax,ay,bx,by)=>{const dx=bx-ax,dy=by-ay,l=dx*dx+dy*dy;let t=l?((px-ax)*dx+(py-ay)*dy)/l:0;t=Math.max(0,Math.min(1,t));return Math.hypot(px-ax-t*dx,py-ay-t*dy)};
+const pathD=(P,H)=>{if(!P.length)return'';const f=p=>`${(p[0]*1000).toFixed(1)} ${(p[1]*H).toFixed(1)}`;return P.length===1?`M${f(P[0])}l.01 0`:'M'+f(P[0])+P.slice(1).map(p=>'L'+f(p)).join('')};
+const TOOLS=[['read','✋','قراءة'],['select','🔠','تحديد'],['pen','✏️','قلم'],['marker','🖍','ماركر'],['erase','🧽','ممحاة'],['note','📝','ملاحظة']];
+function rdShell(){
+  const b=RD.b;
+  return`<div class="rd t-read${RD.night?' night':''}" id="rdroot">
+<div class="rd-top"><button data-r="close" aria-label="إغلاق">✕</button>
+<div class="rd-pg"><button data-r="next" aria-label="التالي">›</button><input id="rdn" type="number" inputmode="numeric" min="1" aria-label="رقم الصفحة"><span id="rdt" dir="ltr"></span><button data-r="prev" aria-label="السابق">‹</button></div>
+<div class="rd-z"><button data-r="zout" aria-label="تصغير">−</button><button data-r="zin" aria-label="تكبير">+</button></div>
+<button data-r="menu" aria-label="القائمة">☰</button></div>
+<div class="rd-scroll" id="rds"><div class="rd-page" id="rdp"><canvas id="rdc" class="rd-c"></canvas><div class="rd-hl" id="rdh"></div><div class="textLayer" id="rdl"></div><svg class="rd-ink" id="rdi" preserveAspectRatio="none"></svg><div class="rd-nts" id="rdnts"></div><div class="rd-bm" id="rdbm" hidden>🔖</div></div><div class="rd-msg" id="rdm">جاري التحميل…</div></div>
+<div class="rd-selbar" id="rdsb" hidden>${RC.map(c=>`<button class="rd-dot" style="background:${c}" data-r="selhl" data-c="${c}" aria-label="تظليل"></button>`).join('')}<button data-r="selul">تسطير</button><button data-r="selnote">+ ملاحظة</button><button data-r="selcopy">نسخ</button></div>
+<div class="rd-colors" id="rdcol">${RC.map(c=>`<button class="rd-dot" data-r="color" data-c="${c}" style="background:${c}" aria-label="لون"></button>`).join('')}<button class="rd-undo" data-r="undo">↶ تراجع</button></div>
+<div class="rd-bar" id="rdbar">${TOOLS.map(([k,i,n])=>`<button data-r="tool" data-v="${k}"><span>${i}</span><small>${n}</small></button>`).join('')}</div>
+<div class="rd-sheet" id="rdsh" hidden></div></div>`;
+}
+function rdUi(){
+  const r=$('#rdroot');if(!r)return;
+  r.className='rd t-'+RD.tool+(RD.night?' night':'')+(RD.z>1.02?' zoomed':'');
+  document.querySelectorAll('#rdbar [data-r=tool]').forEach(x=>x.classList.toggle('on',x.dataset.v===RD.tool));
+  document.querySelectorAll('#rdcol .rd-dot').forEach(x=>x.classList.toggle('on',x.dataset.c===RD.color));
+  $('#rdcol').style.display=['pen','marker','note','select'].includes(RD.tool)?'':'none';
+  const n=$('#rdn');if(n&&document.activeElement!==n)n.value=RD.n;
+  $('#rdt').textContent='/ '+(RD.doc?RD.doc.numPages:'…');
+  const bm=$('#rdbm');if(bm)bm.hidden=!(RD.b.bm||[]).includes(RD.n);
+}
+async function rdOpen(id){
+  const b=data.eyes.books.find(x=>x.id===id);if(!b||!b.file)return;
+  Object.assign(RD,{open:true,b,tool:'read',z:1,sel:null,doc:null,n:Math.max(1,+b.page||1)});
+  RD.night=!!data.eyes.rnight;
+  const rr=$('#reader');rr.innerHTML=rdShell();rr.classList.add('on');document.body.classList.add('rd-open');
+  try{history.pushState({rd:1},'');RD.hist=1}catch(e){RD.hist=0}
+  rdUi();
+  const msg=t=>{const m=$('#rdm');if(m){m.textContent=t;m.style.display=t?'':'none'}};
+  try{
+    let lib;try{lib=await loadPdfJs()}catch(e){msg('تعذّر تحميل قارئ PDF. تأكد من الاتصال بالإنترنت أو من رفع الملفين pdf.min.mjs و pdf.worker.min.mjs.');return}
+    const buf=await FDB.get(b.id);
+    if(!buf){msg('ملف هذا الكتاب غير موجود على هذا الجهاز. ارفعه من جديد من المكتبة.');return}
+    RD.lib=lib;
+    RD.doc=await lib.getDocument({data:new Uint8Array(buf.slice(0)),cMapUrl:PDFJS_ROOT+'cmaps/',cMapPacked:true,standardFontDataUrl:PDFJS_ROOT+'standard_fonts/',wasmUrl:PDFJS_ROOT+'wasm/'}).promise;
+  }catch(e){msg('تعذّر فتح هذا الملف. قد يكون تالفاً أو محمياً بكلمة مرور.');return}
+  if(!RD.open)return;
+  b.pages=RD.doc.numPages;RD.n=Math.min(RD.n,b.pages);
+  if(b.status==='next'){b.status='reading';ui.bf='reading'}
+  msg('');rdUi();rdRender(RD.n);
+}
+function rdClose(fromPop){
+  if(!RD.open)return;
+  RD.open=false;RD.tok++;
+  try{RD.task&&RD.task.cancel()}catch(e){}
+  try{RD.doc&&RD.doc.destroy()}catch(e){}
+  RD.doc=null;RD.sel=null;
+  const rr=$('#reader');rr.classList.remove('on');rr.innerHTML='';document.body.classList.remove('rd-open');
+  save();
+  if(!fromPop&&RD.hist){RD.hist=0;try{history.back()}catch(e){}}
+  RD.hist=0;render();
+}
+window.addEventListener('popstate',()=>{if(RD.open){RD.hist=0;rdClose(true)}});
+async function rdRender(n,keep){
+  const my=++RD.tok;RD.n=n;
+  if(RD.task){try{RD.task.cancel()}catch(e){}RD.task=null}
+  const page=await RD.doc.getPage(n);if(my!==RD.tok)return;
+  const box=$('#rds'),cw=Math.max(200,box.clientWidth-16),css=cw/page.getViewport({scale:1}).width*RD.z,vp=page.getViewport({scale:css});
+  const out=Math.min(window.devicePixelRatio||1,Math.sqrt(16e6/(vp.width*vp.height)));
+  const pe=$('#rdp');pe.style.width=vp.width+'px';pe.style.height=vp.height+'px';pe.style.setProperty('--scale-factor',css);
+  RD.asp=vp.height/vp.width;
+  if(keep){const pr=pe.getBoundingClientRect();box.scrollLeft+=pr.left+keep.fx*pr.width-keep.cx;box.scrollTop+=pr.top+keep.fy*pr.height-keep.cy}
+  const b=RD.b;b.page=n;b.pages=RD.doc.numPages;save();
+  rdDrawAnn();rdUi();
+  const cv=document.createElement('canvas');cv.width=Math.max(1,Math.floor(vp.width*out));cv.height=Math.max(1,Math.floor(vp.height*out));cv.className='rd-c';
+  const task=page.render({canvas:cv,viewport:page.getViewport({scale:css*out})});RD.task=task;
+  try{await task.promise}catch(e){return}
+  if(my!==RD.tok)return;
+  const old=$('#rdc');if(old){cv.id='rdc';old.replaceWith(cv)}
+  const tl=$('#rdl');tl.innerHTML='';
+  try{const tc=await page.getTextContent();if(my!==RD.tok)return;await new RD.lib.TextLayer({textContentSource:tc,container:tl,viewport:vp}).render()}catch(e){}
+}
+function rdGo(n){
+  if(!RD.doc)return;n=Math.max(1,Math.min(RD.doc.numPages,Math.round(+n)||1));
+  if(n===RD.n){rdUi();return}
+  RD.sel=null;$('#rdsb').hidden=true;try{getSelection().removeAllRanges()}catch(e){}
+  const box=$('#rds');box.scrollTop=0;rdRender(n);
+}
+function rdZoomTo(z,cx,cy){
+  if(!RD.doc)return;z=Math.max(1,Math.min(5,z));
+  const box=$('#rds'),pe=$('#rdp'),pr=pe.getBoundingClientRect(),br=box.getBoundingClientRect();
+  if(cx===undefined){cx=br.left+br.width/2;cy=br.top+br.height/2}
+  RD.z=z;pe.style.transform='';
+  rdRender(RD.n,{fx:(cx-pr.left)/pr.width,fy:(cy-pr.top)/pr.height,cx,cy});
+}
+function rdDrawAnn(){
+  const items=rdAnn(RD.n),H=1000*RD.asp;let hl='',ink='',nt='';
+  for(const it of items){
+    if(it.t==='h'||it.t==='u')hl+=it.r.map(r=>`<i class="${it.t==='h'?'hl':'ul'}" style="left:${r[0]*100}%;top:${r[1]*100}%;width:${r[2]*100}%;height:${r[3]*100}%;${it.t==='h'?'background':'border-color'}:${it.c}"></i>`).join('');
+    else if(it.t==='p'||it.t==='m')ink+=`<path d="${pathD(it.pts,H)}" stroke="${it.c}" stroke-width="${(it.w*1000).toFixed(1)}" ${it.t==='m'?'opacity=".4"':''}/>`;
+    else if(it.t==='n')nt+=`<button class="rd-n" style="left:${it.x*100}%;top:${it.y*100}%;--c:${it.c}" data-r="note" data-id="${it.id}" aria-label="ملاحظة">📝</button>`;
+    if(it.t==='h'&&it.nt){const r=it.r[0];nt+=`<button class="rd-n sm" style="left:${(r[0]+r[2])*100}%;top:${r[1]*100}%;--c:${it.c}" data-r="hnote" data-id="${it.id}" aria-label="ملاحظة">💬</button>`}
+  }
+  $('#rdh').innerHTML=hl;
+  const sv=$('#rdi');sv.setAttribute('viewBox',`0 0 1000 ${H.toFixed(1)}`);sv.innerHTML=ink;
+  $('#rdnts').innerHTML=nt;
+}
+const rdPt=e=>{const r=$('#rdp').getBoundingClientRect();return[Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),Math.max(0,Math.min(1,(e.clientY-r.top)/r.height))]};
+function rdHit(p){
+  const a=RD.asp,items=rdAnn(RD.n);
+  for(let i=items.length-1;i>=0;i--){const it=items[i];
+    if(it.t==='h'||it.t==='u'){if(it.r.some(r=>p[0]>=r[0]-.004&&p[0]<=r[0]+r[2]+.004&&p[1]>=r[1]-.004&&p[1]<=r[1]+r[3]+.004))return it}
+    else if(it.t==='p'||it.t==='m'){const tol=Math.max(it.w/2,.012),P=it.pts;for(let k=0;k<P.length;k++){const A=P[k],B=P[k+1]||A;if(segDist(p[0],p[1]*a,A[0],A[1]*a,B[0],B[1]*a)<=tol)return it}}
+    else if(it.t==='n'){if(Math.abs(p[0]-it.x)<.035&&Math.abs((p[1]-it.y)*a)<.035)return it}
+  }
+  return null;
+}
+/* pen / marker / eraser / note on the ink layer */
+(function(){
+  let st=null;
+  document.addEventListener('pointerdown',e=>{
+    if(!RD.open||e.target.id!=='rdi')return;
+    const tool=RD.tool;if(!['pen','marker','erase','note'].includes(tool))return;
+    e.preventDefault();try{e.target.setPointerCapture(e.pointerId)}catch(_){}
+    const pt=rdPt(e);st={id:e.pointerId,x:e.clientX,y:e.clientY,moved:false,t:Date.now()};
+    if(tool==='erase'){const h=rdHit(pt);if(h){rdDel(RD.n,h.id);rdDrawAnn();hVib(8)}}
+    else if(tool!=='note'){
+      const m=tool==='marker';RD.draw={t:m?'m':'p',c:RD.color,w:m?.022:.0045,pts:[pt]};
+      const el=document.createElementNS('http://www.w3.org/2000/svg','path');el.setAttribute('stroke',RD.color);el.setAttribute('stroke-width',(RD.draw.w*1000).toFixed(1));if(m)el.setAttribute('opacity','.4');
+      el.setAttribute('d',pathD(RD.draw.pts,1000*RD.asp));RD.draw.el=el;$('#rdi').appendChild(el);
+    }
+  });
+  document.addEventListener('pointermove',e=>{
+    if(!st||e.pointerId!==st.id||!RD.open)return;
+    if(Math.hypot(e.clientX-st.x,e.clientY-st.y)>6)st.moved=true;
+    if(RD.tool==='erase'){const h=rdHit(rdPt(e));if(h){rdDel(RD.n,h.id);rdDrawAnn();hVib(6)}return}
+    const d=RD.draw;if(!d)return;
+    const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];
+    for(const ev of(evs.length?evs:[e])){const pt=rdPt(ev),l=d.pts[d.pts.length-1];if(Math.hypot(pt[0]-l[0],(pt[1]-l[1])*RD.asp)>.0015)d.pts.push(pt)}
+    d.el.setAttribute('d',pathD(d.pts,1000*RD.asp));
+  });
+  const end=e=>{
+    if(!st||e.pointerId!==st.id)return;
+    const s0=st;st=null;
+    if(RD.tool==='note'&&e.type==='pointerup'&&!s0.moved){rdNoteOpen({isNew:true,x:rdPt(e)[0],y:rdPt(e)[1]});return}
+    const d=RD.draw;RD.draw=null;if(!d)return;
+    if(d.el)d.el.remove();
+    if(e.type==='pointercancel')return;
+    rdAdd(RD.n,{id:uid(),t:d.t,c:d.c,w:d.w,pts:d.pts.map(p=>[+p[0].toFixed(4),+p[1].toFixed(4)])});rdDrawAnn();
+  };
+  document.addEventListener('pointerup',end);document.addEventListener('pointercancel',end);
+})();
+/* read mode: swipe to turn pages, double-tap and pinch to zoom */
+(function(){
+  const P=new Map();let pin=null,sw=null,lastTap=0,lastX=0,lastY=0;
+  const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+  document.addEventListener('pointerdown',e=>{
+    if(!RD.open||RD.tool!=='read'||!e.target.closest||!e.target.closest('#rds')||e.target.closest('.rd-n'))return;
+    P.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(P.size===1)sw={x:e.clientX,y:e.clientY,t:Date.now()};
+    if(P.size===2){sw=null;const[a,b]=[...P.values()];pin={d:dist(a,b),z:RD.z,live:RD.z,cx:(a.x+b.x)/2,cy:(a.y+b.y)/2}}
+  });
+  document.addEventListener('pointermove',e=>{
+    if(!P.has(e.pointerId))return;P.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(pin&&P.size===2){const[a,b]=[...P.values()];pin.live=Math.max(1,Math.min(5,pin.z*dist(a,b)/pin.d));
+      const pe=$('#rdp'),pr=pe.getBoundingClientRect(),k=pin.live/RD.z;pe.style.transformOrigin=`${(pin.cx-pr.left)/(pr.width/(pe._k||1))}px ${(pin.cy-pr.top)/(pr.height/(pe._k||1))}px`;pe.style.transform=`scale(${k})`;pe._k=k}
+  });
+  const up=e=>{
+    if(!P.has(e.pointerId))return;
+    P.delete(e.pointerId);
+    if(pin&&P.size<2){const z=pin.live,pe=$('#rdp'),cx=pin.cx,cy=pin.cy;pin=null;sw=null;
+      if(pe){const pr=pe.getBoundingClientRect();const fx=(cx-pr.left)/pr.width,fy=(cy-pr.top)/pr.height;pe.style.transform='';pe._k=1;RD.z=z;rdRender(RD.n,{fx,fy,cx,cy})}
+      return}
+    if(!sw||e.type==='pointercancel'||!RD.open){sw=null;return}
+    const dx=e.clientX-sw.x,dy=e.clientY-sw.y,dt=Date.now()-sw.t;sw=null;
+    if(RD.z<=1.02&&Math.abs(dx)>60&&Math.abs(dy)<50&&dt<700){const dir=(dx<0?1:-1)*(RD.b.rtl?-1:1);rdGo(RD.n+dir);return}
+    if(Math.abs(dx)<12&&Math.abs(dy)<12&&dt<300){
+      const now=Date.now();
+      if(now-lastTap<320&&Math.hypot(e.clientX-lastX,e.clientY-lastY)<30){lastTap=0;rdZoomTo(RD.z>1.05?1:2.4,e.clientX,e.clientY)}
+      else{lastTap=now;lastX=e.clientX;lastY=e.clientY}
+    }
+  };
+  document.addEventListener('pointerup',up);document.addEventListener('pointercancel',up);
+})();
+/* text selection -> highlight / underline */
+function rdSelRects(range){
+  const pr=$('#rdp').getBoundingClientRect(),W=pr.width,H=pr.height;
+  let rs=[...range.getClientRects()].map(r=>({x:(r.left-pr.left)/W,y:(r.top-pr.top)/H,w:r.width/W,h:r.height/H})).filter(r=>r.w>.002&&r.h>.004&&r.h<.12&&r.x>-.02&&r.y>-.02&&r.x<1.02&&r.y<1.02);
+  rs=rs.filter((a,i)=>!rs.some((b,j)=>j!==i&&b.x<=a.x+1e-4&&b.y<=a.y+1e-4&&b.x+b.w>=a.x+a.w-1e-4&&b.y+b.h>=a.y+a.h-1e-4&&(b.w*b.h>a.w*a.h||j<i)));
+  rs.sort((a,b)=>a.y-b.y||a.x-b.x);
+  const out=[];
+  for(const r of rs){const l=out[out.length-1];
+    if(l&&Math.abs(l.y-r.y)<l.h*.5&&r.x<=l.x+l.w+.012){const x2=Math.max(l.x+l.w,r.x+r.w),y1=Math.min(l.y,r.y),y2=Math.max(l.y+l.h,r.y+r.h);l.x=Math.min(l.x,r.x);l.w=x2-l.x;l.y=y1;l.h=y2-y1}
+    else out.push({...r})}
+  return out.map(r=>[+r.x.toFixed(4),+r.y.toFixed(4),+r.w.toFixed(4),+r.h.toFixed(4)]);
+}
+let rdHideT=null;
+document.addEventListener('selectionchange',()=>{
+  if(!RD.open||RD.tool!=='select')return;
+  const sb=$('#rdsb'),tl=$('#rdl'),sel=getSelection();
+  if(!sb||!tl)return;
+  if(!sel||!sel.rangeCount||sel.isCollapsed||!tl.contains(sel.anchorNode)||!tl.contains(sel.focusNode)){
+    clearTimeout(rdHideT);rdHideT=setTimeout(()=>{if(!RD.barDown){RD.sel=null;sb.hidden=true}},400);return}
+  clearTimeout(rdHideT);
+  const rects=rdSelRects(sel.getRangeAt(0));
+  if(rects.length){RD.sel={rects,tx:sel.toString().replace(/\s+/g,' ').trim()};sb.hidden=false}
+});
+function rdMakeHL(kind,color){
+  if(!RD.sel||!RD.sel.rects.length)return null;
+  const it=rdAdd(RD.n,{id:uid(),t:kind,c:color,r:RD.sel.rects,tx:RD.sel.tx.slice(0,400)});
+  RD.sel=null;$('#rdsb').hidden=true;try{getSelection().removeAllRanges()}catch(e){}
+  rdDrawAnn();hVib(10);return it;
+}
+/* sheets: notes + menu */
+function rdSheet(html){const sh=$('#rdsh');if(!html){sh.hidden=true;sh.innerHTML='';return}sh.innerHTML=`<div class="rd-sh-in">${html}</div>`;sh.hidden=false}
+function rdFind(id){for(const k of Object.keys(RD.b.ann||{})){const it=RD.b.ann[k].find(x=>x.id===id);if(it)return{it,page:+k}}return null}
+function rdNoteOpen(o){
+  RD.ne=o;let txt='';
+  if(!o.isNew){const f=rdFind(o.id);if(!f)return;o.page=f.page;txt=o.hl?(f.it.nt||''):(f.it.tx||'')}
+  rdSheet(`<h4>${o.hl?'ملاحظة على التظليل':'ملاحظة'}</h4><textarea id="rdnt" dir="auto" placeholder="اكتب ملاحظتك…">${esc(txt)}</textarea><div class="acts"><button class="btn" data-r="notesave">حفظ</button>${o.isNew?'':'<button class="btn ghost" data-r="notedel">حذف</button>'}<button class="btn ghost" data-r="sheetx">إغلاق</button></div>`);
+  setTimeout(()=>{const t=$('#rdnt');if(t)t.focus()},50);
+}
+function rdMenu(){
+  const b=RD.b,bm=(b.bm||[]).includes(RD.n),rows=[];
+  for(const k of Object.keys(b.ann||{}).map(Number).sort((a,c)=>a-c)){
+    for(const it of b.ann[k]){
+      if(it.t==='p'||it.t==='m')continue;
+      const txt=it.t==='n'?it.tx:(it.tx||'')+(it.nt?'\n💬 '+it.nt:'');
+      rows.push(`<div class="rd-row"><button data-r="goto" data-p="${k}"><i style="background:${it.c}"></i><small>ص ${k}</small><span>${it.t==='n'?'📝 ':it.t==='u'?'تسطير: ':''}${esc(txt).slice(0,140)||'…'}</span></button>${it.t==='n'?'':`<button class="rd-rb" data-r="hnote" data-id="${it.id}" aria-label="ملاحظة">💬</button>`}<button class="rd-rb" data-r="del" data-p="${k}" data-id="${it.id}" aria-label="حذف">✕</button></div>`);
+    }
+  }
+  for(const k of (b.bm||[]).slice().sort((a,c)=>a-c))rows.unshift(`<div class="rd-row"><button data-r="goto" data-p="${k}"><i style="background:var(--accent)"></i><small>ص ${k}</small><span>🔖 علامة صفحة</span></button><button class="rd-rb" data-r="bmdel" data-p="${k}" aria-label="حذف">✕</button></div>`);
+  rdSheet(`<div class="rd-mh"><h4>${esc(b.title)}</h4><button data-r="sheetx" aria-label="إغلاق">✕</button></div>
+<div class="rd-mg"><button data-r="bm">${bm?'🔖 إزالة العلامة':'🔖 علامة لهذه الصفحة'}</button><button data-r="night">${RD.night?'☀️ وضع عادي':'🌙 الوضع الليلي'}</button><button data-r="dir">↔ التقليب: ${b.rtl?'عربي (يمين←يسار)':'لاتيني (يسار←يمين)'}</button></div>
+<h5>العلامات والملاحظات (${rows.length})</h5>${rows.join('')||'<p class="muted" style="text-align:center;padding:14px">لا توجد علامات بعد. ظلّل نصاً أو أضف ملاحظة وستظهر هنا.</p>'}`);
+}
+function rdAct(a,D){
+  switch(a){
+    case 'close':rdClose();break;
+    case 'prev':rdGo(RD.n-1);break;
+    case 'next':rdGo(RD.n+1);break;
+    case 'zin':rdZoomTo(RD.z*1.3);break;
+    case 'zout':rdZoomTo(RD.z/1.3);break;
+    case 'tool':RD.tool=D.v;RD.sel=null;$('#rdsb').hidden=true;try{getSelection().removeAllRanges()}catch(e){}rdUi();break;
+    case 'color':RD.color=D.c;rdUi();break;
+    case 'undo':{const arr=rdAnn(RD.n);if(arr.length){rdDel(RD.n,arr[arr.length-1].id);rdDrawAnn();hVib(8)}break}
+    case 'menu':rdMenu();break;
+    case 'sheetx':rdSheet('');break;
+    case 'bm':{const b=RD.b;b.bm=b.bm||[];const i=b.bm.indexOf(RD.n);if(i>=0)b.bm.splice(i,1);else b.bm.push(RD.n);save();rdUi();rdMenu();break}
+    case 'bmdel':{const b=RD.b;b.bm=(b.bm||[]).filter(x=>x!==+D.p);save();rdUi();rdMenu();break}
+    case 'night':RD.night=!RD.night;data.eyes.rnight=RD.night;save();rdUi();rdMenu();break;
+    case 'dir':RD.b.rtl=!RD.b.rtl;save();rdMenu();break;
+    case 'goto':rdSheet('');rdGo(+D.p);break;
+    case 'del':rdDel(+D.p,D.id);if(+D.p===RD.n)rdDrawAnn();rdMenu();break;
+    case 'note':rdNoteOpen({id:D.id});break;
+    case 'hnote':rdNoteOpen({id:D.id,hl:true});break;
+    case 'notesave':{
+      const v=($('#rdnt').value||'').trim(),o=RD.ne;if(!o)break;
+      if(o.isNew){if(v)rdAdd(RD.n,{id:uid(),t:'n',c:RD.color,x:+o.x.toFixed(4),y:+o.y.toFixed(4),tx:v})}
+      else{const f=rdFind(o.id);if(f){if(o.hl){if(v)f.it.nt=v;else delete f.it.nt}else{if(v)f.it.tx=v;else rdDel(f.page,o.id)}save()}}
+      RD.ne=null;rdSheet('');rdDrawAnn();break}
+    case 'notedel':{const o=RD.ne;if(o&&!o.isNew){const f=rdFind(o.id);if(f){if(o.hl){delete f.it.nt;save()}else rdDel(f.page,o.id)}}RD.ne=null;rdSheet('');rdDrawAnn();break}
+    case 'selhl':rdMakeHL('h',D.c);break;
+    case 'selul':rdMakeHL('u',RD.color);break;
+    case 'selnote':{const it=rdMakeHL('h',RD.color);if(it)rdNoteOpen({id:it.id,hl:true});break}
+    case 'selcopy':{if(RD.sel){try{navigator.clipboard.writeText(RD.sel.tx);hToast('تم النسخ')}catch(e){}}break}
+  }
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest&&e.target.closest('#reader [data-r]');if(!t)return;
+  RD.barDown=false;rdAct(t.dataset.r,t.dataset);
+});
+['pointerdown','mousedown','touchstart'].forEach(n=>document.addEventListener(n,e=>{
+  const sb=e.target.closest&&e.target.closest('#rdsb');if(!sb)return;
+  RD.barDown=true;if(n!=='touchstart'||e.cancelable)e.preventDefault();
+},{passive:false}));
+document.addEventListener('change',e=>{if(e.target.id==='rdn'&&RD.open)rdGo(+e.target.value)});
+document.addEventListener('keydown',e=>{
+  if(!RD.open||lk.mode||(e.target.tagName==='TEXTAREA')||(e.target.id==='rdn'))return;
+  if(e.key==='ArrowRight')rdGo(RD.n+(RD.b.rtl?-1:1));else if(e.key==='ArrowLeft')rdGo(RD.n-(RD.b.rtl?-1:1));
+  else if(e.key==='Escape'){if(!$('#rdsh').hidden)rdSheet('');else rdClose()}
+});
 buildNav();
-load().then(render);
+load().then(render).then(lkBoot);
 </script>
 </body>
 </html>
