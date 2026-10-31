@@ -200,8 +200,8 @@ button:active:not(:disabled){transform:scale(.95)}
 /* dock */
 .dock{position:fixed;bottom:0;left:0;right:0;z-index:5;background:rgba(16,19,24,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
 body:has(.bt:focus,input:focus,textarea:focus,select:focus) .dock{transform:translateY(110%)}
-.dk-in{position:relative;max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);padding:6px 4px}
-.dk-ind{position:absolute;top:6px;bottom:6px;inset-inline-start:calc(var(--i,0)*100%/4);width:calc(100%/4);padding:0 3px;transition:inset-inline-start .38s cubic-bezier(.3,1.25,.4,1);pointer-events:none}
+.dk-in{position:relative;max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);padding:6px 4px}
+.dk-ind{position:absolute;top:6px;bottom:6px;inset-inline-start:calc(var(--i,0)*100%/5);width:calc(100%/5);padding:0 3px;transition:inset-inline-start .38s cubic-bezier(.3,1.25,.4,1);pointer-events:none}
 .dk-ind::before{content:"";display:block;height:100%;border-radius:14px;background:color-mix(in srgb,var(--accent) 16%,transparent)}
 .dk-b{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 6px;color:var(--muted);font-size:10.5px;font-weight:600;min-width:0}
 .dk-b span{white-space:nowrap;transition:color .25s}
@@ -412,6 +412,38 @@ button.chip:active{transform:scale(.94)}
 .abb i{display:block;height:100%;border-radius:9px;margin-inline-start:0;transform-origin:right;animation:grow .8s cubic-bezier(.2,.8,.2,1)}
 .ab.good i{background:var(--good)}.ab.warn i{background:var(--warn)}.ab.bad i{background:var(--bad)}
 @media (prefers-reduced-motion:reduce){.cd,.sc,.ex,.ab,.abb i{animation:none!important}}
+
+/* ===== eyes ===== */
+.eyes{--st:#4fc3f7;--dd:#4fc3f7;--dp:#b58cff;--dc:#F5B544}
+.eyes .seg .on{background:color-mix(in srgb,var(--st) 20%,var(--surface));color:var(--st)}
+.ets{display:grid;gap:10px;margin:10px 0}
+.et{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;text-align:start;padding:16px;border-radius:20px;background:var(--surface);border:1px solid var(--line);transition:transform .15s,background .3s,border-color .3s;animation:stIn .5s both;animation-delay:calc(var(--i)*80ms)}
+.et:active{transform:scale(.97)}
+.et b{font-size:16px}.et small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.et.kd{--c:var(--dd)}.et.kp{--c:var(--dp)}.et.kc{--c:var(--dc)}
+.eic{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:var(--soft);color:var(--c);transition:all .3s}
+.et.on{background:color-mix(in srgb,var(--c) 14%,var(--surface));border-color:var(--c)}
+.et.on .eic{background:var(--c);color:#06121a}
+.et.on .eic svg{animation:pop .45s}
+.ech{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-weight:800;color:#06121a;transition:all .25s}
+.et.on .ech{background:var(--c);border-color:var(--c);transform:scale(1.1)}
+.et.off{opacity:.55}
+.ec{aspect-ratio:1;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-weight:700;font-size:15px;color:var(--ink);transition:transform .12s,background .2s}
+.ec:active{transform:scale(.9)}.ec:disabled{opacity:.3}
+.ec.sel{background:color-mix(in srgb,var(--st) 22%,var(--surface))}
+.ec.today{outline:2.5px solid var(--st);outline-offset:-2px}
+.dots{display:flex;gap:3px;height:6px}
+.dots i{width:6px;height:6px;border-radius:50%}
+.dots .dd{background:var(--dd)}.dots .dp{background:var(--dp)}.dots .dc{background:var(--dc)}
+.leg{display:flex;gap:16px;justify-content:center;font-size:12px;color:var(--muted);margin-top:10px}
+.leg i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-inline-end:5px}
+.bk{display:block;width:100%;text-align:start;padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--line);margin-top:10px;animation:stIn .5s both;animation-delay:calc(var(--i)*60ms);transition:transform .15s}
+.bk:active{transform:scale(.98)}
+.bk b{font-size:16px}.bk small{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+.bk p{margin:8px 0 0;opacity:.8;font-size:13.5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap}
+.bk .abb i{background:var(--st)}
+.cd[data-act]{cursor:pointer}
+@media (prefers-reduced-motion:reduce){.et,.bk{animation:none!important}}
 </style>
 </head>
 <body>
@@ -437,7 +469,7 @@ const monthName=d=>parse(d).toLocaleDateString(LOC,{month:'long'});
 const monthsOfYear=y=>[...Array(12)].map((_,m)=>daysBetween(new Date(y,m,1),new Date(y,m+1,0)));
 
 const PR=[['fajr','الفجر'],['dhuhr','الظهر'],['asr','العصر'],['maghrib','المغرب'],['isha','العشاء']];
-const TABS=[['home','الرئيسية'],['prayers','الصلوات'],['habit','العادة'],['study','الدراسة']];
+const TABS=[['home','الرئيسية'],['prayers','الصلوات'],['habit','العادة'],['study','الدراسة'],['eyes','Eyes']];
 
 let data={prayers:{},habit:{},notes:{},docs:[],days:{},hnotes:{},hgoal:0};
 let ui={tab:'home',period:'day',anchor:today(),modal:null,confirm:null,focus:null,editing:null,anim:false,pop:null};
@@ -474,6 +506,12 @@ function fixData(){
   if(!Array.isArray(u.exams))u.exams=[];
   if(!u.abs||typeof u.abs!=='object')u.abs={};
   u.lim=+u.lim||3;
+  if(!data.eyes||typeof data.eyes!=='object'||Array.isArray(data.eyes))data.eyes={};
+  const ey=data.eyes;
+  if(!ey.log||typeof ey.log!=='object')ey.log={};
+  if(!Array.isArray(ey.books))ey.books=[];
+  if(!ey.pill)ey.pill=today().slice(0,7);
+  if(!ey.doc||typeof ey.doc!=='object')ey.doc=null;
 }
 let saveT;
 function save(){
@@ -999,6 +1037,8 @@ function modalHtml(){
   if(ui.modal==='hnote')return hnoteModal();
   if(ui.modal==='tedit')return teditModal();
   if(ui.modal==='exam')return examModal();
+  if(ui.modal==='doc')return docModal();
+  if(ui.modal==='book')return bookModal();
   const body=`<h3>نسخة احتياطية</h3><p class="muted">انسخ هذا النص واحفظه في مكان آمن. للاستعادة الصقه هنا ثم اضغط «استيراد».</p>
 <textarea id="bk" style="margin-top:10px;min-height:160px;direction:ltr;font-size:12px">${esc(JSON.stringify(data))}</textarea>
 <div class="err" id="err"></div><div class="acts"><button class="btn" data-act="copybk">نسخ</button><button class="btn ghost" data-act="importbk">استيراد</button><button class="btn ghost" data-act="close">إغلاق</button></div>
@@ -1010,6 +1050,7 @@ function modalHtml(){
 const ICON={
   home:'<path d="M3.5 11 12 4l8.5 7"/><path d="M5.5 9.8V19a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V9.8"/><path d="M10 20v-5h4v5"/>',
   prayers:'<path d="M20 14.2A8.2 8.2 0 1 1 9.8 4a6.4 6.4 0 0 0 10.2 10.2z"/><path d="M17 4.5v3M15.5 6h3"/>',
+  eyes:'<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="3"/>',
   study:'<path d="M2 9 12 4l10 5-10 5L2 9z"/><path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5"/><path d="M22 9v6"/>',
   habit:'<path d="M12 3 5 6v5.5c0 4.2 2.9 7.6 7 9 4.1-1.4 7-4.8 7-9V6l-7-3z"/><path d="m9 12 2.2 2.2L15.5 10"/>',
 };
@@ -1024,14 +1065,14 @@ function updateNav(){
 
 /* ---------- render ---------- */
 function render(){
-  const V={home:viewHome,prayers:viewPrayers,habit:viewHabit,study:viewStudy};
+  const V={home:viewHome,prayers:viewPrayers,habit:viewHabit,study:viewStudy,eyes:viewEyes};
   const anim=ui.anim;ui.anim=false;
   const title=ui.tab==='home'?'':`<h1 class="ptitle">${TABS.find(t=>t[0]===ui.tab)[1]}</h1>`;
   $('#app').innerHTML=`<div class="page ${anim?'enter':''}">${title}${V[ui.tab]()}</div>`;
   updateNav();
   if(ui.tab==='home')mountHome();
   if(ui.tab==='habit')mountHabit();
-  if(ui.tab==='study')mountStudy();
+  if(ui.tab==='study'||ui.tab==='eyes')mountStudy();
   $('#modal').innerHTML=ui.modal?modalHtml():'';
   if(ui.focus){const el=$(ui.focus);if(el)el.focus();ui.focus=null}
   if(ui.pop){const el=document.querySelector(ui.pop);if(el)el.classList.add('pop');ui.pop=null}
@@ -1056,6 +1097,25 @@ function handle(a,D){
     case 'hmonth':{const a=parse(ui.hm||today());a.setDate(1);a.setMonth(a.getMonth()+(+D.v));ui.hm=fmt(a);ui.ms=+D.v>0?1:-1;hVib(8);break}
     case 'htoday':ui.hm=today();ui.ms=0;break;
     case 'hgoal':{const i=GOALS.indexOf(data.hgoal||0);data.hgoal=GOALS[(i+1)%GOALS.length];save();hVib(10);break}
+    case 'etab':ui.et=D.v;break;
+    case 'eday':ui.ey=D.d;hVib(8);break;
+    case 'emonth':{const a=parse(ui.em||ui.ey||today());a.setDate(1);a.setMonth(a.getMonth()+(+D.v));ui.em=fmt(a);hVib(8);break}
+    case 'etog':{const L=data.eyes.log,d=ui.ey||today(),r=L[d]=L[d]||{};r[D.k]=!r[D.k];if(!r[D.k])delete r[D.k];if(!Object.keys(r).length)delete L[d];save();hVib(r[D.k]?12:6);
+      if(r[D.k]){const all=['d','p',...(pillOn(d)?['c']:[])].every(k=>r[k]);ui.burst={sel:`[data-act="etog"][data-k="${D.k}"]`,big:all,msg:'🎉 أتممت متابعة اليوم كاملة',cur:0}}break}
+    case 'epill':{const[y,m]=data.eyes.pill.split('-').map(Number);data.eyes.pill=fmt(new Date(y,m,1)).slice(0,7);save();hVib(15);break}
+    case 'docedit':ui.modal='doc';break;
+    case 'docsave':{const d=$('#dcd').value,t=$('#dct').value||'09:00';if(!d){$('#err').textContent='حدد تاريخ الموعد.';return false}
+      data.eyes.doc={date:d,time:t,note:($('#dcn').value||'').trim()};ui.modal=null;save();break}
+    case 'docdel':data.eyes.doc=null;ui.modal=null;save();break;
+    case 'bfil':ui.bf=D.v;break;
+    case 'bknew':ui.modal='book';ui.bid=null;ui.bnf=ui.bf||'reading';ui.focus='#bkt';break;
+    case 'bkopen':ui.modal='book';ui.bid=D.id;break;
+    case 'bksave':{const g=i=>$(i).value,t=g('#bkt').trim();if(!t){$('#err').textContent='اكتب عنوان الكتاب.';return false}
+      const o={title:t,author:g('#bka').trim(),status:g('#bks'),page:Math.max(0,+g('#bkg')||0),pages:Math.max(0,+g('#bkp')||0),summary:g('#bkm').trim(),points:g('#bkn').trim()};
+      if(o.status==='done'&&o.pages)o.page=o.pages;
+      const B=data.eyes.books,b=B.find(x=>x.id===ui.bid);if(b)Object.assign(b,o);else B.unshift({id:uid(),...o,created:Date.now()});
+      ui.bf=o.status;ui.modal=null;save();break}
+    case 'bkdel':{if(!confirm('حذف الكتاب مع ملخصه ونقاطه؟'))return false;data.eyes.books=data.eyes.books.filter(x=>x.id!==ui.bid);ui.modal=null;save();break}
     case 'stab':ui.st=D.v;break;
     case 'sday':ui.sd=+D.v;hVib(8);break;
     case 'tedit':ui.modal='tedit';ui.td=+D.d;ui.ts=+D.s;ui.focus='#tin';break;
@@ -1094,8 +1154,8 @@ document.addEventListener('click',e=>{
   const t=e.target.closest('[data-act]');if(!t)return;
   const a=t.dataset.act;
   if(a==='ovclose'){if(e.target!==t)return;ui.modal=null;render();return}
-  if(['tab','period','shift','today','openday','openmonth','hshift','stab','sday'].includes(a))ui.anim=true;
-  if(['pset','pcycle','hset','hcycle','abadd','absub'].includes(a))
+  if(['tab','period','shift','today','openday','openmonth','hshift','stab','sday','etab','bfil'].includes(a))ui.anim=true;
+  if(['pset','pcycle','hset','hcycle','abadd','absub','etog'].includes(a))
     ui.pop=`[data-act="${a}"]`+['d','k','v','id','p','n'].filter(x=>t.dataset[x]!==undefined).map(x=>`[data-${x}="${t.dataset[x]}"]`).join('');
   if(handle(a,t.dataset)!==false)render();
 });
@@ -1137,7 +1197,7 @@ function hBurst(b){
     p.className='sp';p.style.cssText=`left:${x}px;top:${y}px;--dx:${Math.cos(a)*sp}px;--dy:${Math.sin(a)*sp-(b.big?30:0)}px;background:${i%3?'var(--accent)':'var(--good)'}`;
     document.body.appendChild(p);setTimeout(()=>p.remove(),900);
   }
-  if(b.big){hToast('🔥 '+b.cur+' يوماً متتالية! استمر');hVib([30,60,30,60,80])}
+  if(b.big){hToast(b.msg||'🔥 '+b.cur+' يوماً متتالية! استمر');hVib([30,60,30,60,80])}
 }
 function mountHabit(){
   document.querySelectorAll('.page.enter [data-count]').forEach(el=>{const to=+el.dataset.count,t0=performance.now();(function f(n){const p=Math.min(1,(n-t0)/800);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)})(t0)});
@@ -1193,6 +1253,52 @@ function teditModal(){
 function examModal(){
   const e=data.uni.exams.find(x=>x.id===ui.eid)||{};
   return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>${e.id?'تعديل امتحان':'امتحان جديد'}</h3><input id="exn" value="${esc(e.name||'')}" placeholder="اسم المادة (مثال: Algorithm)" autocomplete="off"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px"><input id="exd" type="date" value="${e.date||''}"><input id="ext" type="time" value="${e.time||'08:00'}"></div><div class="err" id="err"></div><div class="acts"><button class="btn" data-act="exsave">حفظ</button>${e.id?'<button class="btn ghost" data-act="exdel">حذف</button>':''}<button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
+}
+/* ---------- Eyes: doctor countdown, daily tracker, books library ---------- */
+const BST=[['reading','أقرأه الآن'],['next','سأقرأه'],['done','انتهيت منه']];
+const EI={d:'<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>',p:'<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="3"/>',c:'<path d="M10.5 20.5a5 5 0 0 1-7-7l9-9a5 5 0 0 1 7 7z"/><path d="M8.5 8.5l7 7"/>'};
+const eyGet=(d,k)=>!!((data.eyes.log[d]||{})[k]);
+const pillOn=d=>{const[sy,sm]=data.eyes.pill.split('-').map(Number),[y,m]=d.split('-').map(Number);return(((y-sy)*12+(m-sm))%2+2)%2===0};
+function eyStreak(k){let d=new Date();if(!eyGet(fmt(d),k))d=addDays(d,-1);let n=0;while(eyGet(fmt(d),k)){n++;d=addDays(d,-1)}return n}
+function viewEyes(){
+  const tab=ui.et||'tr';
+  return`<div class="eyes">${eyDoc()}<div class="seg">${[['tr','المتابعة'],['bk','المكتبة']].map(([k,n])=>`<button data-act="etab" data-v="${k}" class="${tab===k?'on':''}">${n}</button>`).join('')}</div>${tab==='tr'?eyTrack():eyLib()}</div>`;
+}
+function eyDoc(){
+  const d=data.eyes.doc,now=Date.now(),dt=x=>parse(x).toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'});
+  if(!d)return`<div class="cd off" data-act="docedit"><h3>👁</h3><small>اضغط لتحديد موعدك مع الدكتور</small></div>`;
+  const ts=new Date(`${d.date}T${d.time||'09:00'}`).getTime();
+  if(ts<=now)return`<div class="cd off" data-act="docedit"><h3>✓</h3><small>انتهى موعد ${dt(d.date)} · اضغط لتحديد موعد جديد</small></div>`;
+  const n=Math.round((parse(d.date)-parse(today()))/864e5);
+  return`<div class="cd" data-cd="${ts}" data-act="docedit"><small>موعدي مع الدكتور 👁</small><h3>${n<=0?'اليوم!':n===1?'غداً':'بعد '+n+' يوم'}</h3><div class="cdb">${['يوم','ساعة','دقيقة','ثانية'].map(l=>`<div><b>00</b><span>${l}</span></div>`).join('')}</div><small>${dt(d.date)} · ${esc(d.time||'')}${d.note?' · '+esc(d.note):''}</small></div>`;
+}
+function eyTrack(){
+  const E=data.eyes,t=today();if(!ui.ey||ui.ey>t)ui.ey=t;
+  const sel=ui.ey,l=E.log[sel]||{},on=pillOn(sel),rd=E.books.find(b=>b.status==='reading');
+  const am=parse(ui.em||sel),days=daysBetween(new Date(am.getFullYear(),am.getMonth(),1),new Date(am.getFullYear(),am.getMonth()+1,0));
+  const pc=days.filter(x=>eyGet(x,'c')).length;
+  const it=(k,cl,name,sub,i)=>{const off=k==='c'&&!on,dn=!!l[k];return`<button class="et ${cl} ${dn?'on':''} ${off?'off':''}" style="--i:${i}" data-act="etog" data-k="${k}" ${off?'disabled':''}><span class="eic">${hsvg(EI[k],24,1.9)}</span><div><b>${name}</b><small>${sub}</small></div><span class="ech">${dn?'✓':''}</span></button>`};
+  const cell=d=>{const x=E.log[d]||{};return`<button class="ec ${d===sel?'sel':''} ${d===t?'today':''}" data-act="eday" data-d="${d}" ${d>t?'disabled':''}><span>${+d.slice(8)}</span><div class="dots">${x.d?'<i class="dd"></i>':''}${x.p?'<i class="dp"></i>':''}${x.c?'<i class="dc"></i>':''}</div></button>`};
+  const sd=eyStreak('d'),sp=eyStreak('p');
+  return`<div class="hn-h" style="margin-top:12px"><b>${sel===t?'اليوم':parse(sel).toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'})}</b><button class="chip" data-act="epill">${on?'💊 شهر الكاشي':'🌙 شهر راحة'} · القادم: ${on?'راحة':'كاشي'}</button></div>`
+  +`<div class="ets">${it('d','kd','قطرة العين',sd?sd+' يوماً متتالياً':'ابدأ سلسلتك اليوم',0)}${it('p','kp','الفوسمة',rd?'📖 اقرأ الآن: '+esc(rd.title):'اقرأ كتاباً أثناءها',1)}${it('c','kc','الكاشي',on?pc+' يوماً هذا الشهر':'شهر راحة 🌙 بلا حبوب',2)}</div>`
+  +`<div class="card"><div class="nav"><button data-act="emonth" data-v="-1" aria-label="السابق">›</button><div class="nav-l">${am.toLocaleDateString(LOC,{month:'long',year:'numeric'})}</div><button data-act="emonth" data-v="1" aria-label="التالي">‹</button></div>${calendar(days,cell)}<div class="leg"><span><i style="background:var(--dd)"></i>قطرة</span><span><i style="background:var(--dp)"></i>فوسمة</span><span><i style="background:var(--dc)"></i>كاشي</span></div></div>`;
+}
+function eyLib(){
+  const B=data.eyes.books,f=ui.bf||'reading';
+  const tabs=`<div class="dchips">${BST.map(([k,n])=>`<button class="dchip ${f===k?'on':''}" data-act="bfil" data-v="${k}">${n} · ${B.filter(b=>b.status===k).length}</button>`).join('')}</div>`;
+  const L=B.filter(b=>b.status===f);
+  const cards=L.length?L.map((b,k)=>{const pct=b.pages?Math.min(100,Math.round((b.page||0)/b.pages*100)):0,np=(b.points||'').split('\n').filter(x=>x.trim()).length;
+    return`<button class="bk" style="--i:${k}" data-act="bkopen" data-id="${b.id}"><b>${esc(b.title)}</b>${b.author?`<small>${esc(b.author)}</small>`:''}${b.pages?`<div class="abb" style="margin-top:10px"><i style="width:${pct}%"></i></div><small>${b.page||0} / ${b.pages} صفحة · ${pct}%</small>`:''}${b.summary?`<p>${esc(b.summary)}</p>`:''}${np?`<small>📝 ${np} نقاط مهمة</small>`:''}</button>`}).join(''):empty(f==='reading'?'لا تقرأ كتاباً الآن. أضف كتابك الحالي 📖':f==='next'?'قائمة قراءاتك المستقبلية فارغة':'لم تنهِ أي كتاب بعد');
+  return tabs+cards+`<button class="btn addb" data-act="bknew">+ إضافة كتاب</button>`;
+}
+function docModal(){
+  const d=data.eyes.doc||{};
+  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>موعد الدكتور</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input id="dcd" type="date" value="${d.date||''}"><input id="dct" type="time" value="${d.time||'09:00'}"></div><input id="dcn" value="${esc(d.note||'')}" placeholder="ملاحظة (اسم الدكتور أو العيادة)" style="margin-top:8px" autocomplete="off"><div class="err" id="err"></div><div class="acts"><button class="btn" data-act="docsave">حفظ</button>${d.date?'<button class="btn ghost" data-act="docdel">حذف</button>':''}<button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
+}
+function bookModal(){
+  const b=data.eyes.books.find(x=>x.id===ui.bid)||{status:ui.bnf||'reading'};
+  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>${b.id?'تعديل الكتاب':'كتاب جديد'}</h3><input id="bkt" value="${esc(b.title||'')}" placeholder="عنوان الكتاب" autocomplete="off"><input id="bka" value="${esc(b.author||'')}" placeholder="المؤلف (اختياري)" style="margin-top:8px" autocomplete="off"><select id="bks" style="margin-top:8px">${BST.map(([k,n])=>`<option value="${k}" ${b.status===k?'selected':''}>${n}</option>`).join('')}</select><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px"><input id="bkg" type="number" inputmode="numeric" min="0" value="${b.page||''}" placeholder="الصفحة الحالية"><input id="bkp" type="number" inputmode="numeric" min="0" value="${b.pages||''}" placeholder="عدد الصفحات"></div><textarea id="bkm" dir="auto" placeholder="ملخص الكتاب بكلماتك…" style="margin-top:8px;min-height:110px">${esc(b.summary||'')}</textarea><textarea id="bkn" dir="auto" placeholder="النقاط المهمة — نقطة في كل سطر" style="margin-top:8px;min-height:130px">${esc(b.points||'')}</textarea><div class="err" id="err"></div><div class="acts"><button class="btn" data-act="bksave">حفظ</button>${b.id?'<button class="btn ghost" data-act="bkdel">حذف</button>':''}<button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
 }
 let stT=null;
 function tickCD(){
