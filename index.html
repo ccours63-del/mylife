@@ -308,6 +308,50 @@ html[dir=rtl] .page.enter .bar i{transform-origin:right;animation:grow .7s cubic
 .wd b{display:block;margin-bottom:4px}
 .wl{color:var(--muted);font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wl.dn{text-decoration:line-through;opacity:.7}
+
+/* ===== habit v4 ===== */
+.hm-wrap{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:14px 12px 12px;margin:10px 0;direction:ltr;overflow:hidden}
+.hm-m{display:grid;grid-template-columns:repeat(22,1fr);gap:3px;font-size:10px;color:var(--muted);height:15px;margin-bottom:4px}
+.hm-m span{white-space:nowrap;grid-row:1;justify-self:start}
+.hm{display:grid;grid-template-columns:repeat(22,1fr);grid-template-rows:repeat(7,auto);grid-auto-flow:column;gap:3px}
+.hm i{display:block;aspect-ratio:1;border-radius:32%;background:color-mix(in srgb,var(--accent) 13%,var(--soft))}
+.hm i.c{background:var(--accent);box-shadow:0 0 8px color-mix(in srgb,var(--accent) 50%,transparent)}
+.hm i.r{background:var(--bad)}
+.hm i.f{opacity:0}
+.hm i.t{outline:1.5px solid var(--ink);outline-offset:1px}
+@keyframes cellIn{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:none}}
+.page.enter .hm i:not(.f){animation:cellIn .45s cubic-bezier(.2,.9,.3,1.3) both;animation-delay:calc(var(--i)*8ms)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.chip{display:flex;align-items:center;gap:8px;padding:11px 16px;border-radius:999px;background:color-mix(in srgb,var(--accent) 15%,var(--surface));color:var(--accent);font-weight:800;font-size:15px;position:relative;overflow:hidden;transition:transform .15s}
+button.chip:active{transform:scale(.94)}
+.chip b{font-size:18px;min-width:1ch}
+.chip.hot{box-shadow:0 0 18px color-mix(in srgb,var(--accent) 38%,transparent)}
+.chip.goal i{position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--accent);transform-origin:right;transform:scaleX(var(--p,0))}
+.page.enter .chip.goal i{animation:grow .9s cubic-bezier(.2,.8,.2,1)}
+@keyframes flick{0%,100%{transform:scale(1) rotate(-4deg)}50%{transform:scale(1.15) rotate(4deg)}}
+.flame{display:flex;animation:flick 1.6s ease-in-out infinite;transform-origin:50% 90%}
+.hc{aspect-ratio:1;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;font-size:16px;position:relative;color:var(--ink);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation;transition:transform .12s,background .25s}
+.hc:active{transform:scale(.9)}
+.hc.c{background:color-mix(in srgb,var(--accent) 22%,var(--surface))}
+.hc.r{background:color-mix(in srgb,var(--bad) 24%,var(--surface))}
+.hc.c::after,.hc.r::after{content:"";width:6px;height:6px;border-radius:50%;margin-top:4px;background:var(--accent)}
+.hc.r::after{background:var(--bad)}
+.hc.today{outline:2.5px solid var(--accent);outline-offset:-2px}
+.hc:disabled{opacity:.3}
+.hc svg{position:absolute;top:6px;right:7px;opacity:.75}
+@keyframes msA{from{opacity:0;transform:translateX(-26px)}}
+@keyframes msB{from{opacity:0;transform:translateX(26px)}}
+.ms1 .cal{animation:msA .32s cubic-bezier(.2,.8,.2,1)}
+.ms-1 .cal{animation:msB .32s cubic-bezier(.2,.8,.2,1)}
+.hn-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.hn{display:block;width:100%;text-align:start;background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:11px 13px;margin-top:8px}
+.hn small{display:block;color:var(--muted);font-size:12px;margin-bottom:3px}
+.hn span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap}
+.sp{position:fixed;width:7px;height:7px;border-radius:50%;pointer-events:none;z-index:30;animation:spark .8s cubic-bezier(.2,.8,.3,1) forwards}
+@keyframes spark{from{transform:translate(-50%,-50%) scale(1);opacity:1}to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.2);opacity:0}}
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));background:var(--accent);color:var(--accent-ink);padding:11px 18px;border-radius:999px;font-weight:800;z-index:31;white-space:nowrap;animation:toastIn 2.4s both}
+@keyframes toastIn{0%{opacity:0;transform:translate(-50%,16px) scale(.9)}12%,85%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-50%,-8px)}}
+@media (prefers-reduced-motion:reduce){.hm i,.flame,.chip i,.ms1 .cal,.ms-1 .cal{animation:none!important}}
 </style>
 </head>
 <body>
@@ -335,7 +379,7 @@ const monthsOfYear=y=>[...Array(12)].map((_,m)=>daysBetween(new Date(y,m,1),new 
 const PR=[['fajr','الفجر'],['dhuhr','الظهر'],['asr','العصر'],['maghrib','المغرب'],['isha','العشاء']];
 const TABS=[['home','الرئيسية'],['prayers','الصلوات'],['habit','العادة']];
 
-let data={prayers:{},habit:{},notes:{},docs:[],days:{}};
+let data={prayers:{},habit:{},notes:{},docs:[],days:{},hnotes:{},hgoal:0};
 let ui={tab:'home',period:'day',anchor:today(),modal:null,confirm:null,focus:null,editing:null,anim:false,pop:null};
 let storageOk=true;
 
@@ -361,6 +405,8 @@ async function load(){
 function fixData(){
   if(!Array.isArray(data.docs))data.docs=[];
   if(!data.days||typeof data.days!=='object')data.days={};
+  if(!data.hnotes||typeof data.hnotes!=='object'||Array.isArray(data.hnotes))data.hnotes={};
+  data.hgoal=+data.hgoal||0;
 }
 let saveT;
 function save(){
@@ -458,29 +504,19 @@ function streaks(){
   return{cur,best,since};
 }
 function viewHabit(){
-  const{days}=range(),t=today(),st=streaks();let h=periodBar();
-  const cl=days.filter(d=>data.habit[d]==='c').length,rl=days.filter(d=>data.habit[d]==='r').length;
-  h+=`<div class="grid3"><div class="stat"><b class="good">${st.cur}</b><span>أيام متتالية</span></div><div class="stat"><b>${st.best}</b><span>أفضل سلسلة</span></div><div class="stat"><b>${st.since===null?'—':st.since}</b><span>منذ آخر انتكاسة</span></div></div>`;
-  if(ui.period==='day'){
-    const d=ui.anchor,v=data.habit[d];
-    h+=`<div class="card"><div class="q">كيف كان هذا اليوم؟</div><div class="two">
-<button class="hb good ${v==='c'?'on':''}" data-act="hset" data-d="${d}" data-v="c" ${d>t?'disabled':''}>نجحت</button>
-<button class="hb bad ${v==='r'?'on':''}" data-act="hset" data-d="${d}" data-v="r" ${d>t?'disabled':''}>انتكست</button></div></div>`;
-  }else{
-    h+=`<div class="card"><div class="muted" style="margin-bottom:10px">في هذه الفترة: <b class="good">${cl}</b> يوم نجاح · <b class="bad">${rl}</b> يوم انتكاس</div>`;
-    if(ui.period==='week'){
-      h+=`<div class="wk">${days.map(d=>{const v=data.habit[d];return`<button class="cc ${v?'cc-'+v:''} ${d===t?'today':''}" data-act="hcycle" data-d="${d}" ${d>t?'disabled':''}><span>${+d.slice(8)}</span><small>${parse(d).toLocaleDateString(LOC,{weekday:'short'})}</small></button>`}).join('')}</div>`;
-    }else if(ui.period==='month'){
-      h+=calendar(days,d=>{const v=data.habit[d];return`<button class="cc ${v?'cc-'+v:''} ${d===t?'today':''}" data-act="hcycle" data-d="${d}" ${d>t?'disabled':''}><span>${+d.slice(8)}</span></button>`});
-    }else{
-      const y=parse(ui.anchor).getFullYear();
-      h+=monthsOfYear(y).map(ds=>{const c=ds.filter(d=>data.habit[d]==='c').length,r=ds.filter(d=>data.habit[d]==='r').length;
-        return`<button class="yrow" data-act="openmonth" data-d="${ds[0]}" style="grid-template-columns:76px 1fr 70px"><span>${monthName(ds[0])}</span><div class="stack"><i style="width:${c/ds.length*100}%;background:var(--good)"></i><i style="width:${r/ds.length*100}%;background:var(--bad)"></i></div><b><span class="good">${c}</span> / <span class="bad">${r}</span></b></button>`}).join('');
-    }
-    h+=`</div>`;
-    if(ui.period!=='year')h+=`<p class="muted">اضغط على اليوم: نجاح ← انتكاس ← إلغاء</p>`;
-  }
-  return h;
+  const t=today(),st=streaks();ui.hm=ui.hm||t;
+  const ms=ui.ms||0;ui.ms=0;
+  const a=parse(ui.hm),days=daysBetween(new Date(a.getFullYear(),a.getMonth(),1),new Date(a.getFullYear(),a.getMonth()+1,0));
+  const cl=days.filter(d=>data.habit[d]==='c').length,g=data.hgoal||0,hit=g&&st.cur>=g,p=g?Math.min(1,st.cur/g):0;
+  const cell=d=>{const v=data.habit[d],has=(data.hnotes[d]||'').trim();return`<button class="hc ${v||''} ${d===t?'today':''}" data-act="hcycle" data-d="${d}" ${d>t?'disabled':''}>${+d.slice(8)}${has?hsvg(HI.note,13,2.4):''}</button>`};
+  return heatmap()
+  +`<div class="chips"><div class="chip ${st.cur?'hot':''}"><span class="flame">${hsvg(HI.flame,22)}</span><b data-count="${st.cur}">${st.cur}</b><span>يوم</span></div><button class="chip goal ${hit?'hot':''}" data-act="hgoal" style="--p:${p}">${hsvg(HI.goal,20)}<span>${g?(hit?'تحقق الهدف ✓ · ':'الهدف ')+g+(hit?'':' يوم'):'بدون هدف'}</span>${g?'<i></i>':''}</button></div>`
+  +`<div class="grid3"><div class="stat"><b class="good">${cl}</b><span>نجاح هذا الشهر</span></div><div class="stat"><b>${st.best}</b><span>أفضل سلسلة</span></div><div class="stat"><b>${st.since===null?'—':st.since}</b><span>منذ آخر انتكاسة</span></div></div>`
+  +`<div class="card ms${ms}"><div class="nav"><button data-act="hmonth" data-v="-1" aria-label="السابق">›</button><div class="nav-l">${a.toLocaleDateString(LOC,{month:'long',year:'numeric'})}</div><button data-act="hmonth" data-v="1" aria-label="التالي">‹</button></div>`
+  +calendar(days,cell)
+  +(fmt(a).slice(0,7)===t.slice(0,7)?'':`<button class="link" data-act="htoday">العودة إلى هذا الشهر</button>`)
+  +`<p class="muted" style="text-align:center;margin-top:10px">اضغط: نجاح ← انتكاس ← إلغاء · اضغط مطولاً لإضافة ملاحظة</p></div>`
+  +hnotesCard();
 }
 
 /* ---------- home (day page) ---------- */
@@ -893,6 +929,7 @@ function closeEditor(){
 
 /* ---------- modal ---------- */
 function modalHtml(){
+  if(ui.modal==='hnote')return hnoteModal();
   const body=`<h3>نسخة احتياطية</h3><p class="muted">انسخ هذا النص واحفظه في مكان آمن. للاستعادة الصقه هنا ثم اضغط «استيراد».</p>
 <textarea id="bk" style="margin-top:10px;min-height:160px;direction:ltr;font-size:12px">${esc(JSON.stringify(data))}</textarea>
 <div class="err" id="err"></div><div class="acts"><button class="btn" data-act="copybk">نسخ</button><button class="btn ghost" data-act="importbk">استيراد</button><button class="btn ghost" data-act="close">إغلاق</button></div>
@@ -923,9 +960,11 @@ function render(){
   $('#app').innerHTML=`<div class="page ${anim?'enter':''}">${title}${V[ui.tab]()}</div>`;
   updateNav();
   if(ui.tab==='home')mountHome();
+  if(ui.tab==='habit')mountHabit();
   $('#modal').innerHTML=ui.modal?modalHtml():'';
   if(ui.focus){const el=$(ui.focus);if(el)el.focus();ui.focus=null}
   if(ui.pop){const el=document.querySelector(ui.pop);if(el)el.classList.add('pop');ui.pop=null}
+  if(ui.burst){hBurst(ui.burst);ui.burst=null}
 }
 
 /* ---------- actions ---------- */
@@ -941,7 +980,14 @@ function handle(a,D){
     case 'pset':setP(D.d,D.k,getP(D.d,D.k)===+D.v?0:+D.v);break;
     case 'pcycle':setP(D.d,D.k,(getP(D.d,D.k)+1)%3);break;
     case 'hset':if(data.habit[D.d]===D.v)delete data.habit[D.d];else data.habit[D.d]=D.v;save();break;
-    case 'hcycle':{const c=data.habit[D.d],n=!c?'c':c==='c'?'r':null;if(n)data.habit[D.d]=n;else delete data.habit[D.d];save();break}
+    case 'hcycle':{const c=data.habit[D.d],n=!c?'c':c==='c'?'r':null;if(n)data.habit[D.d]=n;else delete data.habit[D.d];save();hVib(n==='r'?[20,40,20]:12);
+      if(n==='c'){const cur=streaks().cur;ui.burst={sel:`[data-act="hcycle"][data-d="${D.d}"]`,cur,big:MILES.includes(cur)}}break}
+    case 'hmonth':{const a=parse(ui.hm||today());a.setDate(1);a.setMonth(a.getMonth()+(+D.v));ui.hm=fmt(a);ui.ms=+D.v>0?1:-1;hVib(8);break}
+    case 'htoday':ui.hm=today();ui.ms=0;break;
+    case 'hgoal':{const i=GOALS.indexOf(data.hgoal||0);data.hgoal=GOALS[(i+1)%GOALS.length];save();hVib(10);break}
+    case 'hnote':ui.modal='hnote';ui.hd=D.d;ui.focus='#hnt';break;
+    case 'hnsave':{const v=($('#hnt').value||'').trim();if(v)data.hnotes[ui.hd]=v;else delete data.hnotes[ui.hd];ui.modal=null;save();break}
+    case 'hndel':delete data.hnotes[ui.hd];ui.modal=null;save();break;
     case 'modal':ui.modal=D.v;break;
     case 'close':ui.modal=null;break;
     case 'ovclose':return false;
@@ -979,6 +1025,51 @@ document.addEventListener('keydown',e=>{
 document.addEventListener('input',e=>{
   if(e.target.id==='note'){data.notes[ui.anchor]=e.target.value;save()}
 });
+/* ---------- habit v4: heatmap, goal, notes, motion ---------- */
+const GOALS=[0,7,14,30,60,90,365],MILES=[3,7,14,21,30,50,60,90,100,180,365];
+const hsvg=(p,z=20,w=2)=>`<svg viewBox="0 0 24 24" width="${z}" height="${z}" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const HI={flame:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',goal:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>',note:'<path d="M5 8h14M5 12h14M5 16h9"/>'};
+const hVib=n=>{try{navigator.vibrate&&navigator.vibrate(n)}catch(e){}};
+function heatmap(){
+  const W=22,t=today(),now=new Date(),start=addDays(now,6-now.getDay()-(W*7-1));
+  let cells='',mon='',last=-1;
+  for(let i=0;i<W*7;i++){const k=fmt(addDays(start,i)),v=data.habit[k];cells+=`<i class="${v||''}${k>t?' f':''}${k===t?' t':''}" style="--i:${i}"></i>`}
+  for(let w=0;w<W;w++){const d=addDays(start,w*7);if(d.getMonth()!==last&&(w===0||d.getDate()<=7)){last=d.getMonth();mon+=`<span style="grid-column:${w+1}">${d.toLocaleDateString(LOC,{month:'short'})}</span>`}}
+  return`<div class="hm-wrap"><div class="hm-m">${mon}</div><div class="hm">${cells}</div></div>`;
+}
+function hnotesCard(){
+  const t=today(),ks=Object.keys(data.hnotes).filter(k=>(data.hnotes[k]||'').trim()).sort().reverse();
+  return`<div class="card"><div class="hn-h"><b>الملاحظات</b><span class="muted">${ks.length}</span></div>`+(ks.length?ks.slice(0,10).map(k=>`<button class="hn" data-act="hnote" data-d="${k}"><small>${k===t?'اليوم':parse(k).toLocaleDateString(LOC,{weekday:'short',day:'numeric',month:'short'})}${data.habit[k]==='c'?' · نجاح':data.habit[k]==='r'?' · انتكاس':''}</small><span>${esc(data.hnotes[k])}</span></button>`).join(''):empty('اضغط مطولاً على أي يوم في التقويم لإضافة ملاحظة'))+`</div>`;
+}
+function hnoteModal(){
+  const d=ui.hd,v=data.hnotes[d]||'',dt=parse(d).toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'});
+  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>ملاحظة · ${dt}</h3><textarea id="hnt" dir="auto" placeholder="اكتب ملاحظتك لهذا اليوم…" style="min-height:130px">${esc(v)}</textarea><div class="acts"><button class="btn" data-act="hnsave">حفظ</button>${v?'<button class="btn ghost" data-act="hndel">حذف</button>':''}<button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
+}
+function hToast(t){const e=document.createElement('div');e.className='toast';e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2400)}
+function hBurst(b){
+  const el=document.querySelector(b.sel);if(!el)return;
+  const r=el.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,n=b.big?26:9;
+  for(let i=0;i<n;i++){
+    const p=document.createElement('b'),a=Math.random()*6.283,sp=(b.big?90:44)+Math.random()*(b.big?110:30);
+    p.className='sp';p.style.cssText=`left:${x}px;top:${y}px;--dx:${Math.cos(a)*sp}px;--dy:${Math.sin(a)*sp-(b.big?30:0)}px;background:${i%3?'var(--accent)':'var(--good)'}`;
+    document.body.appendChild(p);setTimeout(()=>p.remove(),900);
+  }
+  if(b.big){hToast('🔥 '+b.cur+' يوماً متتالية! استمر');hVib([30,60,30,60,80])}
+}
+function mountHabit(){
+  document.querySelectorAll('.page.enter [data-count]').forEach(el=>{const to=+el.dataset.count,t0=performance.now();(function f(n){const p=Math.min(1,(n-t0)/800);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)})(t0)});
+}
+let lpT=null,lpX=0,lpY=0,lpDone=false;
+document.addEventListener('pointerdown',e=>{
+  lpDone=false;clearTimeout(lpT);lpT=null;
+  const c=e.target.closest('.hc');if(!c||c.disabled)return;
+  lpX=e.clientX;lpY=e.clientY;
+  lpT=setTimeout(()=>{lpDone=true;hVib(25);ui.modal='hnote';ui.hd=c.dataset.d;ui.focus='#hnt';render()},480);
+});
+['pointerup','pointercancel'].forEach(n=>document.addEventListener(n,()=>{clearTimeout(lpT);lpT=null}));
+document.addEventListener('pointermove',e=>{if(lpT&&Math.hypot(e.clientX-lpX,e.clientY-lpY)>10){clearTimeout(lpT);lpT=null}});
+document.addEventListener('click',e=>{if(lpDone){lpDone=false;e.stopPropagation();e.preventDefault()}},true);
+document.addEventListener('contextmenu',e=>{if(e.target.closest('.hc'))e.preventDefault()});
 buildNav();
 load().then(render);
 </script>
