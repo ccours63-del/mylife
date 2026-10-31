@@ -199,7 +199,7 @@ button:active:not(:disabled){transform:scale(.95)}
 .ed-head .ed-tools-in{padding:0}
 /* dock */
 .dock{position:fixed;bottom:0;left:0;right:0;z-index:5;background:rgba(16,19,24,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
-body:has(.bt:focus,input:focus,textarea:focus,select:focus) .dock{transform:translateY(110%)}
+body.kb .dock{transform:translateY(110%)}
 .dk-in{position:relative;max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);padding:6px 4px}
 .dk-ind{position:absolute;top:6px;bottom:6px;inset-inline-start:calc(var(--i,0)*100%/5);width:calc(100%/5);padding:0 3px;transition:inset-inline-start .38s cubic-bezier(.3,1.25,.4,1);pointer-events:none}
 .dk-ind::before{content:"";display:block;height:100%;border-radius:14px;background:color-mix(in srgb,var(--accent) 16%,transparent)}
@@ -1950,6 +1950,29 @@ document.addEventListener('keydown',e=>{
 });
 buildNav();
 load().then(render).then(lkBoot);
+
+/* ---------- keyboard: hide dock only while the keyboard is really open ---------- */
+(function(){
+  const vv=window.visualViewport;let base=0,open=false;
+  const editable=el=>el&&(el.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
+  const set=v=>{open=v;document.body.classList.toggle('kb',v)};
+  if(!vv){
+    document.addEventListener('focusin',e=>{if(editable(e.target))set(true)});
+    document.addEventListener('focusout',()=>setTimeout(()=>{if(!editable(document.activeElement))set(false)},50));
+    return;
+  }
+  const check=()=>{
+    const h=vv.height;
+    if(!open)base=Math.max(base,h);
+    const shrunk=Math.max(base,innerHeight)-h>140;
+    if(shrunk&&editable(document.activeElement)){if(!open)set(true)}
+    else if(open){set(false);const a=document.activeElement;if(editable(a)&&!a.closest('#lock'))a.blur()}
+  };
+  vv.addEventListener('resize',check);
+  window.addEventListener('orientationchange',()=>{base=0;setTimeout(()=>{base=vv.height;check()},400)});
+  document.addEventListener('focusout',()=>setTimeout(()=>{if(open&&!editable(document.activeElement))set(false)},80));
+  base=vv.height;
+})();
 </script>
 </body>
 </html>
