@@ -200,8 +200,8 @@ button:active:not(:disabled){transform:scale(.95)}
 /* dock */
 .dock{position:fixed;bottom:0;left:0;right:0;z-index:5;background:rgba(16,19,24,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
 body.kb .dock{transform:translateY(110%)}
-.dk-in{position:relative;max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);padding:6px 4px}
-.dk-ind{position:absolute;top:6px;bottom:6px;inset-inline-start:calc(var(--i,0)*100%/5);width:calc(100%/5);padding:0 3px;transition:inset-inline-start .38s cubic-bezier(.3,1.25,.4,1);pointer-events:none}
+.dk-in{position:relative;max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr);padding:6px 4px}
+.dk-ind{position:absolute;top:6px;bottom:6px;inset-inline-start:calc(var(--i,0)*100%/6);width:calc(100%/6);padding:0 3px;transition:inset-inline-start .38s cubic-bezier(.3,1.25,.4,1);pointer-events:none}
 .dk-ind::before{content:"";display:block;height:100%;border-radius:14px;background:color-mix(in srgb,var(--accent) 16%,transparent)}
 .dk-b{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 6px;color:var(--muted);font-size:10.5px;font-weight:600;min-width:0}
 .dk-b span{white-space:nowrap;transition:color .25s}
@@ -560,6 +560,37 @@ body.locked #app,body.locked .topbar,body.locked .dock,body.locked #modal,body.l
 .rd-row span{overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:13.5px;white-space:pre-wrap}
 .rd-rb{width:38px;border-radius:12px;background:var(--bg);flex:none}
 body.rd-open{overflow:hidden}body.rd-open #app,body.rd-open .topbar,body.rd-open .dock{visibility:hidden}
+
+/* ===== social ===== */
+.soc{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px;margin:10px 0;border-inline-start:4px solid var(--pc,var(--accent));animation:stIn .5s both;animation-delay:calc(var(--i,0)*70ms)}
+.soc-h{display:flex;align-items:center;gap:10px}
+.soc-ic{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-weight:800;font-size:13px;color:#0B0D10;background:var(--pc);flex:none}
+.soc-h>div{flex:1;min-width:0;line-height:1.35}
+.soc-h small{display:block;color:var(--muted);font-size:12px;direction:ltr;text-align:start}
+.soc-tag{font-size:11px;font-weight:800;padding:2px 9px;border-radius:99px;background:var(--soft);color:var(--muted);white-space:nowrap}
+.soc-tag.auto{background:color-mix(in srgb,var(--good) 18%,transparent);color:var(--good)}
+.soc-ed{width:36px;height:36px;border-radius:11px;background:var(--soft);color:var(--muted);flex:none}
+.soc-n{display:flex;align-items:baseline;gap:8px;margin:10px 0 6px}
+.soc-n b{font-size:38px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums;direction:ltr}
+.soc-n span{color:var(--muted);font-size:13px}
+.soc-ds{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.soc-d{background:var(--soft);border-radius:12px;padding:7px 4px;text-align:center}
+.soc-d small{display:block;color:var(--muted);font-size:11px}
+.soc-d b{font-size:14px;font-weight:800}
+.sdu{color:var(--good)}.sdd{color:var(--bad)}.sd0{color:var(--muted)}
+.soc-g{margin-top:10px}
+.soc-gt{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;color:var(--muted)}
+.soc-gt b{color:var(--ink)}
+.soc-gt em{font-style:normal;font-size:11px}
+.soc-g .bar{height:9px;margin-top:6px}
+.soc .bar i{background:var(--pc)}
+.soc .chart{height:56px;margin-top:10px}
+.soc-nb{text-align:center;font-size:12px;margin-top:8px}
+.soc-sum{text-align:center;background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 16%,var(--surface)),var(--surface))}
+.soc-sum>small{color:var(--muted);font-size:12.5px}
+.soc-sum>b{display:block;font-size:44px;font-weight:800;line-height:1.2;font-variant-numeric:tabular-nums;direction:ltr}
+.soc-acts{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:8px;margin-top:14px}
+.soc-acts .btn{padding:11px 8px}
 </style>
 </head>
 <body>
@@ -638,6 +669,7 @@ function fixData(){
   if(!Array.isArray(ey.books))ey.books=[];
   if(!ey.pill)ey.pill=today().slice(0,7);
   if(!ey.doc||typeof ey.doc!=='object')ey.doc=null;
+  soInit();
 }
 let saveT;
 function save(){
@@ -1165,6 +1197,7 @@ function closeEditor(){
 
 /* ---------- modal ---------- */
 function modalHtml(){
+  if(ui.modal==='soq'||ui.modal==='sog'||ui.modal==='sos')return socModal();
   if(ui.modal==='hnote')return hnoteModal();
   if(ui.modal==='hcolor')return hcolorModal();
   if(ui.modal==='lock')return lockModal();
@@ -1200,7 +1233,7 @@ function updateNav(){
 
 /* ---------- render ---------- */
 function render(){
-  const V={home:viewHome,prayers:viewPrayers,habit:viewHabit,study:viewStudy,eyes:viewEyes};
+  const V={home:viewHome,prayers:viewPrayers,habit:viewHabit,study:viewStudy,eyes:viewEyes,social:viewSocial};
   const anim=ui.anim;ui.anim=false;
   const title=ui.tab==='home'?'':`<h1 class="ptitle">${TABS.find(t=>t[0]===ui.tab)[1]}</h1>`;
   $('#app').innerHTML=`<div class="page ${anim?'enter':''}"${ui.tab==='habit'?' style="--accent:var(--hcol);--accent-ink:var(--hink);--bad:var(--hbadc)"':''}>${title}${V[ui.tab]()}</div>`;
@@ -1208,6 +1241,7 @@ function render(){
   if(ui.tab==='home')mountHome();
   if(ui.tab==='habit')mountHabit();
   if(ui.tab==='study'||ui.tab==='eyes')mountStudy();
+  if(ui.tab==='social')mountSocial();
   $('#modal').innerHTML=ui.modal?modalHtml():'';
   if(ui.focus){const el=$(ui.focus);if(el)el.focus();ui.focus=null}
   if(ui.pop){const el=document.querySelector(ui.pop);if(el)el.classList.add('pop');ui.pop=null}
@@ -1216,6 +1250,7 @@ function render(){
 
 /* ---------- actions ---------- */
 function handle(a,D){
+  if(a.slice(0,2)==='s_')return socAct(a,D);
   if(a!=='del')ui.confirm=null;
   switch(a){
     case 'tab':ui.tab=D.v;if(D.v==='home'&&ui.period==='year')ui.period='month';window.scrollTo(0,0);break;
@@ -1947,8 +1982,189 @@ document.addEventListener('keydown',e=>{
   if(e.key==='ArrowRight')rdGo(RD.n+(RD.b.rtl?-1:1));else if(e.key==='ArrowLeft')rdGo(RD.n-(RD.b.rtl?-1:1));
   else if(e.key==='Escape'){if(!$('#rdsh').hidden)rdSheet('');else rdClose()}
 });
+/* ---------- social: followers growth, goals, auto-sync ---------- */
+const SP=[
+  ['yt','YouTube','#FF5A5A','مشترك','YT','@abdellah_tech.01'],
+  ['ig','Instagram','#E8579A','متابع','IG','@abdellah.tech'],
+  ['tt','TikTok','#2FE0D8','متابع','TT','@abdellah_tech0'],
+  ['fb','Facebook','#5B9CF5','متابع','FB','Abdellah Tech']
+];
+const SMS=[100,250,500,1000,2500,5000,10000,25000,50000,100000,250000,500000,1000000,2500000,5000000];
+const spOf=k=>SP.find(x=>x[0]===k);
+TABS.push(['social','السوشيال']);
+ICON.social='<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>';
+
+function soInit(){
+  if(!data.social||typeof data.social!=='object'||Array.isArray(data.social))data.social={};
+  const so=data.social;
+  if(!so.log||typeof so.log!=='object'||Array.isArray(so.log))so.log={};
+  SP.forEach(([k])=>{if(!so.log[k]||typeof so.log[k]!=='object'||Array.isArray(so.log[k]))so.log[k]={}});
+  if(!so.goal||typeof so.goal!=='object'||Array.isArray(so.goal))so.goal={};
+  so.ytkey=String(so.ytkey||'');so.ep=String(so.ep||'');so.ytH=String(so.ytH||'@abdellah_tech.01');
+  so.last=+so.last||0;
+  if(!so.seeded){
+    const t=today();
+    [['tt',4043],['ig',411],['fb',4581]].forEach(([k,v])=>{if(!Object.keys(so.log[k]).length)so.log[k][t]=v});
+    so.seeded=1;save();
+  }
+}
+const soLogKeys=k=>Object.keys(data.social.log[k]).sort();
+function soLast(k){const ks=soLogKeys(k);return ks.length?data.social.log[k][ks[ks.length-1]]:null}
+function soVal(k,d){let b=null;for(const x of Object.keys(data.social.log[k]))if(x<=d&&(b===null||x>b))b=x;return b===null?null:data.social.log[k][b]}
+function soDelta(k,n){
+  const cur=soLast(k);if(cur===null)return null;
+  const ks=soLogKeys(k);if(!ks.length)return null;
+  let b=soVal(k,fmt(addDays(parse(today()),-n)));
+  if(b===null){if(ks[0]>=today())return null;b=data.social.log[k][ks[0]]}
+  return cur-b;
+}
+function soRate(k){
+  const L=data.social.log[k],ks=soLogKeys(k);if(ks.length<2)return null;
+  const last=ks[ks.length-1],lim=fmt(addDays(parse(last),-30));
+  let first=ks.find(x=>x>=lim)||ks[0];if(first===last)first=ks[ks.length-2];
+  const days=Math.max(1,Math.round((parse(last)-parse(first))/864e5));
+  return{rate:(L[last]-L[first])/days,span:days};
+}
+function soGoal(k,cur){
+  const g=Math.round(+data.social.goal[k]);
+  if(g>0)return{g,auto:false};
+  const n=SMS.find(x=>x>cur)||(Math.floor(cur/1e6)+1)*1e6;
+  return{g:n,auto:true};
+}
+const soD=n=>n===null?'<span class="sd0">—</span>':n>0?`<bdi dir="ltr" class="sdu">▲ ${nf(n)}</bdi>`:n<0?`<bdi dir="ltr" class="sdd">▼ ${nf(-n)}</bdi>`:'<span class="sd0">0</span>';
+function soEta(days){
+  if(days<=1)return'غداً تقريباً';
+  if(days>730)return'~ '+Math.round(days/365)+' سنة';
+  if(days>60)return'~ '+Math.round(days/30)+' شهر';
+  return'~ '+days+' يوم';
+}
+function soSpark(k,c){
+  const s=soLogKeys(k).slice(-30).map(d=>data.social.log[k][d]);
+  if(s.length<2)return'<div class="muted soc-nb">الرسم البياني يظهر بعد تسجيل يومين</div>';
+  const mn=Math.min(...s),mx=Math.max(...s),W=300,H=60,r=(mx-mn)||1;
+  const pts=s.map((v,i)=>((i/(s.length-1))*W).toFixed(1)+','+(H-5-((v-mn)/r)*(H-12)).toFixed(1)).join(' ');
+  return`<svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><polygon points="0,${H} ${pts} ${W},${H}" fill="${c}" opacity=".16"/><polyline points="${pts}" fill="none" stroke="${c}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`;
+}
+const soAutoOf=k=>k==='yt'?!!data.social.ytkey:!!data.social.ep;
+const soConfigured=()=>!!(data.social.ytkey||data.social.ep);
+function soCard(p,i){
+  const[k,name,c,unit,ab,hd]=p,cur=soLast(k),so=data.social,auto=soAutoOf(k);
+  const head=`<div class="soc-h"><span class="soc-ic">${ab}</span><div><b>${name}</b><small>${esc(hd)}</small></div><span class="soc-tag ${auto?'auto':''}">${auto?'تلقائي':'يدوي'}</span><button class="soc-ed" data-act="s_edit" data-k="${k}" aria-label="هدف ${name}">✎</button></div>`;
+  if(cur===null)return`<div class="soc" style="--pc:${c};--i:${i}">${head}<div class="soc-n"><b>—</b><span>${unit}</span></div><button class="btn ghost" style="width:100%" data-act="s_edit" data-k="${k}">أدخل العدد الحالي</button></div>`;
+  const G=soGoal(k,cur),g=G.g,left=Math.max(0,g-cur),pct=Math.min(100,cur/g*100),R=soRate(k);
+  let eta='';
+  if(cur>=g)eta='🎉 تحقق الهدف';
+  else if(R&&R.span>=3&&R.rate>0)eta='التوقع '+soEta(Math.ceil(left/R.rate));
+  else if(R&&R.span>=3)eta='النمو متوقف حالياً';
+  else eta='التوقع بعد بضعة أيام';
+  const lastD=soLogKeys(k).pop();
+  return`<div class="soc" style="--pc:${c};--i:${i}">${head}
+<div class="soc-n"><b data-count="${cur}">${nf(cur)}</b><span>${unit}</span></div>
+<div class="soc-ds"><div class="soc-d"><small>اليوم</small><b>${soD(soDelta(k,1))}</b></div><div class="soc-d"><small>7 أيام</small><b>${soD(soDelta(k,7))}</b></div><div class="soc-d"><small>30 يوماً</small><b>${soD(soDelta(k,30))}</b></div></div>
+<div class="soc-g"><div class="soc-gt"><span>الهدف <b><bdi dir="ltr">${nf(g)}</bdi></b>${G.auto?' <em>(تلقائي)</em>':''}</span><span>${cur>=g?'':'باقي <b><bdi dir="ltr">'+nf(left)+'</bdi></b>'}</span></div><div class="bar"><i style="width:${pct.toFixed(1)}%"></i></div><div class="soc-gt" style="margin-top:6px"><span>${eta}</span><span><bdi dir="ltr">${pct.toFixed(0)}%</bdi></span></div></div>
+${soSpark(k,c)}<div class="soc-nb muted">آخر تسجيل: ${lastD===today()?'اليوم':parse(lastD).toLocaleDateString(LOC,{day:'numeric',month:'long'})}</div></div>`;
+}
+function viewSocial(){
+  soInit();
+  const so=data.social;
+  const tot=SP.reduce((a,[k])=>a+(soLast(k)||0),0);
+  const sum=n=>{let s=0,h=false;SP.forEach(([k])=>{const d=soDelta(k,n);if(d!==null){s+=d;h=true}});return h?s:null};
+  const last=so.last?new Date(so.last):null;
+  const lastTxt=last?'آخر مزامنة: '+last.toLocaleDateString(LOC,{day:'numeric',month:'long'})+' · '+last.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):(soConfigured()?'لم تتم مزامنة بعد':'لم يُفعَّل الربط التلقائي بعد');
+  return`<div class="card soc-sum"><small>إجمالي المتابعين في المنصات الأربع</small><b data-count="${tot}">${nf(tot)}</b>
+<div class="soc-ds"><div class="soc-d"><small>اليوم</small><b>${soD(sum(1))}</b></div><div class="soc-d"><small>7 أيام</small><b>${soD(sum(7))}</b></div><div class="soc-d"><small>30 يوماً</small><b>${soD(sum(30))}</b></div></div></div>`
+  +SP.map(soCard).join('')
+  +`<div class="soc-acts"><button class="btn" data-act="s_quick">✎ تحديث الأرقام</button><button class="btn ghost" data-act="s_sync">↻ مزامنة</button><button class="btn ghost" data-act="s_set">⚙ الربط</button></div><p class="muted" style="text-align:center;margin-top:10px">${lastTxt}</p>`;
+}
+const soOv=h=>`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true">${h}</div></div>`;
+function socModal(){
+  const so=data.social;
+  if(ui.modal==='soq')
+    return soOv(`<h3>تحديث الأرقام</h3><p class="muted">اكتب العدد الحالي لكل منصة. الفارغ يبقى كما هو.</p>`
+      +SP.map(([k,n])=>{const v=soLast(k);return`<label class="f">${n}</label><input id="sq_${k}" type="number" inputmode="numeric" min="0" value="${v===null?'':v}" placeholder="—">`}).join('')
+      +`<div class="acts"><button class="btn" data-act="s_qsave">حفظ</button><button class="btn ghost" data-act="close">إغلاق</button></div>`);
+  if(ui.modal==='sog'){
+    const p=spOf(ui.sk),cur=soLast(ui.sk),G=cur===null?null:soGoal(ui.sk,cur);
+    return soOv(`<h3>${p[1]}</h3><label class="f">الهدف (عدد ${p[3]}ين)</label><input id="sg" type="number" inputmode="numeric" min="1" value="${so.goal[ui.sk]||''}" placeholder="${G?'تلقائي: '+nf(G.g):'مثال: 5000'}"><label class="f">العدد الحالي (تصحيح يدوي)</label><input id="sc" type="number" inputmode="numeric" min="0" value="${cur===null?'':cur}" placeholder="—"><div class="acts"><button class="btn" data-act="s_gsave">حفظ</button>${so.goal[ui.sk]?'<button class="btn ghost" data-act="s_gauto">هدف تلقائي</button>':''}<button class="btn ghost" data-act="close">إغلاق</button></div>`);
+  }
+  return soOv(`<h3>الربط التلقائي</h3>
+<label class="f">YouTube — اسم القناة</label><input id="st_h" dir="ltr" value="${esc(so.ytH)}" placeholder="@abdellah_tech.01" autocomplete="off">
+<label class="f">YouTube — مفتاح API (مجاني)</label><input id="st_k" dir="ltr" value="${esc(so.ytkey)}" placeholder="AIza…" autocomplete="off">
+<label class="f">رابط الخادم — Instagram / Facebook / TikTok</label><input id="st_e" dir="ltr" value="${esc(so.ep)}" placeholder="https://….workers.dev" autocomplete="off">
+<div class="warnbox">بدون مفتاح أو رابط تبقى المنصة يدوية. المفتاح والرابط يدخلان في النسخة الاحتياطية، فلا تشاركها مع أحد.</div>
+<div class="err" id="err"></div><div class="acts"><button class="btn" data-act="s_ssave">حفظ ومزامنة</button><button class="btn ghost" data-act="close">إغلاق</button></div>`);
+}
+async function soSync(){
+  const so=data.social,t=today(),res={got:0,fail:[]};
+  const put=(k,v)=>{v=Math.round(+v);if(isFinite(v)&&v>=0){so.log[k][t]=v;res.got++;return true}return false};
+  try{
+    if(so.ytkey){
+      try{
+        const r=await fetch('https://www.googleapis.com/youtube/v3/channels?part=statistics&forHandle='+encodeURIComponent(so.ytH||'@abdellah_tech.01')+'&key='+encodeURIComponent(so.ytkey));
+        const j=await r.json(),s=j.items&&j.items[0]&&j.items[0].statistics;
+        if(!(s&&!s.hiddenSubscriberCount&&put('yt',s.subscriberCount)))res.fail.push('YouTube');
+      }catch(e){res.fail.push('YouTube')}
+    }
+    if(so.ep){
+      try{
+        const r=await fetch(so.ep,{cache:'no-store'}),j=await r.json();
+        [['instagram','ig','Instagram'],['facebook','fb','Facebook'],['tiktok','tt','TikTok'],['youtube','yt','YouTube']].forEach(([a,k,n])=>{
+          if(k==='yt'&&so.ytkey)return;
+          if(j[a]!==null&&j[a]!==undefined&&j[a]!==''&&put(k,j[a]))return;
+          if(k!=='yt')res.fail.push(n);
+        });
+      }catch(e){res.fail.push('الخادم')}
+    }
+  }finally{so.last=Date.now();save()}
+  return res;
+}
+function soAuto(force){
+  if(!data.social||!data.social.log)return;
+  if(!soConfigured())return;
+  if(!force&&Date.now()-(data.social.last||0)<30*60*1000)return;
+  soSync().then(()=>{if(ui.tab==='social'&&!ui.modal&&!ui.editing&&!RD.open)render()}).catch(()=>{});
+}
+function mountSocial(){
+  document.querySelectorAll('.page.enter [data-count]').forEach(el=>{
+    const to=+el.dataset.count,t0=performance.now();
+    (function f(n){const p=Math.min(1,(n-t0)/800);el.textContent=nf(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)})(t0);
+  });
+  soAuto();
+}
+function socAct(a,D){
+  soInit();const so=data.social;
+  switch(a){
+    case 's_quick':ui.modal='soq';return true;
+    case 's_qsave':{
+      const t=today();
+      SP.forEach(([k])=>{const el=$('#sq_'+k),v=el?el.value:'';if(v!==''&&isFinite(+v)&&+v>=0)so.log[k][t]=Math.round(+v)});
+      ui.modal=null;save();hVib(12);return true}
+    case 's_edit':ui.modal='sog';ui.sk=D.k;return true;
+    case 's_gsave':{
+      const k=ui.sk,g=$('#sg').value,c=$('#sc').value;
+      if(g==='')delete so.goal[k];else if(+g>0)so.goal[k]=Math.round(+g);
+      if(c!==''&&isFinite(+c)&&+c>=0)so.log[k][today()]=Math.round(+c);
+      ui.modal=null;save();hVib(10);return true}
+    case 's_gauto':delete so.goal[ui.sk];ui.modal=null;save();return true;
+    case 's_set':ui.modal='sos';return true;
+    case 's_ssave':{
+      const ep=($('#st_e').value||'').trim(),kk=($('#st_k').value||'').trim(),h=($('#st_h').value||'').trim();
+      if(ep&&!/^https:\/\/\S+$/i.test(ep)){$('#err').textContent='رابط الخادم يجب أن يبدأ بـ https://';return false}
+      so.ep=ep;so.ytkey=kk;so.ytH=h||'@abdellah_tech.01';ui.modal=null;save();
+      if(soConfigured())soAuto(true);
+      return true}
+    case 's_sync':{
+      if(!soConfigured()){ui.modal='sos';return true}
+      hToast('↻ جاري المزامنة…');
+      soSync().then(r=>{if(ui.tab==='social'&&!ui.modal)render();hToast(r.fail.length?'تعذّر: '+r.fail.join('، '):'✓ تم تحديث '+r.got+' منصات')}).catch(()=>hToast('تعذّرت المزامنة'));
+      return false}
+  }
+  return true;
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!(typeof lk!=='undefined'&&lk.mode))soAuto()});
+
 buildNav();
-load().then(render).then(lkBoot);
+load().then(render).then(lkBoot).then(()=>soAuto());
 
 /* ---------- keyboard: hide dock only while the keyboard is really open ---------- */
 (function(){
