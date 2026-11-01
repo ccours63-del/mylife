@@ -713,8 +713,7 @@ function viewPrayers(){
     h+=`<div class="grid3" style="grid-template-columns:repeat(4,1fr)"><div class="stat"><b>${st.pct}%</b><span>الالتزام</span></div><div class="stat"><b>${st.full}</b><span>أيام كاملة</span></div><div class="stat"><b>${st.jam}</b><span>في جماعة</span></div><div class="stat"><b class="good">${st.q}</b><span>قرآن</span></div></div>`;
     if(ui.period==='week'){
       h+=`<div class="card"><div class="wgrid"><div></div>${days.map(d=>`<div class="wh">${parse(d).toLocaleDateString(LOC,{weekday:'short'})}<small>${+d.slice(8)}</small></div>`).join('')}
-${PR.map(([k,n])=>`<div class="wn">${n}</div>`+days.map(d=>`<button class="dot s${getP(d,k)}" data-act="pcycle" data-d="${d}" data-k="${k}" ${d>t?'disabled':''} aria-label="${n}"></button>`).join('')).join('')}<div class="wn">📖 قرآن</div>${days.map(d=>`<div class="qn">${qCount(d)||''}</div>`).join('')}</div>
-<p class="muted" style="margin-top:10px">اضغط على الدائرة: صلّيت ← جماعة ← إلغاء</p></div>`;
+${PR.map(([k,n])=>`<div class="wn">${n}</div>`+days.map(d=>`<button class="dot s${getP(d,k)}" data-act="pcycle" data-d="${d}" data-k="${k}" ${d>t?'disabled':''} aria-label="${n}"></button>`).join('')).join('')}<div class="wn">📖 قرآن</div>${days.map(d=>`<div class="qn">${qCount(d)||''}</div>`).join('')}</div></div>`;
     }else if(ui.period==='month'){
       h+=`<div class="card">${calendar(days,d=>{const n=dayCount(d),f=d>t;return`<button class="cc ${d===t?'today':''} ${n>=4?'hi':''}" ${f?'disabled':''} data-act="openday" data-d="${d}" style="background:color-mix(in srgb,var(--accent) ${n*18}%,var(--surface))">${qCount(d)?'<i class="qd"></i>':''}<span>${+d.slice(8)}</span><small>${f?'':n+'/5'}</small></button>`})}<p class="muted" style="margin-top:10px"><i class="qd" style="position:static;display:inline-block;margin-inline-end:6px"></i>يوم فيه قراءة قرآن</p></div>`;
     }else{
@@ -752,7 +751,7 @@ function viewHabit(){
   +`<div class="card ms${ms}"><div class="nav"><button data-act="hmonth" data-v="-1" aria-label="السابق">›</button><div class="nav-l">${a.toLocaleDateString(LOC,{month:'long',year:'numeric'})}</div><button data-act="hmonth" data-v="1" aria-label="التالي">‹</button></div>`
   +calendar(days,cell)
   +(fmt(a).slice(0,7)===t.slice(0,7)?'':`<button class="link" data-act="htoday">العودة إلى هذا الشهر</button>`)
-  +`<p class="muted" style="text-align:center;margin-top:10px">اضغط: نجاح ← انتكاس ← إلغاء · اضغط مطولاً لإضافة ملاحظة</p></div>`
+  +`</div>`
   +hnotesCard();
 }
 
@@ -871,7 +870,7 @@ function sanitize(html){
 function notesSection(){
   const ns=[...data.docs].sort((a,b)=>b.updated-a.updated);
   let h=`<div class="h2" style="display:flex;justify-content:space-between;align-items:center;margin-top:26px"><span>ملاحظات</span><button class="btn" style="padding:6px 14px" data-act="newnote">+ ملاحظة</button></div>`;
-  if(!ns.length)return h+`<div class="card">${empty('لا توجد ملاحظات أخرى. أنشئ ملاحظة لأي موضوع خارج جدول اليوم.')}</div>`;
+  if(!ns.length)return h+`<div class="card">${empty('لا توجد ملاحظات')}</div>`;
   return h+`<div class="notes">`+ns.map(n=>{
     const ch=n.blocks.filter(b=>b.type==='check'),dn=ch.filter(b=>b.done).length;
     const lines=n.blocks.filter(b=>b.type!=='divider').map(b=>stripHtml(b.html)).filter(Boolean);
@@ -1344,7 +1343,7 @@ function heatmap(){
 }
 function hnotesCard(){
   const t=today(),ks=Object.keys(data.hnotes).filter(k=>(data.hnotes[k]||'').trim()).sort().reverse();
-  return`<div class="card"><div class="hn-h"><b>الملاحظات</b><span class="muted">${ks.length}</span></div>`+(ks.length?ks.slice(0,10).map(k=>`<button class="hn" data-act="hnote" data-d="${k}"><small>${k===t?'اليوم':parse(k).toLocaleDateString(LOC,{weekday:'short',day:'numeric',month:'short'})}${data.habit[k]==='c'?' · نجاح':data.habit[k]==='r'?' · انتكاس':''}</small><span>${esc(data.hnotes[k])}</span></button>`).join(''):empty('اضغط مطولاً على أي يوم في التقويم لإضافة ملاحظة'))+`</div>`;
+  return`<div class="card"><div class="hn-h"><b>الملاحظات</b><span class="muted">${ks.length}</span></div>`+(ks.length?ks.slice(0,10).map(k=>`<button class="hn" data-act="hnote" data-d="${k}"><small>${k===t?'اليوم':parse(k).toLocaleDateString(LOC,{weekday:'short',day:'numeric',month:'short'})}${data.habit[k]==='c'?' · نجاح':data.habit[k]==='r'?' · انتكاس':''}</small><span>${esc(data.hnotes[k])}</span></button>`).join(''):empty('لا توجد ملاحظات'))+`</div>`;
 }
 const HSW=['#4FC48B','#3CC8C8','#5B9CF5','#A98BF2','#F27CB0','#F2726C','#F59A4A','#F5B544','#ECEFF4'];
 function hInk(h){const n=parseInt(h.slice(1),16),r=n>>16,g=(n>>8)&255,b=n&255;return(0.299*r+0.587*g+0.114*b)>150?'#0B0D10':'#FFFFFF'}
@@ -1399,7 +1398,7 @@ function stTT(){
   const L=u.tt[sd].map((t,s)=>({t:t.trim(),s})).filter(x=>stType(x.t));
   const cards=L.length?L.map((x,k)=>{const ty=stType(x.t);return`<button class="sc ${ty}" style="--i:${k}" data-act="tedit" data-d="${sd}" data-s="${x.s}"><div class="stime">${esc(u.slots[x.s])}</div><b>${esc(x.t)}</b><em>${stTag[ty]}</em></button>`}).join(''):empty('لا توجد حصص هذا اليوم 🎉');
   const grid=`<div class="wk-scroll"><table class="wg"><tr><th></th>${u.slots.map(x=>`<th><button class="thb" data-act="slotsedit">${esc(x)}</button></th>`).join('')}</tr>${u.tt.map((r,d)=>`<tr><th>${DN[d]}</th>${r.map((t,s)=>{const ty=stType(t);return`<td><button class="wc ${ty}" data-act="tedit" data-d="${d}" data-s="${s}">${ty?esc(t):'·'}</button></td>`}).join('')}</tr>`).join('')}</table></div>`;
-  return wakeCard(sd)+`<div class="dchips">${chips}</div><div class="scs">${cards}</div><div class="card"><div class="hn-h"><b>الأسبوع كاملاً</b><button class="chip" data-act="slotsedit">⏱ أوقات الحصص</button></div>${grid}<p class="muted" style="margin-top:8px">اضغط على أي خانة لتعديل المادة، وعلى وقت الحصة لتعديل البداية والنهاية.</p></div>`;
+  return wakeCard(sd)+`<div class="dchips">${chips}</div><div class="scs">${cards}</div><div class="card"><div class="hn-h"><b>الأسبوع كاملاً</b><button class="chip" data-act="slotsedit">⏱ أوقات الحصص</button></div>${grid}</div>`;
 }
 /* slot times + wake-up time */
 function parseSlot(str){
@@ -1417,16 +1416,16 @@ function wakeFor(d){const u=data.uni,f=firstClass(d);if(u.wake[d])return{t:u.wak
 const leadTxt=n=>n%60===0?(n/60)+' ساعة':n>60?Math.floor(n/60)+' س و '+(n%60)+' د':n+' دقيقة';
 function wakeCard(d){
   const w=wakeFor(d),u=data.uni;
-  const sub=!w?'لا توجد حصص هذا اليوم · اضغط لتحديد وقت يدوي':w.f?`أول حصة ${w.f.a} (${esc(w.f.name)}) · ${w.auto?'قبلها بـ '+leadTxt(u.lead):'وقت مخصص'}`:'وقت مخصص';
+  const sub=!w?'لا توجد حصص هذا اليوم':w.f?`أول حصة ${w.f.a} (${esc(w.f.name)}) · ${w.auto?'قبلها بـ '+leadTxt(u.lead):'وقت مخصص'}`:'وقت مخصص';
   return`<button class="card wake" data-act="wedit" data-d="${d}"><span class="wk-i">⏰</span><div><small>وقت النهوض · ${DN[d]}</small><b dir="ltr">${w?w.t:'--:--'}</b><small>${sub}</small></div><em>تعديل</em></button>`;
 }
 function wakeModal(){
   const d=ui.wd,w=wakeFor(d),u=data.uni;
-  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>وقت النهوض · ${DN[d]}</h3><label class="fl">وقت النهوض (ضع المنبه عليه)</label><input id="wkt" type="time" value="${w?w.t:'06:00'}" data-orig="${w?w.t:'06:00'}"><label class="fl">مدة التحضير قبل أول حصة (دقيقة)</label><input id="wkl" type="number" inputmode="numeric" min="0" max="300" value="${u.lead}"><p class="muted" style="margin-top:8px">عند تحديد مدة التحضير يُحسب وقت النهوض تلقائياً لكل الأيام بحسب بداية أول حصة. وإن غيّرت الوقت يدوياً يُحفظ لهذا اليوم فقط.</p><div class="err" id="err"></div><div class="acts"><button class="btn" data-act="wsave">حفظ</button>${u.wake[d]?'<button class="btn ghost" data-act="wauto">تلقائي</button>':''}<button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
+  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>وقت النهوض · ${DN[d]}</h3><label class="fl">وقت النهوض (ضع المنبه عليه)</label><input id="wkt" type="time" value="${w?w.t:'06:00'}" data-orig="${w?w.t:'06:00'}"><label class="fl">مدة التحضير قبل أول حصة (دقيقة)</label><input id="wkl" type="number" inputmode="numeric" min="0" max="300" value="${u.lead}"><div class="err" id="err"></div><div class="acts"><button class="btn" data-act="wsave">حفظ</button>${u.wake[d]?'<button class="btn ghost" data-act="wauto">تلقائي</button>':''}<button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
 }
 function slotsModal(){
   const u=data.uni;
-  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>أوقات الحصص</h3><div class="slr slh"><span></span><small>البداية</small><small>النهاية</small></div>${u.st.map((x,i)=>`<div class="slr"><b>الحصة ${i+1}</b><input id="sa${i}" type="time" value="${x.a||''}"><input id="sb${i}" type="time" value="${x.b||''}"></div>`).join('')}<p class="muted" style="margin-top:8px">اترك الخانتين فارغتين إن لم تكن للحصة وقت محدد.</p><div class="err" id="err"></div><div class="acts"><button class="btn" data-act="slotssave">حفظ</button><button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
+  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>أوقات الحصص</h3><div class="slr slh"><span></span><small>البداية</small><small>النهاية</small></div>${u.st.map((x,i)=>`<div class="slr"><b>الحصة ${i+1}</b><input id="sa${i}" type="time" value="${x.a||''}"><input id="sb${i}" type="time" value="${x.b||''}"></div>`).join('')}<div class="err" id="err"></div><div class="acts"><button class="btn" data-act="slotssave">حفظ</button><button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
 }
 function stEX(){
   const now=Date.now(),dt=d=>parse(d).toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'});
@@ -1444,7 +1443,7 @@ function stAB(){
 }
 function teditModal(){
   const t=data.uni.tt[ui.td][ui.ts]||'';
-  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>${DN[ui.td]} · ${esc(data.uni.slots[ui.ts])}</h3><input id="tin" data-enter="tsave" value="${esc(t)}" placeholder="مثال: TD algo أو TP Poo" autocomplete="off"><p class="muted" style="margin-top:8px">ابدأ بـ TD أو TP ليظهر بلونه، وغير ذلك يُعد محاضرة. اتركه فارغاً لحصة فارغة.</p><div class="acts"><button class="btn" data-act="tsave">حفظ</button><button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
+  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>${DN[ui.td]} · ${esc(data.uni.slots[ui.ts])}</h3><input id="tin" data-enter="tsave" value="${esc(t)}" placeholder="مثال: TD algo أو TP Poo" autocomplete="off"><div class="acts"><button class="btn" data-act="tsave">حفظ</button><button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
 }
 function examModal(){
   const e=data.uni.exams.find(x=>x.id===ui.eid)||{};
@@ -1462,7 +1461,7 @@ function viewEyes(){
 }
 function eyDoc(){
   const d=data.eyes.doc,now=Date.now(),dt=x=>parse(x).toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'});
-  if(!d)return`<div class="cd off" data-act="docedit"><h3>👁</h3><small>اضغط لتحديد موعدك مع الدكتور</small></div>`;
+  if(!d)return`<div class="cd off" data-act="docedit"><h3>👁</h3></div>`;
   const ts=new Date(`${d.date}T${d.time||'09:00'}`).getTime();
   if(ts<=now)return`<div class="cd off" data-act="docedit"><h3>✓</h3><small>انتهى موعد ${dt(d.date)} · اضغط لتحديد موعد جديد</small></div>`;
   const n=Math.round((parse(d.date)-parse(today()))/864e5);
@@ -1485,7 +1484,7 @@ function eyLib(){
   const tabs=`<div class="dchips">${BST.map(([k,n])=>`<button class="dchip ${f===k?'on':''}" data-act="bfil" data-v="${k}">${n} · ${B.filter(b=>b.status===k).length}</button>`).join('')}</div>`;
   const L=B.filter(b=>b.status===f);
   const cards=L.length?L.map((b,k)=>{const pct=b.pages?Math.min(100,Math.round((b.page||0)/b.pages*100)):0,np=(b.points||'').split('\n').filter(x=>x.trim()).length;
-    return`<div class="bkw"><button class="bk" style="--i:${k}" data-act="${b.file?'bkread':'bkopen'}" data-id="${b.id}"><b>${esc(b.title)}</b>${b.author?`<small>${esc(b.author)}</small>`:''}${b.file?'<small class="bkf">📖 اضغط للقراءة · PDF</small>':''}${b.pages?`<div class="abb" style="margin-top:10px"><i style="width:${pct}%"></i></div><small>${b.page||0} / ${b.pages} صفحة · ${pct}%</small>`:''}${b.summary?`<p>${esc(b.summary)}</p>`:''}${np?`<small>📝 ${np} نقاط مهمة</small>`:''}</button>${b.file?`<button class="bke" data-act="bkopen" data-id="${b.id}" aria-label="تعديل بيانات الكتاب">✎</button>`:''}</div>`}).join(''):empty(f==='reading'?'لا تقرأ كتاباً الآن. أضف كتابك الحالي 📖':f==='next'?'قائمة قراءاتك المستقبلية فارغة':'لم تنهِ أي كتاب بعد');
+    return`<div class="bkw"><button class="bk" style="--i:${k}" data-act="${b.file?'bkread':'bkopen'}" data-id="${b.id}"><b>${esc(b.title)}</b>${b.author?`<small>${esc(b.author)}</small>`:''}${b.file?'<small class="bkf">📖 PDF</small>':''}${b.pages?`<div class="abb" style="margin-top:10px"><i style="width:${pct}%"></i></div><small>${b.page||0} / ${b.pages} صفحة · ${pct}%</small>`:''}${b.summary?`<p>${esc(b.summary)}</p>`:''}${np?`<small>📝 ${np} نقاط مهمة</small>`:''}</button>${b.file?`<button class="bke" data-act="bkopen" data-id="${b.id}" aria-label="تعديل بيانات الكتاب">✎</button>`:''}</div>`}).join(''):empty(f==='reading'?'لا تقرأ كتاباً الآن. أضف كتابك الحالي 📖':f==='next'?'قائمة قراءاتك المستقبلية فارغة':'لم تنهِ أي كتاب بعد');
   return tabs+cards+`<button class="btn addb" data-act="bkpick">⬆ رفع كتاب (PDF) إلى المكتبة</button><button class="btn ghost addb" style="margin-top:8px" data-act="bknew">+ إضافة كتاب بدون ملف</button><input id="bkpdf" type="file" accept="application/pdf,.pdf" hidden>`;
 }
 function docModal(){
@@ -1900,7 +1899,7 @@ function rdMenu(){
   for(const k of (b.bm||[]).slice().sort((a,c)=>a-c))rows.unshift(`<div class="rd-row"><button data-r="goto" data-p="${k}"><i style="background:var(--accent)"></i><small>ص ${k}</small><span>🔖 علامة صفحة</span></button><button class="rd-rb" data-r="bmdel" data-p="${k}" aria-label="حذف">✕</button></div>`);
   rdSheet(`<div class="rd-mh"><h4>${esc(b.title)}</h4><button data-r="sheetx" aria-label="إغلاق">✕</button></div>
 <div class="rd-mg"><button data-r="bm">${bm?'🔖 إزالة العلامة':'🔖 علامة لهذه الصفحة'}</button><button data-r="night">${RD.night?'☀️ وضع عادي':'🌙 الوضع الليلي'}</button><button data-r="dir">↔ التقليب: ${b.rtl?'عربي (يمين←يسار)':'لاتيني (يسار←يمين)'}</button></div>
-<h5>العلامات والملاحظات (${rows.length})</h5>${rows.join('')||'<p class="muted" style="text-align:center;padding:14px">لا توجد علامات بعد. ظلّل نصاً أو أضف ملاحظة وستظهر هنا.</p>'}`);
+<h5>العلامات والملاحظات (${rows.length})</h5>${rows.join('')||''}`);
 }
 function rdAct(a,D){
   switch(a){
