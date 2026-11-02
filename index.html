@@ -630,6 +630,18 @@ body.rd-open{overflow:hidden}body.rd-open #app,body.rd-open .topbar,body.rd-open
 .pv-cap{padding:10px 14px calc(12px + env(safe-area-inset-bottom));background:#0f1216}
 .pv-cap small{display:block;color:var(--muted);margin-bottom:6px}
 body.locked #pview{visibility:hidden}
+.pv-mv{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+.pv-mv button{padding:10px 0;border-radius:12px;background:rgba(255,255,255,.12);color:#fff;font-weight:700;font-size:13px}
+.pv-mv button:disabled{opacity:.3}
+.sjp button.picked{outline:3px solid var(--accent);outline-offset:-3px}
+.sjp button.picked img{opacity:.7}
+.pk{position:absolute;top:5px;inset-inline-start:5px;width:24px;height:24px;border-radius:50%;border:2px solid #fff;background:rgba(0,0,0,.35);color:var(--accent-ink);font-size:14px;display:grid;place-items:center;font-weight:800}
+.sjp button.picked .pk{background:var(--accent);border-color:var(--accent)}
+.selbar{position:fixed;left:8px;right:8px;bottom:calc(76px + env(safe-area-inset-bottom));max-width:504px;margin:0 auto;z-index:8;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;padding:10px;border-radius:18px;background:var(--surface);border:1px solid var(--line);box-shadow:0 8px 28px rgba(0,0,0,.5)}
+.selbar button{padding:8px 12px;border-radius:10px;background:var(--soft);font-weight:700;font-size:13px}
+.selbar .selmain{background:var(--accent);color:var(--accent-ink)}
+.selbar .seldel{color:var(--bad)}
+.selc{width:100%;text-align:center;font-weight:800;font-size:13px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -642,7 +654,7 @@ body.locked #pview{visibility:hidden}
 <div id="lock" role="dialog" aria-modal="true" aria-label="قفل التطبيق"></div>
 <script>
 const $=s=>document.querySelector(s);
-try{const c=JSON.parse(localStorage.getItem('hayati-lock')||'null');if(c&&c.hash)document.body.classList.add('locked')}catch(e){}
+try{const c=JSON.parse(localStorage.getItem('hayati-lock')||'null');if(c&&c.hash&&!sessionStorage.getItem('hayati-unlocked'))document.body.classList.add('locked')}catch(e){}
 const pad=n=>String(n).padStart(2,'0');
 const fmt=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const parse=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
@@ -699,6 +711,7 @@ function fixData(){
   if(!Array.isArray(u.exams))u.exams=[];
   if(!Array.isArray(u.subj)||!u.subj.length)u.subj=MODS.map(m=>({id:uid(),name:m[0],ph:[]}));
   u.subj.forEach(x=>{if(!Array.isArray(x.ph))x.ph=[]});
+  if(!u.phord){u.subj.forEach(x=>x.ph.sort((a,b)=>b.ts-a.ts));u.phord=1}
   if(!u.abs||typeof u.abs!=='object')u.abs={};
   u.lim=+u.lim||3;
   if(!Array.isArray(u.st)||u.st.length!==5||u.st.some(x=>!x||typeof x!=='object'))u.st=u.slots.map(parseSlot);
@@ -1340,8 +1353,21 @@ function handle(a,D){
       ui.bf=o.status;ui.modal=null;save();break}
     case 'bkdel':{if(!confirm('حذف الكتاب مع ملخصه ونقاطه وملفه وكل تظليلاتك عليه؟'))return false;FDB.del(ui.bid).catch(()=>{});data.eyes.books=data.eyes.books.filter(x=>x.id!==ui.bid);ui.modal=null;save();break}
     case 'stab':ui.st=D.v;break;
-    case 'sjopen':ui.sj=D.id;window.scrollTo(0,0);break;
-    case 'sjback':ui.sj=null;break;
+    case 'sjopen':ui.sj=D.id;ui.ssel=false;ui.sels=[];window.scrollTo(0,0);break;
+    case 'sjback':ui.sj=null;ui.ssel=false;ui.sels=[];break;
+    case 'sjsel':ui.ssel=!ui.ssel;ui.sels=[];break;
+    case 'sjtog':{const L=ui.sels=ui.sels||[],i=L.indexOf(D.id);if(i>=0)L.splice(i,1);else L.push(D.id);hVib(8);break}
+    case 'sjall':{const s=data.uni.subj.find(x=>x.id===ui.sj);if(s)ui.sels=(ui.sels||[]).length===s.ph.length?[]:s.ph.map(p=>p.id);break}
+    case 'sjshare':sjShare(ui.sels||[]);return false;
+    case 'sjmvsel':{const s=data.uni.subj.find(x=>x.id===ui.sj),L=ui.sels||[];if(!s||!L.length)break;
+      const dir=+D.v,A=s.ph;const idx=A.map((p,i)=>L.includes(p.id)?i:-1).filter(i=>i>=0);
+      if(dir<0){for(const i of idx){if(i>0&&!L.includes(A[i-1].id)){[A[i-1],A[i]]=[A[i],A[i-1]]}}}
+      else{for(const i of idx.reverse()){if(i<A.length-1&&!L.includes(A[i+1].id)){[A[i+1],A[i]]=[A[i],A[i+1]]}}}
+      save();hVib(8);break}
+    case 'sjdelsel':{const s=data.uni.subj.find(x=>x.id===ui.sj),L=ui.sels||[];if(!s||!L.length)return false;
+      if(!confirm('حذف '+L.length+' صورة؟'))return false;
+      L.forEach(id=>{FDB.del('ph-'+id).catch(()=>{});FDB.del('th-'+id).catch(()=>{})});
+      s.ph=s.ph.filter(p=>!L.includes(p.id));ui.sels=[];ui.ssel=false;save();break}
     case 'sjcam':{const i=$('#sjc');if(i)i.click();return false}
     case 'sjgal':{const i=$('#sjf');if(i)i.click();return false}
     case 'sjnew':ui.modal='subj';ui.sid=null;ui.focus='#sjn';break;
@@ -1371,6 +1397,10 @@ function handle(a,D){
         if(a&&b&&toMin(b)<=toMin(a)){$('#err').textContent='الحصة '+(i+1)+': النهاية يجب أن تكون بعد البداية.';return false}
         R.push({a,b})}
       const u=data.uni;u.st=R;u.slots=R.map((x,i)=>x.a?x.a+' - '+x.b:'الحصة '+(i+1));ui.modal=null;save();break}
+    case 'tmove':{const d=+$('#tmd').value,s=+$('#tms').value,T=data.uni.tt;
+      if(d===ui.td&&s===ui.ts){$('#err').textContent='اختر مكاناً مختلفاً.';return false}
+      const cur=($('#tin').value||'').trim(),other=T[d][s];
+      T[d][s]=cur;T[ui.td][ui.ts]=other;ui.sd=d;ui.modal=null;save();hVib(15);break}
     case 'tsave':{data.uni.tt[ui.td][ui.ts]=($('#tin').value||'').trim();ui.modal=null;save();break}
     case 'exnew':ui.modal='exam';ui.eid=null;ui.focus='#exn';break;
     case 'exedit':ui.modal='exam';ui.eid=D.id;break;
@@ -1535,7 +1565,7 @@ function stAB(){
 }
 function teditModal(){
   const t=data.uni.tt[ui.td][ui.ts]||'';
-  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>${DN[ui.td]} · ${esc(data.uni.slots[ui.ts])}</h3><input id="tin" data-enter="tsave" value="${esc(t)}" placeholder="مثال: TD algo أو TP Poo" autocomplete="off"><div class="acts"><button class="btn" data-act="tsave">حفظ</button><button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
+  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>${DN[ui.td]} · ${esc(data.uni.slots[ui.ts])}</h3><input id="tin" data-enter="tsave" value="${esc(t)}" placeholder="مثال: TD algo أو TP Poo" autocomplete="off">${t.trim()?`<label class="fl">نقل هذه الحصة إلى (إن كان المكان مشغولاً يتم التبديل بينهما)</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><select id="tmd">${DN.map((n,i)=>`<option value="${i}" ${i===ui.td?'selected':''}>${n}</option>`).join('')}</select><select id="tms">${data.uni.slots.map((n,i)=>`<option value="${i}" ${i===ui.ts?'selected':''}>${esc(n)}</option>`).join('')}</select></div><button class="btn ghost" style="width:100%;margin-top:8px" data-act="tmove">↔ نقل / تبديل</button>`:''}<div class="err" id="err"></div><div class="acts"><button class="btn" data-act="tsave">حفظ</button><button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
 }
 function examModal(){
   const e=data.uni.exams.find(x=>x.id===ui.eid)||{};
@@ -1597,12 +1627,26 @@ function stSJ(){
   return`<div class="hn-h" style="margin-top:12px"><b>موادي</b><span class="muted">${tot} صورة</span></div><div class="sjg">${S.map((s,k)=>{const n=s.ph.length,l=s.ph[n-1];return`<button class="sjc" style="--i:${k}" data-act="sjopen" data-id="${s.id}"><div class="sjt">${l?`<img data-th="${l.id}" alt="">`:'<span>📚</span>'}</div><b>${esc(s.name)}</b><small>${n?n+' صورة':'لا صور بعد'}</small></button>`}).join('')}</div><button class="btn ghost addb" data-act="sjnew">+ إضافة مادة</button>`;
 }
 function sjDetail(s){
-  const g={};[...s.ph].sort((a,b)=>b.ts-a.ts).forEach(p=>{const k=fmt(new Date(p.ts));(g[k]=g[k]||[]).push(p)});
-  const t=today();
+  const t=today(),sel=!!ui.ssel,L=ui.sels||[];
+  const groups=[];s.ph.forEach(p=>{const k=fmt(new Date(p.ts)),l=groups[groups.length-1];if(l&&l.k===k)l.a.push(p);else groups.push({k,a:[p]})});
+  const bar=sel?`<div class="selbar"><span class="selc">${L.length} محددة</span><button data-act="sjall">${L.length===s.ph.length?'إلغاء الكل':'تحديد الكل'}</button><button data-act="sjmvsel" data-v="-1" ${L.length?'':'disabled'}>⬆ تقديم</button><button data-act="sjmvsel" data-v="1" ${L.length?'':'disabled'}>⬇ تأخير</button><button class="selmain" data-act="sjshare" ${L.length?'':'disabled'}>↗ مشاركة</button><button class="seldel" data-act="sjdelsel" ${L.length?'':'disabled'}>🗑</button></div>`:'';
   return`<div class="hn-h" style="margin-top:12px"><button class="chip" data-act="sjback">› المواد</button><button class="chip" data-act="sjedit">✎ ${esc(s.name)}</button></div>
 <div class="sjadd"><button class="btn" data-act="sjcam">📷 التقاط صورة</button><button class="btn ghost" data-act="sjgal">🖼 من المعرض</button></div>
 <input id="sjc" type="file" accept="image/*" capture="environment" hidden><input id="sjf" type="file" accept="image/*" multiple hidden>`
-  +(s.ph.length?Object.keys(g).map(d=>`<div class="h2">${d===t?'اليوم':parse(d).toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long',year:'numeric'})} <span class="muted">· ${g[d].length}</span></div><div class="sjp">${g[d].map(p=>`<button data-act="sjview" data-id="${p.id}"><img data-th="${p.id}" alt="">${p.cap?'<i>📝</i>':''}</button>`).join('')}</div>`).join(''):empty('لا توجد صور بعد.<br>صوّر درسك وسيُحفظ هنا في «'+esc(s.name)+'» 📸'));
+  +(s.ph.length?`<div class="hn-h"><span class="muted">${s.ph.length} صورة</span><button class="chip" data-act="sjsel">${sel?'✕ إلغاء التحديد':'☑ تحديد'}</button></div>`:'')
+  +(s.ph.length?groups.map(g=>`<div class="h2">${g.k===t?'اليوم':parse(g.k).toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long',year:'numeric'})} <span class="muted">· ${g.a.length}</span></div><div class="sjp">${g.a.map(p=>`<button class="${sel&&L.includes(p.id)?'picked':''}" data-act="${sel?'sjtog':'sjview'}" data-id="${p.id}"><img data-th="${p.id}" alt="">${p.cap?'<i>📝</i>':''}${sel?`<b class="pk">${L.includes(p.id)?'✓':''}</b>`:''}</button>`).join('')}</div>`).join(''):empty('لا توجد صور بعد.<br>صوّر درسك وسيُحفظ هنا في «'+esc(s.name)+'» 📸'))+bar+(sel?'<div style="height:70px"></div>':'');
+}
+async function sjShare(ids){
+  if(!ids.length)return;
+  hToast('جاري التجهيز…');
+  try{
+    const files=[];
+    for(const id of ids){const b=await FDB.get('ph-'+id)||await FDB.get('th-'+id);if(b)files.push(new File([b],'lesson-'+id+'.jpg',{type:'image/jpeg'}))}
+    if(!files.length){hToast('لا توجد صور للمشاركة');return}
+    if(navigator.canShare&&navigator.canShare({files})){await navigator.share({files});return}
+    files.forEach((f,i)=>setTimeout(()=>{const u=URL.createObjectURL(f),a=document.createElement('a');a.href=u;a.download=f.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),3000)},i*350));
+    hToast('المشاركة غير مدعومة هنا، تم تنزيل الصور');
+  }catch(e){if(e&&e.name!=='AbortError')hToast('تعذّرت المشاركة')}
 }
 function subjModal(){
   const x=data.uni.subj.find(y=>y.id===ui.sid)||{};
@@ -1626,7 +1670,7 @@ async function sjImport(files){
     try{
       const id=uid(),full=await imgScale(f,1800,.82),th=await imgScale(f,320,.7);
       await FDB.put('ph-'+id,full);await FDB.put('th-'+id,th);
-      s.ph.push({id,ts:Date.now()+n,cap:''});n++;save();
+      s.ph.splice(n,0,{id,ts:Date.now()+n,cap:''});n++;save();
     }catch(e){hToast('تعذّر حفظ صورة: المساحة غير كافية؟');break}
   }
   if(n){hToast('✓ أُضيفت '+n+(n===1?' صورة':' صور'));render()}
@@ -1634,7 +1678,7 @@ async function sjImport(files){
 const PV={s:null,i:0,list:[],x0:0};
 function pvOpen(id){
   const s=data.uni.subj.find(x=>x.id===ui.sj);if(!s)return;
-  PV.s=s;PV.list=[...s.ph].sort((a,b)=>b.ts-a.ts);PV.i=Math.max(0,PV.list.findIndex(p=>p.id===id));
+  PV.s=s;PV.list=[...s.ph];PV.i=Math.max(0,PV.list.findIndex(p=>p.id===id));
   let o=document.getElementById('pview');if(!o){o=document.createElement('div');o.id='pview';document.body.appendChild(o)}
   document.body.classList.add('rd-open');pvDraw();
 }
@@ -1643,7 +1687,7 @@ async function pvDraw(){
   if(!p){pvClose();return}
   o.innerHTML=`<div class="pv-top"><button data-p="close" aria-label="إغلاق">✕</button><span dir="ltr">${PV.i+1} / ${PV.list.length}</span><button data-p="del" aria-label="حذف">🗑</button></div>
 <div class="pv-img"><button class="pv-n l" data-p="${'next'}" aria-label="التالي" ${PV.i>=PV.list.length-1?'disabled':''}>‹</button><img id="pvi" alt=""><button class="pv-n r" data-p="prev" aria-label="السابق" ${PV.i<=0?'disabled':''}>›</button></div>
-<div class="pv-cap"><small>${new Date(p.ts).toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'})} · ${esc(PV.s.name)}</small><input id="pvc" dir="auto" value="${esc(p.cap||'')}" placeholder="أضف ملاحظة على هذه الصورة…" autocomplete="off"></div>`;
+<div class="pv-cap"><div class="pv-mv"><button data-p="mvprev" ${PV.i<=0?'disabled':''}>⬆ تقديم</button><button data-p="share">↗ مشاركة</button><button data-p="mvnext" ${PV.i>=PV.list.length-1?'disabled':''}>⬇ تأخير</button></div><small>${new Date(p.ts).toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'})} · ${esc(PV.s.name)}</small><input id="pvc" dir="auto" value="${esc(p.cap||'')}" placeholder="أضف ملاحظة على هذه الصورة…" autocomplete="off"></div>`;
   const id=p.id;
   try{const b=await FDB.get('ph-'+id)||await FDB.get('th-'+id);const im=document.getElementById('pvi');if(b&&im&&PV.list[PV.i]&&PV.list[PV.i].id===id)im.src=URL.createObjectURL(b)}catch(e){}
 }
@@ -1654,6 +1698,11 @@ document.addEventListener('click',e=>{
   if(a==='close')pvClose();
   else if(a==='next'&&PV.i<PV.list.length-1){PV.i++;pvDraw()}
   else if(a==='prev'&&PV.i>0){PV.i--;pvDraw()}
+  else if(a==='share'){const p=PV.list[PV.i];if(p)sjShare([p.id])}
+  else if(a==='mvprev'||a==='mvnext'){const d=a==='mvprev'?-1:1,j=PV.i+d,A=PV.s.ph;
+    if(j<0||j>=PV.list.length)return;
+    const x=A.findIndex(q=>q.id===PV.list[PV.i].id),y=A.findIndex(q=>q.id===PV.list[j].id);
+    if(x<0||y<0)return;[A[x],A[y]]=[A[y],A[x]];[PV.list[PV.i],PV.list[j]]=[PV.list[j],PV.list[PV.i]];PV.i=j;save();hVib(8);pvDraw()}
   else if(a==='del'){const p=PV.list[PV.i];if(!p||!confirm('حذف هذه الصورة؟'))return;
     FDB.del('ph-'+p.id).catch(()=>{});FDB.del('th-'+p.id).catch(()=>{});
     PV.s.ph=PV.s.ph.filter(x=>x.id!==p.id);PV.list.splice(PV.i,1);if(PV.i>=PV.list.length)PV.i=Math.max(0,PV.list.length-1);save();
@@ -1694,11 +1743,12 @@ const lkLen=()=>lk.mode==='setup1'||lk.mode==='setup2'?lk.len:((lk.cfg&&lk.cfg.l
 const lkWait=()=>Math.max(0,Math.ceil(((lk.cfg&&lk.cfg.until)||0)-Date.now())/1000);
 function lkShow(mode,msg){
   lk.mode=mode;lk.buf='';lk.msg=msg||'';lk.busy=false;
+  if(mode==='unlock'){try{sessionStorage.removeItem('hayati-unlocked')}catch(e){}}
   if(mode==='setup1'){lk.tmp='';lk.len=(lk.cfg&&lk.cfg.len)||4}
   document.body.classList.add('locked');lkRender();
   if(mode==='unlock'&&lk.cfg&&lk.cfg.bio)setTimeout(()=>{if(lk.mode==='unlock')lkBioUnlock(true)},350);
 }
-function lkHide(){clearTimeout(lk.t);lk.mode=null;lk.buf='';document.body.classList.remove('locked');$('#lock').innerHTML=''}
+function lkHide(){clearTimeout(lk.t);lk.mode=null;lk.buf='';document.body.classList.remove('locked');$('#lock').innerHTML='';try{if(lkActive())sessionStorage.setItem('hayati-unlocked','1')}catch(e){}}
 function lkRender(){
   const m=lk.mode;if(!m)return;
   const len=lkLen(),wait=m==='unlock'?lkWait():0;
@@ -1795,7 +1845,8 @@ document.addEventListener('visibilitychange',lkVisibility);
 window.addEventListener('pageshow',e=>{if(e.persisted&&lkActive()&&!lk.mode)lkShow('unlock')});
 function lkBoot(){
   lkLoad();lkBioSupported().then(v=>{lk.bioOk=v});
-  if(lkActive())lkShow('unlock');
+  let ok=false;try{ok=!!sessionStorage.getItem('hayati-unlocked')}catch(e){}
+  if(lkActive()){if(ok)document.body.classList.remove('locked');else lkShow('unlock')}
   else if(!lk.cfg)lkShow('setup1');
 }
 
