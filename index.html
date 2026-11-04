@@ -200,8 +200,8 @@ button:active:not(:disabled){transform:scale(.95)}
 /* dock */
 .dock{position:fixed;bottom:0;left:0;right:0;z-index:5;background:rgba(16,19,24,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
 body.kb .dock{transform:translateY(110%)}
-.dk-in{position:relative;max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);padding:6px 4px}
-.dk-ind{position:absolute;top:6px;bottom:6px;inset-inline-start:calc(var(--i,0)*100%/5);width:calc(100%/5);padding:0 3px;transition:inset-inline-start .38s cubic-bezier(.3,1.25,.4,1);pointer-events:none}
+.dk-in{position:relative;max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr);padding:6px 4px}
+.dk-ind{position:absolute;top:6px;bottom:6px;inset-inline-start:calc(var(--i,0)*100%/6);width:calc(100%/6);padding:0 3px;transition:inset-inline-start .38s cubic-bezier(.3,1.25,.4,1);pointer-events:none}
 .dk-ind::before{content:"";display:block;height:100%;border-radius:14px;background:color-mix(in srgb,var(--accent) 16%,transparent)}
 .dk-b{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 6px;color:var(--muted);font-size:10.5px;font-weight:600;min-width:0}
 .dk-b span{white-space:nowrap;transition:color .25s}
@@ -413,6 +413,48 @@ button.chip:active{transform:scale(.94)}
 .ab.good i{background:var(--good)}.ab.warn i{background:var(--warn)}.ab.bad i{background:var(--bad)}
 @media (prefers-reduced-motion:reduce){.cd,.sc,.ex,.ab,.abb i{animation:none!important}}
 
+/* ===== social ===== */
+.soc{--ig:#E1306C;--tt:#25D1D8;--yt:#FF4D4D;--fb:#4C8DF5}
+.soc .seg .on{background:color-mix(in srgb,var(--accent) 20%,var(--surface));color:var(--accent)}
+.sotot{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.sotot>div:first-child b{font-size:34px;font-weight:800;line-height:1.2;display:block}
+.sotot .dls{text-align:end;font-size:12.5px;line-height:1.8}
+.dl{font-weight:800;font-size:12.5px;white-space:nowrap;direction:ltr;unicode-bidi:isolate}
+.dl.up{color:var(--good)}.dl.dn{color:var(--bad)}.dl.z{color:var(--muted)}
+.spc{border-inline-start:4px solid var(--pc);animation:stIn .5s both;animation-delay:calc(var(--i)*60ms)}
+.sph{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.spn{display:flex;align-items:center;gap:8px;font-weight:700}
+.spn i{width:10px;height:10px;border-radius:50%;background:var(--pc);display:inline-block}
+.spnum{font-size:28px;font-weight:800;line-height:1.2}
+.sprow{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.sprow span{background:var(--soft);border-radius:10px;padding:3px 9px;font-size:12px;color:var(--muted)}
+.spk{width:100%;height:44px;direction:ltr;display:block;margin:4px 0}
+.spg{display:block;width:100%;text-align:start;margin-top:6px}
+.spg .abb i{background:var(--pc)}
+.srcb{font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--soft);color:var(--muted);white-space:nowrap}
+.srcb.au{color:var(--good);background:color-mix(in srgb,var(--good) 14%,transparent)}
+.srcb.er{color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,transparent)}
+.pcs{display:grid;gap:10px;margin-top:8px}
+.pcd{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.pcd.late{border-color:var(--bad)}
+.pcd.dn{opacity:.65}
+.pch{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.pch b{font-size:15.5px}
+.pct2{color:var(--muted);font-size:12px;margin-top:3px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pdot{display:inline-flex;align-items:center;gap:4px}
+.pdot i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:10px}
+.pipe button{padding:6px 0;border-radius:9px;background:var(--soft);color:var(--muted);font-size:11px;font-weight:700}
+.pipe button.on{background:color-mix(in srgb,var(--accent) 22%,var(--soft));color:var(--accent)}
+.pipe button.cur{background:var(--accent);color:var(--accent-ink)}
+.pipe button.fin.cur{background:var(--good);color:#04140f}
+.pls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pl{position:relative;display:flex;align-items:center;gap:8px;padding:9px 12px;border:2px solid var(--line);border-radius:12px;font-weight:700;color:var(--muted)}
+.pl input{position:absolute;opacity:0;width:0}
+.pl:has(input:checked){border-color:var(--pc);color:var(--ink);background:var(--soft)}
+.soc details{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin:8px 0}
+.soc summary{cursor:pointer;font-weight:700;font-size:14px}
+.soc ol{padding-inline-start:20px;margin-top:8px;color:var(--muted);font-size:13.5px;line-height:1.9}
 /* ===== prayer times card ===== */
 .pt{--pt:#33AEE0;border-radius:14px;overflow:hidden;background:var(--surface);border:1px solid var(--line);margin:8px 0}
 .pt-row{display:grid;grid-template-columns:repeat(5,1fr)}
@@ -686,7 +728,7 @@ const monthName=d=>parse(d).toLocaleDateString(LOC,{month:'long'});
 const monthsOfYear=y=>[...Array(12)].map((_,m)=>daysBetween(new Date(y,m,1),new Date(y,m+1,0)));
 
 const PR=[['fajr','الفجر'],['dhuhr','الظهر'],['asr','العصر'],['maghrib','المغرب'],['isha','العشاء']];
-const TABS=[['home','الرئيسية'],['prayers','الصلوات'],['habit','العادة'],['study','الدراسة'],['eyes','Eyes']];
+const TABS=[['home','الرئيسية'],['prayers','الصلوات'],['habit','العادة'],['study','الدراسة'],['eyes','Eyes'],['social','السوشل']];
 
 let data={prayers:{},habit:{},notes:{},docs:[],days:{},hnotes:{},hgoal:0,quran:{},hcol:'#4FC48B',hbad:'#F2726C'};
 let ui={tab:'home',period:'day',anchor:today(),modal:null,confirm:null,focus:null,editing:null,anim:false,pop:null};
@@ -714,6 +756,14 @@ async function load(){
 function fixData(){
   if(!Array.isArray(data.docs))data.docs=[];
   if(!data.pt||typeof data.pt!=='object'||Array.isArray(data.pt))data.pt=null;
+  if(!data.soc||typeof data.soc!=='object'||Array.isArray(data.soc))data.soc={};
+  const so=data.soc;
+  ['snaps','h','goals','api','src','upd','err'].forEach(k=>{if(!so[k]||typeof so[k]!=='object'||Array.isArray(so[k]))so[k]={}});
+  if(!Array.isArray(so.posts))so.posts=[];
+  so.posts=so.posts.filter(p=>p&&typeof p==='object'&&p.id).map(p=>Object.assign({t:'',d:today(),tm:'',n:''},p,{pl:Array.isArray(p.pl)?p.pl.filter(x=>SPC[x]):[],st:Math.max(0,Math.min(4,+p.st||0))}));
+  const dh={ig:'abdellah.tech',tt:'abdellah_tech0',yt:'@abdellah_tech.01',fb:'Abdellah Tech'};
+  Object.keys(dh).forEach(k=>{if(typeof so.h[k]!=='string')so.h[k]=dh[k]});
+  so.wg=+so.wg||3;so.last=+so.last||0;
   if(!data.days||typeof data.days!=='object')data.days={};
   if(!data.hnotes||typeof data.hnotes!=='object'||Array.isArray(data.hnotes))data.hnotes={};
   data.hgoal=+data.hgoal||0;
@@ -855,6 +905,162 @@ function ptModal(){
 <label class="fl">تعديل بالدقائق (±) لكل صلاة</label><div class="pto">${PR.map(([k,n],i)=>`<div><label>${n}</label><input id="pto${i}" type="number" inputmode="numeric" value="${c.off[i]}"></div>`).join('')}</div>
 <label class="fl">تعديل التاريخ الهجري</label><select id="pth">${[-1,0,1].map(v=>`<option value="${v}" ${(c.hadj||0)===v?'selected':''}>${v===0?'بدون تعديل':v>0?'+1 يوم':'-1 يوم'}</option>`).join('')}</select>
 <div class="err" id="err"></div><div class="acts"><button class="btn" data-act="ptsave">حفظ</button><button class="btn ghost" data-act="ptreset">افتراضي</button><button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
+}
+
+/* ---------- social: growth, content planner, auto tracking ---------- */
+const SP=[['ig','Instagram'],['tt','TikTok'],['yt','YouTube'],['fb','Facebook']];
+const SPN={ig:'إنستغرام',tt:'تيك توك',yt:'يوتيوب',fb:'فيسبوك'};
+const SPC={ig:'var(--ig)',tt:'var(--tt)',yt:'var(--yt)',fb:'var(--fb)'};
+const SPD={ig:418,tt:4048,yt:0,fb:4574};
+const STG=['فكرة','تصوير','مونتاج','جاهز','منشور'];
+function soSeries(p){const S=data.soc;return Object.keys(S.snaps).filter(d=>S.snaps[d][p]!==undefined).sort().map(d=>[d,S.snaps[d][p]])}
+function soLast(p){const s=soSeries(p);return s.length?s[s.length-1][1]:null}
+function soDelta(p,days){
+  const s=soSeries(p);if(s.length<2)return null;
+  const last=s[s.length-1],lim=fmt(addDays(parse(today()),-days));let base=null;
+  for(const x of s){if(x[0]<=lim)base=x;else break}
+  if(!base)base=s[0];
+  return base===last?null:last[1]-base[1];
+}
+function soTD(days){let t=0,any=false;SP.forEach(([p])=>{const d=soDelta(p,days);if(d!==null){t+=d;any=true}});return any?t:null}
+const soDl=n=>n===null?'<b class="dl z">—</b>':`<b class="dl ${n>0?'up':n<0?'dn':'z'}">${n>0?'+':n<0?'−':''}${nf(Math.abs(n))}</b>`;
+const soAgo=ts=>{const m=Math.round((Date.now()-ts)/6e4);return m<1?'الآن':m<60?'قبل '+m+' د':m<1440?'قبل '+Math.round(m/60)+' س':'قبل '+Math.round(m/1440)+' يوم'};
+const soAutoOn=p=>{const S=data.soc,a=S.api;return p==='yt'?!!(a.ytKey&&S.h.yt):(p==='ig'||p==='fb')?!!(a.fbToken&&a.fbPage):false};
+const soLinked=()=>SP.some(([p])=>soAutoOn(p));
+function soSrc(p){
+  const S=data.soc,e=S.err[p],u=S.upd[p];
+  if(e&&soAutoOn(p))return`<span class="srcb er">تعذّر التحديث</span>`;
+  if(S.src[p]==='auto')return`<span class="srcb au">تلقائي · ${soAgo(u)}</span>`;
+  if(soAutoOn(p)&&S.src[p]!=='manual')return`<span class="srcb">بانتظار التحديث</span>`;
+  return`<span class="srcb">يدوي${u?' · '+soAgo(u):''}</span>`;
+}
+function soPut(p,n,changed,src){
+  const S=data.soc;n=Math.round(+n);if(!isFinite(n)||n<0)return;
+  const t=today();(S.snaps[t]=S.snaps[t]||{})[p]=n;
+  if(changed){S.src[p]=src||'manual';S.upd[p]=Date.now()}
+  delete S.err[p];
+}
+const soErr=(p,e)=>{data.soc.err[p]=String((e&&e.message)||e).slice(0,140)};
+async function soGet(u){
+  const r=await fetch(u),j=await r.json().catch(()=>({}));
+  if(!r.ok||j.error)throw new Error((j.error&&(j.error.message||j.error))||('HTTP '+r.status));
+  return j;
+}
+async function soYT(key,h){
+  h=h.trim();if(h[0]!=='@')h='@'+h;
+  const j=await soGet(`https://www.googleapis.com/youtube/v3/channels?part=statistics&forHandle=${encodeURIComponent(h)}&key=${encodeURIComponent(key)}`);
+  const st=j.items&&j.items[0]&&j.items[0].statistics;
+  if(!st)throw new Error('لم يُعثر على القناة. تحقق من المعرّف.');
+  if(st.hiddenSubscriberCount)throw new Error('عدد المشتركين مخفي في القناة.');
+  return +st.subscriberCount;
+}
+async function soMeta(page,token){
+  const j=await soGet(`https://graph.facebook.com/v21.0/${encodeURIComponent(page)}?fields=followers_count,fan_count,instagram_business_account%7Bfollowers_count%7D&access_token=${encodeURIComponent(token)}`);
+  return{fb:j.followers_count!=null?j.followers_count:j.fan_count,ig:j.instagram_business_account?j.instagram_business_account.followers_count:null};
+}
+let soBusy=false;
+async function soFetchAll(force){
+  const S=data.soc,a=S.api;
+  if(soBusy||!soLinked())return;
+  if(!force&&Date.now()-(S.last||0)<108e5)return;
+  soBusy=true;if(ui.tab==='social'&&!ui.modal)render();
+  const jobs=[];
+  if(soAutoOn('yt'))jobs.push(soYT(a.ytKey,S.h.yt).then(n=>soPut('yt',n,true,'auto'),e=>soErr('yt',e)));
+  if(soAutoOn('fb'))jobs.push(soMeta(a.fbPage,a.fbToken).then(r=>{
+    if(r.fb!=null)soPut('fb',r.fb,true,'auto');else soErr('fb','لا يوجد عدد متابعين لهذه الصفحة');
+    if(r.ig!=null)soPut('ig',r.ig,true,'auto');else soErr('ig','حساب إنستغرام غير مرتبط بالصفحة أو الصلاحية ناقصة');
+  },e=>{soErr('fb',e);soErr('ig',e)}));
+  await Promise.all(jobs);
+  S.last=Date.now();soBusy=false;save();
+  if(ui.tab==='social'&&!ui.modal)render();
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)soFetchAll()});
+function mountSocial(){soFetchAll()}
+function soSpark(p){
+  const s=soSeries(p).slice(-30);if(s.length<2)return'';
+  const v=s.map(x=>x[1]),mn=Math.min(...v),mx=Math.max(...v),r=mx-mn||1,W=300,H=44;
+  const pts=s.map((x,i)=>`${(i/(s.length-1)*W).toFixed(1)},${(H-4-(x[1]-mn)/r*(H-8)).toFixed(1)}`).join(' ');
+  return`<svg class="spk" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" style="stroke:${SPC[p]}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`;
+}
+function viewSocial(){
+  const t=ui.sot||'gr';
+  return`<div class="soc"><div class="seg">${[['gr','النمو'],['ct','المحتوى'],['ln','الربط']].map(([k,n])=>`<button data-act="sosub" data-v="${k}" class="${t===k?'on':''}">${n}</button>`).join('')}</div>${t==='gr'?soGrowth():t==='ct'?soContent():soLink()}</div>`;
+}
+function soGrowth(){
+  const S=data.soc,have=SP.some(([p])=>soLast(p)!==null);
+  if(!have)return`<div class="card" style="margin-top:12px;text-align:center"><div class="empty">لم تُسجَّل أي أرقام بعد.<br>ابدأ بأرقامك الحالية (معبّأة من لقطاتك) ثم اربط الحسابات للتتبع التلقائي.</div><button class="btn addb" data-act="soquick">إدخال الأرقام الحالية</button><button class="btn ghost addb" style="margin-top:8px" data-act="sosub" data-v="ln">ربط الحسابات</button></div>`;
+  const tot=SP.reduce((a,[p])=>a+(soLast(p)||0),0);
+  const top=`<div class="card sotot"><div><span class="muted">إجمالي المتابعين</span><b>${nf(tot)}</b></div><div class="dls"><div>${soDl(soTD(1))} <span class="muted">اليوم</span></div><div>${soDl(soTD(7))} <span class="muted">7 أيام</span></div><div>${soDl(soTD(30))} <span class="muted">30 يوماً</span></div></div></div>`;
+  const btns=`<div class="row" style="margin:6px 0">${soLinked()?`<button class="btn" style="flex:1" data-act="sofetch" ${soBusy?'disabled':''}>${soBusy?'جاري التحديث…':'↻ تحديث الآن'}</button>`:''}<button class="btn ghost" style="flex:1" data-act="soquick">✎ إدخال سريع</button></div>`;
+  const cards=SP.map(([p],i)=>{
+    const v=soLast(p),g=S.goals[p]||0,pct=g&&v!==null?Math.min(100,Math.round(v/g*100)):0,e=S.err[p];
+    return`<div class="card spc" style="--pc:${SPC[p]};--i:${i}"><div class="sph"><div><div class="spn"><i></i>${SPN[p]}</div><small class="muted" dir="ltr">${esc(S.h[p]||'')}</small></div>${soSrc(p)}</div>
+<div class="sph" style="align-items:flex-end;margin-top:4px"><span class="spnum">${v===null?'—':nf(v)}</span><button class="chip" data-act="sopl" data-p="${p}" style="padding:6px 12px;font-size:13px">✎ تعديل</button></div>
+<div class="sprow"><span>اليوم ${soDl(soDelta(p,1))}</span><span>أسبوع ${soDl(soDelta(p,7))}</span><span>شهر ${soDl(soDelta(p,30))}</span></div>${soSpark(p)}
+<button class="spg" data-act="sopl" data-p="${p}">${g?`<div class="abb"><i style="width:${pct}%"></i></div><small class="muted">الهدف ${nf(g)} · ${v!==null&&v>=g?'تحقق ✓':'متبقي '+nf(g-(v||0))} (${pct}%)</small>`:`<small class="muted">+ حدد هدفاً</small>`}</button>${e&&soAutoOn(p)?`<p class="muted" style="color:var(--bad);margin-top:6px">${esc(e)}</p>`:''}</div>`;
+  }).join('');
+  return top+btns+cards;
+}
+const soDayLbl=d=>{const t=today();return d===t?'اليوم':d===fmt(addDays(parse(t),1))?'غداً':parse(d).toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'})};
+const soPd=p=>p.st===4?(p.done?fmt(new Date(p.done)):p.d):p.d;
+const soByDT=(a,b)=>(a.d+(a.tm||''))<(b.d+(b.tm||''))?-1:1;
+function soPostCard(p,late){
+  return`<div class="pcd ${late?'late':''} ${p.st===4?'dn':''}"><div class="pch"><div><b>${esc(p.t)}</b><div class="pct2">${p.pl.map(x=>`<span class="pdot"><i style="background:${SPC[x]}"></i>${SPN[x]}</span>`).join('')}${p.tm?`<span dir="ltr">${esc(p.tm)}</span>`:''}${late?'<span style="color:var(--bad)">متأخر</span>':''}</div></div><button class="x" data-act="soped" data-id="${p.id}" aria-label="تعديل">✎</button></div>${p.n?`<p class="muted" style="margin-top:6px;white-space:pre-wrap">${esc(p.n.slice(0,120))}</p>`:''}<div class="pipe">${STG.map((x,i)=>`<button class="${i<=p.st?'on':''} ${i===p.st?'cur':''} ${i===4?'fin':''}" data-act="sopst" data-id="${p.id}" data-v="${i}">${x}</button>`).join('')}</div></div>`;
+}
+function soContent(){
+  const S=data.soc,t=today(),f=ui.sof||'up',P=S.posts;
+  const ws=fmt(addDays(parse(t),-parse(t).getDay())),we=fmt(addDays(parse(ws),6));
+  const posted=P.filter(p=>p.st===4&&soPd(p)>=ws&&soPd(p)<=we).length,sched=P.filter(p=>p.d>=ws&&p.d<=we).length;
+  const mon=P.filter(p=>p.st===4&&soPd(p).slice(0,7)===t.slice(0,7)).length,wg=S.wg;
+  const late=P.filter(p=>p.st<4&&p.d<t).sort(soByDT),up=P.filter(p=>p.st<4&&p.d>=t).sort(soByDT),dn=P.filter(p=>p.st===4).sort((a,b)=>(b.done||0)-(a.done||0));
+  const head=`<div class="wsum" style="margin-top:12px"><div><b>${posted}<small>/${wg}</small></b><span>منشور هذا الأسبوع</span></div><div><b>${sched}</b><span>مجدول هذا الأسبوع</span></div><div class="wbar"><i style="width:${Math.min(100,posted/wg*100)}%"></i></div></div>
+<div class="hn-h"><button class="chip" data-act="sowg">🎯 الهدف الأسبوعي: ${wg}</button><span class="muted">${mon} منشور هذا الشهر</span></div>
+<button class="btn addb" style="margin-top:6px" data-act="sopnew">+ محتوى جديد</button>
+<div class="seg">${[['up','القادم · '+(up.length+late.length)],['dn','المنشور · '+dn.length]].map(([k,n])=>`<button data-act="soflt" data-v="${k}" class="${f===k?'on':''}">${n}</button>`).join('')}</div>`;
+  let body='';
+  if(f==='up'){
+    if(late.length)body+=`<div class="h2" style="color:var(--bad)">متأخر · ${late.length}</div><div class="pcs">${late.map(p=>soPostCard(p,true)).join('')}</div>`;
+    const g=[];up.forEach(p=>{const l=g[g.length-1];if(l&&l.d===p.d)l.a.push(p);else g.push({d:p.d,a:[p]})});
+    body+=g.map(x=>`<div class="h2">${soDayLbl(x.d)}</div><div class="pcs">${x.a.map(p=>soPostCard(p)).join('')}</div>`).join('');
+    if(!late.length&&!up.length)body=empty('لا يوجد محتوى مجدول.<br>أضف فكرتك الأولى 🎬');
+  }else body=dn.length?`<div class="pcs">${dn.map(p=>soPostCard(p)).join('')}</div>`:empty('لم تنشر شيئاً بعد');
+  return head+body;
+}
+function soLink(){
+  const S=data.soc,a=S.api;
+  const rows=SP.map(([p])=>`<div class="logrow"><span style="color:${SPC[p]};font-weight:700">${SPN[p]}</span>${soSrc(p)}</div>`).join('');
+  return`<div class="card" style="margin-top:12px"><b>التتبع التلقائي</b><p class="muted" style="margin-top:6px">يجلب التطبيق أرقامك تلقائياً كلما فتحته (مرة كل 3 ساعات كحد أقصى) ويحفظ نقطة لكل يوم. لا يعمل والتطبيق مغلق، فيومٌ لا تفتح فيه التطبيق لا تُسجَّل له نقطة.</p>${rows}${S.last?`<p class="muted" style="margin-top:8px">آخر محاولة: ${soAgo(S.last)}</p>`:''}</div>
+<div class="card"><b style="color:var(--yt)">يوتيوب</b>
+<label class="fl">معرّف القناة</label><input id="lnyh" dir="ltr" value="${esc(S.h.yt||'')}" placeholder="@abdellah_tech.01" autocomplete="off">
+<label class="fl">مفتاح YouTube Data API</label><input id="lnyk" type="password" dir="ltr" value="${esc(a.ytKey||'')}" placeholder="AIza…" autocomplete="off">
+<details><summary>كيف أحصل على المفتاح؟</summary><ol><li>افتح console.cloud.google.com وأنشئ مشروعاً.</li><li>من APIs &amp; Services فعّل «YouTube Data API v3».</li><li>من Credentials أنشئ API key وانسخه هنا (اتركه دون قيود مواقع).</li></ol></details></div>
+<div class="card"><b style="color:var(--fb)">فيسبوك + إنستغرام (بتوكن واحد)</b>
+<label class="fl">معرّف الصفحة (Page ID)</label><input id="lnfp" dir="ltr" value="${esc(a.fbPage||'')}" autocomplete="off">
+<label class="fl">توكن الصفحة (Page Access Token)</label><input id="lnft" type="password" dir="ltr" value="${esc(a.fbToken||'')}" autocomplete="off">
+<details><summary>كيف أحصل عليهما؟</summary><ol><li>افتح developers.facebook.com/tools/explorer واختر تطبيقاً (أنشئ تطبيقاً من نوع Business إن لزم).</li><li>اطلب الصلاحيات: pages_show_list وpages_read_engagement وinstagram_basic.</li><li>حوّل توكن المستخدم إلى طويل المدى (fb_exchange_token)، ثم افتح me/accounts: ستجد صفحتك مع id وaccess_token، وتوكن الصفحة هذا لا ينتهي.</li><li>إنستغرام يجب أن يكون حساباً احترافياً مرتبطاً بالصفحة.</li></ol></details></div>
+<div class="card"><b style="color:var(--tt)">تيك توك</b><p class="muted" style="margin-top:6px">تيك توك لا يتيح قراءة المتابعين من صفحة ويب، فيبقى رقمه يدوياً: «إدخال سريع» ثم غيّر رقم تيك توك فقط.</p></div>
+<button class="btn addb" data-act="solsave">حفظ وتحديث الآن</button>`;
+}
+function soplModal(){
+  const p=ui.sop,S=data.soc,v=soLast(p);
+  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>${SPN[p]}</h3>
+<label class="fl">اسم الحساب</label><input id="sph" dir="ltr" value="${esc(S.h[p]||'')}" autocomplete="off">
+<label class="fl">عدد المتابعين${soAutoOn(p)?' (يُحدَّث تلقائياً، عدّله للتصحيح فقط)':''}</label><input id="spv" type="number" inputmode="numeric" min="0" value="${v===null?'':v}">
+<label class="fl">الهدف</label><input id="spgl" type="number" inputmode="numeric" min="0" value="${S.goals[p]||''}" placeholder="مثال: 1000">
+<div class="err" id="err"></div><div class="acts"><button class="btn" data-act="soplsave">حفظ</button><button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
+}
+function soqModal(){
+  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>تحديث المتابعين</h3><p class="muted">القيم هي آخر رقم محفوظ (وللمرة الأولى أرقامك من لقطات الشاشة). غيّر ما تغيّر فقط.</p>${SP.map(([p])=>{const v=soLast(p);return`<div class="slr" style="grid-template-columns:96px 1fr"><b style="color:${SPC[p]}">${SPN[p]}</b><input id="sq-${p}" type="number" inputmode="numeric" min="0" value="${v===null?SPD[p]:v}"></div>`}).join('')}<div class="err" id="err"></div><div class="acts"><button class="btn" data-act="soqsave">حفظ</button><button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
+}
+function postModal(){
+  const x=data.soc.posts.find(y=>y.id===ui.soid)||{pl:[],d:fmt(addDays(parse(today()),1)),st:0,tm:''};
+  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>${x.id?'تعديل المحتوى':'محتوى جديد'}</h3>
+<input id="pct" data-enter="sopsv" value="${esc(x.t||'')}" placeholder="عنوان الفيديو / المنشور" autocomplete="off">
+<label class="fl">المنصات</label><div class="pls">${SP.map(([p])=>`<label class="pl" style="--pc:${SPC[p]}"><input type="checkbox" name="pcp" value="${p}" ${x.pl.includes(p)?'checked':''}><i style="width:10px;height:10px;border-radius:50%;background:${SPC[p]}"></i>${SPN[p]}</label>`).join('')}</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px"><input id="pcd" type="date" value="${x.d}"><input id="pctm" type="time" value="${x.tm||''}"></div>
+<label class="fl">المرحلة</label><select id="pcs">${STG.map((s,i)=>`<option value="${i}" ${x.st===i?'selected':''}>${s}</option>`).join('')}</select>
+<textarea id="pcn" dir="auto" placeholder="ملاحظات / فكرة / سكربت…" style="margin-top:8px;min-height:90px">${esc(x.n||'')}</textarea>
+<div class="err" id="err"></div><div class="acts"><button class="btn" data-act="sopsv">حفظ</button>${x.id?'<button class="btn ghost" data-act="sopdel">حذف</button>':''}<button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
 }
 
 /* ---------- prayers ---------- */
@@ -1346,6 +1552,9 @@ function modalHtml(){
   if(ui.modal==='hnote')return hnoteModal();
   if(ui.modal==='hcolor')return hcolorModal();
   if(ui.modal==='ptset')return ptModal();
+  if(ui.modal==='sopl')return soplModal();
+  if(ui.modal==='soq')return soqModal();
+  if(ui.modal==='post')return postModal();
   if(ui.modal==='lock')return lockModal();
   if(ui.modal==='tedit')return teditModal();
   if(ui.modal==='wake')return wakeModal();
@@ -1369,6 +1578,7 @@ const ICON={
   study:'<path d="M2 9 12 4l10 5-10 5L2 9z"/><path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5"/><path d="M22 9v6"/>',
   habit:'<path d="M12 3 5 6v5.5c0 4.2 2.9 7.6 7 9 4.1-1.4 7-4.8 7-9V6l-7-3z"/><path d="m9 12 2.2 2.2L15.5 10"/>',
 };
+ICON.social='<path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/>';
 const ico=k=>`<svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k]}</svg>`;
 function buildNav(){
   $('#nav').innerHTML=`<div class="dk-in" id="dk"><span class="dk-ind"></span>${TABS.map(([k,n])=>`<button class="dk-b" data-act="tab" data-v="${k}" data-t="${k}">${ico(k)}<span>${n}</span></button>`).join('')}</div>`;
@@ -1380,7 +1590,7 @@ function updateNav(){
 
 /* ---------- render ---------- */
 function render(){
-  const V={home:viewHome,prayers:viewPrayers,habit:viewHabit,study:viewStudy,eyes:viewEyes};
+  const V={home:viewHome,prayers:viewPrayers,habit:viewHabit,study:viewStudy,eyes:viewEyes,social:viewSocial};
   const anim=ui.anim;ui.anim=false;
   const title=ui.tab==='home'?'':`<h1 class="ptitle">${TABS.find(t=>t[0]===ui.tab)[1]}</h1>`;
   $('#app').innerHTML=`<div class="page ${anim?'enter':''}"${ui.tab==='habit'?' style="--accent:var(--hcol);--accent-ink:var(--hink);--bad:var(--hbadc)"':''}>${title}${V[ui.tab]()}</div>`;
@@ -1388,6 +1598,7 @@ function render(){
   if(ui.tab==='home')mountHome();
   if(ui.tab==='habit')mountHabit();
   if(ui.tab==='prayers')mountPrayers();
+  if(ui.tab==='social')mountSocial();
   if(ui.tab==='study'||ui.tab==='eyes')mountStudy();
   $('#modal').innerHTML=ui.modal?modalHtml():'';
   if(ui.focus){const el=$(ui.focus);if(el)el.focus();ui.focus=null}
@@ -1512,6 +1723,37 @@ function handle(a,D){
       E.style.color='var(--muted)';E.textContent='جاري تحديد الموقع…';
       navigator.geolocation.getCurrentPosition(r=>{$('#ptla').value=r.coords.latitude.toFixed(4);$('#ptlo').value=r.coords.longitude.toFixed(4);E.style.color='var(--good)';E.textContent='تم. غيّر اسم المدينة ثم احفظ.'},()=>{E.style.color='var(--bad)';E.textContent='تعذّر تحديد الموقع.'},{timeout:15000});
       return false}
+    case 'sosub':ui.sot=D.v;break;
+    case 'soflt':ui.sof=D.v;break;
+    case 'soquick':ui.modal='soq';break;
+    case 'sopl':ui.modal='sopl';ui.sop=D.p;break;
+    case 'sofetch':soFetchAll(true);return false;
+    case 'sowg':{const S=data.soc;S.wg=S.wg>=7?1:S.wg+1;save();hVib(8);break}
+    case 'soqsave':{
+      SP.forEach(([p])=>{const el=$('#sq-'+p);if(!el||el.value==='')return;const n=Math.round(+el.value);if(!(n>=0))return;const old=soLast(p);soPut(p,n,old===null||n!==old,'manual')});
+      ui.modal=null;save();hVib(12);break}
+    case 'soplsave':{const S=data.soc,p=ui.sop,v=$('#spv').value,g=Math.round(+$('#spgl').value)||0;
+      S.h[p]=$('#sph').value.trim();if(g>0)S.goals[p]=g;else delete S.goals[p];
+      if(v!==''&&+v>=0){const n=Math.round(+v),old=soLast(p);soPut(p,n,n!==old,'manual')}
+      ui.modal=null;save();break}
+    case 'solsave':{const S=data.soc,g=i=>($(i)?$(i).value.trim():'');
+      S.api.ytKey=g('#lnyk');S.h.yt=g('#lnyh')||S.h.yt;S.api.fbPage=g('#lnfp');S.api.fbToken=g('#lnft');
+      save();soFetchAll(true);break}
+    case 'sopnew':ui.modal='post';ui.soid=null;ui.focus='#pct';break;
+    case 'soped':ui.modal='post';ui.soid=D.id;break;
+    case 'sopst':{const p=data.soc.posts.find(x=>x.id===D.id);if(!p)break;const v=+D.v,was=p.st;
+      p.st=(p.st===v&&v>0)?v-1:v;if(p.st===4){if(!p.done)p.done=Date.now()}else delete p.done;
+      save();hVib(p.st===4&&was!==4?[20,40,20]:10);break}
+    case 'sopsv':{const t=$('#pct').value.trim(),d=$('#pcd').value,tm=$('#pctm').value,n=$('#pcn').value.trim(),st=+$('#pcs').value,E=$('#err');
+      const pl=[...document.querySelectorAll('#modal input[name=pcp]:checked')].map(x=>x.value);
+      if(!t){E.textContent='اكتب عنواناً.';return false}
+      if(!d){E.textContent='حدد التاريخ.';return false}
+      if(!pl.length){E.textContent='اختر منصة واحدة على الأقل.';return false}
+      const L=data.soc.posts;let r=L.find(y=>y.id===ui.soid);
+      if(r)Object.assign(r,{t,d,tm,pl,n,st});else{r={id:uid(),t,d,tm,pl,n,st};L.push(r)}
+      if(r.st===4){if(!r.done)r.done=Date.now()}else delete r.done;
+      ui.sof=r.st===4?'dn':'up';ui.modal=null;save();break}
+    case 'sopdel':{if(!confirm('حذف هذا المحتوى؟'))return false;data.soc.posts=data.soc.posts.filter(x=>x.id!==ui.soid);ui.modal=null;save();break}
     case 'modal':ui.modal=D.v;break;
     case 'close':ui.modal=null;break;
     case 'ovclose':return false;
@@ -1535,7 +1777,7 @@ document.addEventListener('click',e=>{
   const t=e.target.closest('[data-act]');if(!t)return;
   const a=t.dataset.act;
   if(a==='ovclose'){if(e.target!==t)return;ui.modal=null;render();return}
-  if(['tab','period','shift','today','openday','openmonth','hshift','stab','sday','etab','bfil'].includes(a))ui.anim=true;
+  if(['tab','period','shift','today','openday','openmonth','hshift','stab','sday','etab','bfil','sosub','soflt'].includes(a))ui.anim=true;
   if(['pset','pcycle','qset','hset','hcycle','abadd','absub','etog'].includes(a))
     ui.pop=`[data-act="${a}"]`+['d','k','v','id','p','n'].filter(x=>t.dataset[x]!==undefined).map(x=>`[data-${x}="${t.dataset[x]}"]`).join('');
   if(handle(a,t.dataset)!==false)render();
@@ -2270,7 +2512,7 @@ document.addEventListener('keydown',e=>{
   else if(e.key==='Escape'){if(!$('#rdsh').hidden)rdSheet('');else rdClose()}
 });
 buildNav();
-load().then(render).then(lkBoot);
+load().then(render).then(lkBoot).then(()=>soFetchAll());
 
 /* ---------- keyboard: hide dock only while the keyboard is really open ---------- */
 (function(){
