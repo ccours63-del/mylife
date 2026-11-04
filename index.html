@@ -413,6 +413,22 @@ button.chip:active{transform:scale(.94)}
 .ab.good i{background:var(--good)}.ab.warn i{background:var(--warn)}.ab.bad i{background:var(--bad)}
 @media (prefers-reduced-motion:reduce){.cd,.sc,.ex,.ab,.abb i{animation:none!important}}
 
+/* ===== prayer times card ===== */
+.pt{--pt:#33AEE0;border-radius:14px;overflow:hidden;background:var(--surface);border:1px solid var(--line);margin:8px 0}
+.pt-row{display:grid;grid-template-columns:repeat(5,1fr)}
+.pt-c{text-align:center;padding:7px 0 6px;color:var(--muted);line-height:1.35;border-bottom:2px solid transparent}
+.pt-c b{display:block;font-size:12px;font-weight:600}
+.pt-c span{display:block;font-size:15px;font-weight:700;direction:ltr;color:var(--ink)}
+.pt-c.cur{border-bottom-color:var(--muted)}
+.pt-c.nx{background:var(--pt);color:#fff;border-bottom-color:var(--pt)}
+.pt-c.nx span{color:#fff}
+.pt-bar{display:flex;justify-content:space-between;align-items:center;padding:3px 10px 3px 4px;font-size:12px;color:var(--muted);background:var(--soft)}
+.pt-bar bdi{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+.pt-gear{width:26px;height:26px;border-radius:8px;color:var(--muted);font-size:14px}
+.ptg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pto{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.pto label{font-size:11.5px;color:var(--muted);text-align:center;display:block}
+.pto input{text-align:center;padding:8px 2px}
 /* ===== eyes ===== */
 .eyes{--st:#4fc3f7;--dd:#4fc3f7;--dp:#b58cff;--dc:#F5B544}
 .eyes .seg .on{background:color-mix(in srgb,var(--st) 20%,var(--surface));color:var(--st)}
@@ -697,6 +713,7 @@ async function load(){
 }
 function fixData(){
   if(!Array.isArray(data.docs))data.docs=[];
+  if(!data.pt||typeof data.pt!=='object'||Array.isArray(data.pt))data.pt=null;
   if(!data.days||typeof data.days!=='object')data.days={};
   if(!data.hnotes||typeof data.hnotes!=='object'||Array.isArray(data.hnotes))data.hnotes={};
   data.hgoal=+data.hgoal||0;
@@ -771,6 +788,75 @@ function calendar(days,cell){
   return`<div class="cal">${heads}${'<div></div>'.repeat(lead)}${days.map(cell).join('')}</div>`;
 }
 
+/* ---------- prayer times (local calculation) ---------- */
+const PT_DEF={city:'بوحنيفية',lat:35.31,lon:0.05,fa:18,ia:17,off:[1,1,0,3,0],hadj:0};
+function ptCfg(){const p=data.pt||{};return Object.assign({},PT_DEF,p,{off:(Array.isArray(p.off)&&p.off.length===5?p.off:PT_DEF.off)})}
+function ptCalc(ds){
+  const c=ptCfg(),[y,m,d]=ds.split('-').map(Number),R=Math.PI/180;
+  const sn=x=>Math.sin(x*R),cs=x=>Math.cos(x*R),ac=x=>Math.acos(Math.max(-1,Math.min(1,x)))/R;
+  const tz=-new Date(y,m-1,d,12).getTimezoneOffset()/60,lat=c.lat,lon=c.lon;
+  const jd=Date.UTC(y,m-1,d)/864e5+2440587.5-lon/360,D=jd-2451545;
+  const g=(357.529+0.98560028*D)%360,q=(280.459+0.98564736*D)%360;
+  const L=q+1.915*sn(g)+0.02*sn(2*g),e=23.439-3.6e-7*D;
+  let RA=Math.atan2(cs(e)*sn(L),cs(L))/R/15;RA=((RA%24)+24)%24;
+  let eqt=q/15-RA;eqt=((eqt+12)%24+24)%24-12;
+  const dec=Math.asin(sn(e)*sn(L))/R,mid=12+tz-lon/15-eqt;
+  const A=a=>ac((-sn(a)-sn(lat)*sn(dec))/(cs(lat)*cs(dec)))/15;
+  const asrA=-Math.atan(1/(1+Math.tan(Math.abs(lat-dec)*R)))/R;
+  const H=[mid-A(c.fa),mid,mid+A(asrA),mid+A(.833),mid+A(c.ia)];
+  const T=H.map((h,i)=>Math.round(h*60)+(+c.off[i]||0));
+  return T.some(x=>!isFinite(x))?null:T;
+}
+const ptF=m=>{m=((m%1440)+1440)%1440;return Math.floor(m/60)+':'+pad(m%60)};
+function ptState(){
+  const t=today(),T=ptCalc(t);if(!T)return null;
+  const now=new Date(),nm=now.getHours()*60+now.getMinutes()+now.getSeconds()/60,[y,m,d]=t.split('-').map(Number);
+  let nx=T.findIndex(x=>x>nm),cur,ts;
+  if(nx<0){const T2=ptCalc(fmt(addDays(parse(t),1)));if(!T2)return null;nx=0;cur=4;ts=new Date(y,m-1,d+1).getTime()+T2[0]*60000}
+  else{cur=nx===0?4:nx-1;ts=new Date(y,m-1,d).getTime()+T[nx]*60000}
+  return{cur,nx,ts};
+}
+function ptHijri(ds){
+  try{
+    const c=ptCfg(),P={};
+    new Intl.DateTimeFormat('ar-DZ-u-ca-islamic-umalqura-nu-latn',{day:'numeric',month:'long',year:'numeric'}).formatToParts(addDays(parse(ds),c.hadj||0)).forEach(x=>P[x.type]=x.value);
+    return`${parse(ds).toLocaleDateString(LOC,{weekday:'long'})} ${P.day} ${P.month} ${P.year}`;
+  }catch(e){return''}
+}
+const ptCd=s=>{s=Math.max(0,s);return'-'+Math.floor(s/3600)+':'+pad(Math.floor(s/60)%60)+':'+pad(s%60)};
+function ptCard(ds){
+  const c=ptCfg(),T=ptCalc(ds);
+  if(!T)return`<div class="card muted">تعذّر حساب الأوقات لهذا الموقع. عدّل الإحداثيات من ⚙.</div>`;
+  const live=ds===today(),st=live?ptState():null;
+  const gear=`<button class="pt-gear" data-act="modal" data-v="ptset" aria-label="إعدادات أوقات الصلاة">⚙</button>`;
+  const info=st?`<span>${PR[st.nx][1]} بعد <bdi dir="ltr" data-ptc>${ptCd(Math.floor((st.ts-Date.now())/1000))}</bdi></span>`:`<span>${parse(ds).toLocaleDateString(LOC,{day:'numeric',month:'long'})}</span>`;
+  const tiles=PR.map(([k,n],i)=>{
+    const isN=st&&st.nx===i,isC=st&&st.cur===i;
+    return`<div class="pt-c ${isN?'nx':''} ${isC?'cur':''}"><b>${n}</b><span>${ptF(T[i])}</span></div>`;
+  }).join('');
+  return`<div class="pt" ${live&&st?`data-live="1" data-s="${st.cur}-${st.nx}"`:''}><div class="pt-row">${tiles}</div><div class="pt-bar">${info}${gear}</div></div>`;
+}
+let ptT=null;
+function mountPrayers(){clearInterval(ptT);ptT=null;if(document.querySelector('.pt[data-live]')){ptT=setInterval(tickPT,1000)}}
+function tickPT(){
+  const el=document.querySelector('.pt[data-live]');
+  if(!el||ui.tab!=='prayers'){clearInterval(ptT);ptT=null;return}
+  const st=ptState();if(!st)return;
+  if(el.dataset.s!==st.cur+'-'+st.nx){if(!ui.modal)render();return}
+  const b=el.querySelector('[data-ptc]');if(b)b.textContent=ptCd(Math.floor((st.ts-Date.now())/1000));
+}
+function ptModal(){
+  const c=ptCfg();
+  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>إعدادات أوقات الصلاة</h3>
+<label class="fl">اسم المدينة</label><input id="ptc" value="${esc(c.city)}" autocomplete="off">
+<div class="ptg"><div><label class="fl">خط العرض</label><input id="ptla" type="number" step="any" inputmode="decimal" value="${c.lat}"></div><div><label class="fl">خط الطول</label><input id="ptlo" type="number" step="any" inputmode="decimal" value="${c.lon}"></div></div>
+<button class="btn ghost" style="width:100%;margin-top:8px" data-act="ptgeo">📍 استخدام موقعي الحالي</button>
+<div class="ptg"><div><label class="fl">زاوية الفجر</label><input id="ptfa" type="number" step="any" inputmode="decimal" value="${c.fa}"></div><div><label class="fl">زاوية العشاء</label><input id="ptia" type="number" step="any" inputmode="decimal" value="${c.ia}"></div></div>
+<label class="fl">تعديل بالدقائق (±) لكل صلاة</label><div class="pto">${PR.map(([k,n],i)=>`<div><label>${n}</label><input id="pto${i}" type="number" inputmode="numeric" value="${c.off[i]}"></div>`).join('')}</div>
+<label class="fl">تعديل التاريخ الهجري</label><select id="pth">${[-1,0,1].map(v=>`<option value="${v}" ${(c.hadj||0)===v?'selected':''}>${v===0?'بدون تعديل':v>0?'+1 يوم':'-1 يوم'}</option>`).join('')}</select>
+<div class="err" id="err"></div><div class="acts"><button class="btn" data-act="ptsave">حفظ</button><button class="btn ghost" data-act="ptreset">افتراضي</button><button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
+}
+
 /* ---------- prayers ---------- */
 const getP=(d,k)=>(data.prayers[d]||{})[k]||0;
 const setP=(d,k,v)=>{(data.prayers[d]=data.prayers[d]||{})[k]=v;save()};
@@ -789,6 +875,7 @@ function viewPrayers(){
   const{days}=range(),t=today(),st=prayerStats(days);let h=periodBar();
   if(ui.period==='day'){
     const d=ui.anchor;
+    h+=ptCard(d);
     h+=`<div class="card">${PR.map(([k,n])=>{const v=getP(d,k);return`<div class="prow"><span class="pname">${n}</span><div class="pbtns">
 <button class="pb ${v===1?'on1':''}" data-act="pset" data-d="${d}" data-k="${k}" data-v="1" ${d>t?'disabled':''}>صلّيت</button>
 <button class="pb ${v===2?'on2':''}" data-act="pset" data-d="${d}" data-k="${k}" data-v="2" ${d>t?'disabled':''}>جماعة</button>
@@ -1258,6 +1345,7 @@ function closeEditor(){
 function modalHtml(){
   if(ui.modal==='hnote')return hnoteModal();
   if(ui.modal==='hcolor')return hcolorModal();
+  if(ui.modal==='ptset')return ptModal();
   if(ui.modal==='lock')return lockModal();
   if(ui.modal==='tedit')return teditModal();
   if(ui.modal==='wake')return wakeModal();
@@ -1299,6 +1387,7 @@ function render(){
   updateNav();
   if(ui.tab==='home')mountHome();
   if(ui.tab==='habit')mountHabit();
+  if(ui.tab==='prayers')mountPrayers();
   if(ui.tab==='study'||ui.tab==='eyes')mountStudy();
   $('#modal').innerHTML=ui.modal?modalHtml():'';
   if(ui.focus){const el=$(ui.focus);if(el)el.focus();ui.focus=null}
@@ -1413,6 +1502,16 @@ function handle(a,D){
     case 'hnote':ui.modal='hnote';ui.hd=D.d;ui.focus='#hnt';break;
     case 'hnsave':{const v=($('#hnt').value||'').trim();if(v)data.hnotes[ui.hd]=v;else delete data.hnotes[ui.hd];ui.modal=null;save();break}
     case 'hndel':delete data.hnotes[ui.hd];ui.modal=null;save();break;
+    case 'ptsave':{const g=i=>$(i).value,la=parseFloat(g('#ptla')),lo=parseFloat(g('#ptlo')),fa=parseFloat(g('#ptfa')),ia=parseFloat(g('#ptia')),E=$('#err');
+      if(!(la>=-66&&la<=66)||!(lo>=-180&&lo<=180)){E.textContent='تحقق من خط العرض والطول.';return false}
+      if(!(fa>=10&&fa<=22)||!(ia>=10&&ia<=22)){E.textContent='الزوايا بين 10 و 22 درجة.';return false}
+      data.pt={city:g('#ptc').trim()||PT_DEF.city,lat:la,lon:lo,fa,ia,off:[0,1,2,3,4].map(i=>Math.max(-30,Math.min(30,Math.round(+g('#pto'+i)||0)))),hadj:+g('#pth')||0};
+      ui.modal=null;save();break}
+    case 'ptreset':data.pt=null;ui.modal=null;save();break;
+    case 'ptgeo':{const E=$('#err');if(!navigator.geolocation){E.textContent='تحديد الموقع غير مدعوم.';return false}
+      E.style.color='var(--muted)';E.textContent='جاري تحديد الموقع…';
+      navigator.geolocation.getCurrentPosition(r=>{$('#ptla').value=r.coords.latitude.toFixed(4);$('#ptlo').value=r.coords.longitude.toFixed(4);E.style.color='var(--good)';E.textContent='تم. غيّر اسم المدينة ثم احفظ.'},()=>{E.style.color='var(--bad)';E.textContent='تعذّر تحديد الموقع.'},{timeout:15000});
+      return false}
     case 'modal':ui.modal=D.v;break;
     case 'close':ui.modal=null;break;
     case 'ovclose':return false;
