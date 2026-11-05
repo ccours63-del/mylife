@@ -812,6 +812,58 @@ html[dir=rtl] .pseg{--dir:-1}
 .nd span{font-size:11.5px;color:var(--muted)}
 @keyframes nodeIn{from{transform:scale(0) rotate(-120deg)}}
 @keyframes beat{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--sc) 50%,transparent)}70%,100%{box-shadow:0 0 0 12px transparent}}
+
+/* ===== social v4: compact growth table + daily video tracker ===== */
+.gt{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:10px 0 6px}
+.gh,.grr{display:grid;grid-template-columns:1.3fr 1fr .8fr .8fr .8fr;gap:4px;align-items:center;padding:12px 12px}
+.gh{font-size:11.5px;color:var(--muted);font-weight:700;background:var(--soft);padding:9px 12px}
+.gh span:nth-child(n+2),.grr>span:nth-child(n+2){text-align:center}
+.gr{border-top:1px solid var(--line)}
+.gt .gh+.gr{border-top:0}
+.grr{width:100%;text-align:start;color:var(--ink);transition:background .2s}
+.gr.open .grr{background:color-mix(in srgb,var(--pc) 10%,var(--surface))}
+.grr:active{background:var(--soft)}
+.gn{display:flex;align-items:center;gap:7px;font-weight:700;font-size:14px;min-width:0}
+.gn i{flex:none;width:9px;height:9px;border-radius:50%;background:var(--pc)}
+.gv{font-weight:800;font-size:15px}
+.grd{padding:2px 12px 14px;background:color-mix(in srgb,var(--pc) 6%,var(--surface));animation:stIn .3s both}
+.vtd{width:100%;display:flex;align-items:center;gap:14px;padding:16px;border-radius:18px;border:1.5px dashed color-mix(in srgb,var(--accent) 55%,var(--line));background:color-mix(in srgb,var(--accent) 8%,var(--surface));color:var(--ink);text-align:start;margin-top:12px;transition:transform .15s,background .25s}
+.vtd:active{transform:scale(.97)}
+.vtd i{flex:none;font-style:normal;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:22px;background:var(--soft)}
+.vtd b{display:block;font-size:16px}
+.vtd small{color:var(--muted);font-size:12.5px}
+.vtd.ok{border:1.5px solid var(--good);background:color-mix(in srgb,var(--good) 14%,var(--surface))}
+.vtd.ok i{background:var(--good);color:#04140f;font-weight:800}
+.vs3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.vs3>div{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 4px;text-align:center}
+.vs3 b{display:block;font-size:20px;font-weight:800;line-height:1.3}
+.vs3 b small{font-size:12px;color:var(--muted);font-weight:700}
+.vs3 span{font-size:11.5px;color:var(--muted)}
+.vw{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+.vd{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;border-radius:14px;background:var(--soft);color:var(--ink)}
+.vd small{font-size:11px;color:var(--muted)}
+.vd b{font-size:13px}
+.vd u{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:800;text-decoration:none;color:#04140f}
+.vd.ok u{background:var(--good);border-color:var(--good)}
+.vd.ms u{border-color:color-mix(in srgb,var(--bad) 60%,transparent)}
+.vd.pl u{border:2px dashed var(--accent)}
+.vd.td{box-shadow:inset 0 0 0 2px var(--accent)}
+.vc{aspect-ratio:1;min-height:38px;border-radius:12px;background:var(--soft);color:var(--ink);font-size:13px;font-weight:700;display:grid;place-items:center}
+.vc.ok{background:var(--good);color:#04140f}
+.vc.ms{background:color-mix(in srgb,var(--bad) 18%,var(--soft))}
+.vc.pl{border:1.5px dashed var(--accent)}
+.vc.td{box-shadow:inset 0 0 0 2px var(--accent)}
+.vc.ok.td{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--good)}
+.vcd{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px;margin:8px 0}
+.vcd.dn{opacity:.7}
+.vck{flex:none;width:34px;height:34px;border-radius:50%;border:2px solid var(--line);color:transparent;display:grid;place-items:center;font-weight:800;margin-top:2px;transition:background .2s,transform .15s}
+.vck:active{transform:scale(.88)}
+.vck.on{background:var(--good);border-color:var(--good);color:#04140f}
+.vbd{flex:1;min-width:0;text-align:start;color:var(--ink)}
+.vbd b{display:block;font-size:15px}
+.vbd .vm{color:var(--muted);font-size:12px;margin-top:2px}
+.vbd p{color:var(--muted);font-size:13px;margin-top:6px;white-space:pre-wrap;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.vbd .cta{color:var(--accent);font-size:12.5px;margin-top:4px;font-weight:700}
 </style>
 </head>
 <body>
@@ -873,6 +925,8 @@ function fixData(){
   ['snaps','h','goals','api','src','upd','err'].forEach(k=>{if(!so[k]||typeof so[k]!=='object'||Array.isArray(so[k]))so[k]={}});
   if(!Array.isArray(so.posts))so.posts=[];
   so.posts=so.posts.filter(p=>p&&typeof p==='object'&&p.id).map(p=>Object.assign({t:'',d:today(),tm:'',n:''},p,{pl:Array.isArray(p.pl)?p.pl.filter(x=>SPC[x]):[],st:Math.max(0,Math.min(4,+p.st||0))}));
+  if(!Array.isArray(so.vids))so.vids=so.posts.map(p=>({id:p.id,d:(p.st===4&&p.done)?fmt(new Date(p.done)):p.d,h:p.t||'',s:p.n||'',c:'',ok:p.st===4,done:+p.done||0}));
+  so.vids=so.vids.filter(v=>v&&typeof v==='object'&&v.id&&/^\d{4}-\d\d-\d\d$/.test(v.d||'')).map(v=>({id:v.id,d:v.d,h:String(v.h||''),s:String(v.s||''),c:String(v.c||''),ok:!!v.ok,done:+v.done||0}));
   const dh={ig:'abdellah.tech',tt:'abdellah_tech0',yt:'@abdellah_tech.01',fb:'Abdellah Tech'};
   Object.keys(dh).forEach(k=>{if(typeof so.h[k]!=='string')so.h[k]=dh[k]});
   so.wg=+so.wg||3;so.last=+so.last||0;
@@ -1117,70 +1171,41 @@ function soGrowth(){
   if(!have)return`<div class="card" style="margin-top:12px;text-align:center"><div class="empty">لم تُسجَّل أي أرقام بعد.<br>ابدأ بأرقامك الحالية (معبّأة من لقطاتك) ثم اربط الحسابات للتتبع التلقائي.</div><button class="btn addb" data-act="soquick">إدخال الأرقام الحالية</button><button class="btn ghost addb" style="margin-top:8px" data-act="sosub" data-v="ln">ربط الحسابات</button></div>`;
   const tot=SP.reduce((a,[p])=>a+(soLast(p)||0),0);
   const top=`<div class="card sotot"><div><span class="muted">إجمالي المتابعين</span><b data-cnt="${tot}">${nf(tot)}</b></div><div class="dls"><div>${soDl(soTD(1))} <span class="muted">اليوم</span></div><div>${soDl(soTD(7))} <span class="muted">7 أيام</span></div><div>${soDl(soTD(30))} <span class="muted">30 يوماً</span></div></div></div>`;
-  const btns=`<div class="row" style="margin:6px 0">${soLinked()?`<button class="btn" style="flex:1" data-act="sofetch" ${soBusy?'disabled':''}>${soBusy?'جاري التحديث…':'↻ تحديث الآن'}</button>`:''}<button class="btn ghost" style="flex:1" data-act="soquick">✎ إدخال سريع</button></div>`;
-  const cards=SP.map(([p],i)=>{
-    const v=soLast(p),g=S.goals[p]||0,pct=g&&v!==null?Math.min(100,Math.round(v/g*100)):0,e=S.err[p];
-    return`<div class="card spc" style="--pc:${SPC[p]};--i:${i}"><div class="sph"><div><div class="spn"><i></i>${SPN[p]}</div><small class="muted" dir="ltr">${esc(S.h[p]||'')}</small></div>${soSrc(p)}</div>
-<div class="sph" style="align-items:flex-end;margin-top:4px"><span class="spnum" ${v===null?'':`data-cnt="${v}"`}>${v===null?'—':nf(v)}</span><button class="chip" data-act="sopl" data-p="${p}" style="padding:6px 12px;font-size:13px">✎ تعديل</button></div>
-<div class="sprow"><span>اليوم ${soDl(soDelta(p,1))}</span><span>أسبوع ${soDl(soDelta(p,7))}</span><span>شهر ${soDl(soDelta(p,30))}</span></div>${soSpark(p)}
-<button class="spg" data-act="sopl" data-p="${p}">${g?`<div class="abb"><i style="width:${pct}%"></i></div><small class="muted">الهدف ${nf(g)} · ${v!==null&&v>=g?'تحقق ✓':'متبقي '+nf(g-(v||0))} (${pct}%)</small>`:`<small class="muted">+ حدد هدفاً</small>`}</button>${e&&soAutoOn(p)?`<p class="muted" style="color:var(--bad);margin-top:6px">${esc(e)}</p>`:''}</div>`;
+  const rows=SP.map(([p])=>{
+    const v=soLast(p),g=S.goals[p]||0,pct=g&&v!==null?Math.min(100,Math.round(v/g*100)):0,e=S.err[p],open=ui.sox===p;
+    const det=open?`<div class="grd"><div class="sph" style="align-items:center"><small class="muted" dir="ltr">${esc(S.h[p]||'')}</small>${soSrc(p)}</div>${soSpark(p)}<button class="spg" data-act="sopl" data-p="${p}">${g?`<div class="abb"><i style="width:${pct}%"></i></div><small class="muted">الهدف ${nf(g)} · ${v!==null&&v>=g?'تحقق ✓':'متبقي '+nf(g-(v||0))} (${pct}%)</small>`:`<small class="muted">+ حدد هدفاً</small>`}</button>${e&&soAutoOn(p)?`<p class="muted" style="color:var(--bad);margin-top:6px">${esc(e)}</p>`:''}<button class="chip" data-act="sopl" data-p="${p}" style="margin-top:10px;padding:6px 12px;font-size:13px">✎ تعديل</button></div>`:'';
+    return`<div class="gr ${open?'open':''}" style="--pc:${SPC[p]}"><button class="grr" data-act="soxp" data-p="${p}"><span class="gn"><i></i>${SPN[p]}</span><span class="gv">${v===null?'—':nf(v)}</span><span>${soDl(soDelta(p,1))}</span><span>${soDl(soDelta(p,7))}</span><span>${soDl(soDelta(p,30))}</span></button>${det}</div>`;
   }).join('');
-  return top+btns+cards;
+  const tbl=`<div class="gt"><div class="gh"><span>المنصة</span><span>المتابعين</span><span>اليوم</span><span>أسبوع</span><span>شهر</span></div>${rows}</div><p class="muted" style="text-align:center;font-size:12px;margin:4px 0 8px">اضغط على أي منصة للتفاصيل</p>`;
+  const btns=`<div class="row" style="margin:6px 0">${soLinked()?`<button class="btn" style="flex:1" data-act="sofetch" ${soBusy?'disabled':''}>${soBusy?'جاري التحديث…':'↻ تحديث الآن'}</button>`:''}<button class="btn ghost" style="flex:1" data-act="soquick">✎ إدخال سريع</button></div>`;
+  return top+tbl+btns;
 }
 const soDayLbl=d=>{const t=today();return d===t?'اليوم':d===fmt(addDays(parse(t),1))?'غداً':parse(d).toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'})};
-const soPd=p=>p.st===4?(p.done?fmt(new Date(p.done)):p.d):p.d;
-const soByDT=(a,b)=>(a.d+(a.tm||''))<(b.d+(b.tm||''))?-1:1;
-function soPostCard(p,late,k){
-  return`<div class="pcd ${late?'late':''} ${p.st===4?'dn':''}" style="--sc:${STGC[p.st]};--i:${Math.min(k||0,12)}"><div class="pch"><div><b>${esc(p.t)}</b><div class="pct2">${p.pl.map(x=>`<span class="pdot"><i style="background:${SPC[x]}"></i>${SPN[x]}</span>`).join('')}${p.tm?`<span dir="ltr">${esc(p.tm)}</span>`:''}${late?'<span style="color:var(--bad)">متأخر</span>':''}</div></div><button class="x" data-act="soped" data-id="${p.id}" aria-label="تعديل">✎</button></div>${p.n?`<p class="muted" style="margin-top:6px;white-space:pre-wrap">${esc(p.n.slice(0,120))}</p>`:''}<div class="pipe">${STG.map((x,i)=>`<button class="${i<=p.st?'on':''} ${i===p.st?'cur':''} ${i===4?'fin':''}" style="--sc:${STGC[i]}" data-act="sopst" data-id="${p.id}" data-v="${i}">${x}</button>`).join('')}</div></div>`;
-}
-const SPER=[['day','يوم'],['week','أسبوع'],['month','شهر'],['year','سنة']];
-function soPeriodBar(){
-  const hasToday=range().days.includes(today()),k=SPER.findIndex(x=>x[0]===ui.period),f=ui.pf!==undefined&&ui.pf>=0?ui.pf:k;ui.pf=undefined;
-  return`<div class="pseg" style="--k:${k};--f:${f}"><i></i>${SPER.map(([v,n])=>`<button data-act="period" data-v="${v}" class="${ui.period===v?'on':''}">${n}</button>`).join('')}</div>
-<div class="nav"><button data-act="shift" data-v="-1" aria-label="السابق">›</button><div class="nav-l">${label()}</div><button data-act="shift" data-v="1" aria-label="التالي">‹</button></div>${hasToday?'':'<button class="link" data-act="today">العودة إلى اليوم</button>'}`;
+const soVBy=()=>{const m={};data.soc.vids.forEach(v=>{(m[v.d]=m[v.d]||[]).push(v)});return m};
+function soStreak(set){
+  let cur=0,d=new Date();if(!set.has(fmt(d)))d=addDays(d,-1);
+  while(set.has(fmt(d))){cur++;d=addDays(d,-1)}
+  return cur;
 }
 function soContent(){
-  const S=data.soc,t=today(),f=ui.sof||'up',P=S.posts,wg=S.wg,cm=ui.cm;ui.cm=null;
-  const{days}=range(),hasToday=days.includes(t),a=days[0],z=days[days.length-1];
-  const R=P.filter(p=>soPd(p)>=a&&soPd(p)<=z);
-  const posted=R.filter(p=>p.st===4).length,pct=R.length?Math.round(posted/R.length*100):0;
-  const lateAll=P.filter(p=>p.st<4&&p.d<t).sort(soByDT);
-  const late=hasToday?lateAll:R.filter(p=>p.st<4&&p.d<t).sort(soByDT);
-  const up=R.filter(p=>p.st<4&&p.d>=t).sort(soByDT),dn=R.filter(p=>p.st===4).sort((x,y)=>(y.done||0)-(x.done||0));
-  const byD={};R.forEach(p=>{(byD[soPd(p)]=byD[soPd(p)]||[]).push(p)});
-  const top=`<div class="card cst"><div class="ring"><svg viewBox="0 0 80 80"><circle class="bg" cx="40" cy="40" r="34"/><circle class="fg" cx="40" cy="40" r="34" style="--c:${(pct*2.136).toFixed(1)}"/></svg><b>${pct}%</b></div><div class="cs3"><div style="--i:0"><b style="color:var(--good)">${posted}</b><span>منشور</span></div><div style="--i:1"><b style="color:var(--accent)">${up.length}</b><span>قادم</span></div><div style="--i:2"><b style="color:var(--bad)">${late.length}</b><span>متأخر</span></div></div></div>`;
-  const leg=`<div class="lg">${STG.map((n,i)=>`<span><i style="background:${STGC[i]}"></i>${n}</span>`).join('')}</div>`;
-  const hd=(d,x)=>{const g=byD[d]||[];return{g,w:g.filter(y=>y.st===4).length,l:g.some(y=>y.st<4&&y.d<t)}};
-  let vis='';
-  if(ui.period==='day'){
-    const cnt=STG.map((n,i)=>R.filter(p=>p.st===i).length);
-    vis=`<div class="card"><b>مسار المحتوى</b><div class="tr"><div class="line"><i></i></div>${STG.map((n,i)=>`<div class="nd ${cnt[i]?'on':''}" style="--sc:${STGC[i]};--i:${i}"><u>${cnt[i]}</u><span>${n}</span></div>`).join('')}</div></div>`;
-  }else if(ui.period==='week'){
-    const mx=Math.max(1,...days.map(d=>(byD[d]||[]).length));
-    vis=`<div class="card"><b>أيام الأسبوع</b><div class="wk7">${days.map((d,i)=>{const{g,w,l}=hd(d);return`<button class="wk ${d===t?'td':''} ${l?'lt':''}" style="--i:${i};--p:${g.length/mx*100}%;--q:${w/mx*100}%" data-act="sogo" data-p="day" data-d="${d}"><small>${parse(d).toLocaleDateString(LOC,{weekday:'short'})}</small><b>${+d.slice(8)}</b><div class="tube"><i class="l1"></i><i class="l2"></i></div><span class="wn">${g.length||'·'}</span></button>`}).join('')}</div>${leg}</div>`;
-  }else if(ui.period==='month'){
-    const lead=parse(a).getDay();let ix=0;
-    const cal=calendar(days,d=>{const{g,w,l}=hd(d),n=ix++,r=Math.floor((lead+n)/7),c=(lead+n)%7;
-      return`<button class="mc ${d===t?'td':''} ${g.length&&w===g.length?'ok':''} ${l?'lt':''}" style="--d:${r+c};--h:${g.length?w/g.length*100:0}%" data-act="sogo" data-p="day" data-d="${d}"><b>${+d.slice(8)}</b><span class="md">${g.slice(0,3).map(x=>`<i style="background:${STGC[x.st]}"></i>`).join('')}</span>${g.length>3?`<small>+${g.length-3}</small>`:''}</button>`});
-    vis=`<div class="card"><b>تقويم المحتوى</b><div class="mcal">${cal}</div>${leg}</div>`;
-  }else{
-    const y=a.slice(0,4),cur=t.slice(0,7);
-    vis=`<div class="card"><b>أشهر السنة</b><div class="yg">${[...Array(12)].map((_,m)=>{const k=y+'-'+String(m+1).padStart(2,'0'),g=R.filter(p=>soPd(p).slice(0,7)===k),w=g.filter(p=>p.st===4).length;return`<button class="yt ${k===cur?'td':''}" style="--i:${m};--h:${g.length?w/g.length*100:0}%" data-act="sogo" data-p="month" data-d="${k}-01"><span>${new Date(+y,m,1).toLocaleDateString(LOC,{month:'long'})}</span><b>${w}<small>/${g.length}</small></b></button>`}).join('')}</div></div>`;
-  }
-  const pr=SP.map(([p])=>{const g=R.filter(x=>x.pl.includes(p));return[p,g.length,g.filter(x=>x.st===4).length]}).filter(x=>x[1]);
-  const plat=pr.length?`<div class="card"><b>حسب المنصة</b>${pr.map(([p,n,w])=>`<div class="plr" style="--pc:${SPC[p]}"><b>${SPN[p]}</b><div class="tk"><i style="width:${w/n*100}%"></i></div><small>${w}/${n}</small></div>`).join('')}</div>`:'';
-  const goal=ui.period==='day'?0:Math.max(1,Math.round(wg*days.length/7));
-  const gl=`<div class="hn-h" style="margin-top:12px"><button class="chip" data-act="sowg">🎯 الهدف الأسبوعي: ${wg}</button>${goal?`<span class="muted">${posted}/${goal} في هذه الفترة</span>`:''}</div>${goal?`<div class="wbar2"><i style="width:${Math.min(100,posted/goal*100)}%"></i></div>`:''}`;
-  const head=`<button class="btn addb" style="margin-top:10px" data-act="sopnew">+ محتوى جديد</button>
-<div class="seg">${[['up','القادم · '+(up.length+late.length)],['dn','المنشور · '+dn.length]].map(([k,n])=>`<button data-act="soflt" data-v="${k}" class="${f===k?'on':''}">${n}</button>`).join('')}</div>`;
-  let body='',n=0;
-  if(f==='up'){
-    if(late.length)body+=`<div class="h2" style="color:var(--bad)">متأخر · ${late.length}</div><div class="pcs">${late.map(p=>soPostCard(p,true,n++)).join('')}</div>`;
-    const g=[];up.forEach(p=>{const l=g[g.length-1];if(l&&l.d===p.d)l.a.push(p);else g.push({d:p.d,a:[p]})});
-    body+=g.map(x=>`<div class="h2">${soDayLbl(x.d)}</div><div class="pcs">${x.a.map(p=>soPostCard(p,false,n++)).join('')}</div>`).join('');
-    if(!late.length&&!up.length)body=empty('لا يوجد محتوى قادم في هذه الفترة 🎬');
-  }else body=dn.length?`<div class="pcs">${dn.map((p,i)=>soPostCard(p,false,i)).join('')}</div>`:empty('لا يوجد محتوى منشور في هذه الفترة');
-  return soPeriodBar()+`<div class="cv ${cm?'cv-'+cm:''}">${top}${vis}${gl}${plat}${head}${body}</div>`;
+  const S=data.soc,t=today(),by=soVBy(),set=new Set(S.vids.filter(v=>v.ok).map(v=>v.d));
+  const f=ui.sof||'up',cur=soStreak(set),td=set.has(t);
+  const cls=d=>set.has(d)?'ok':(by[d]&&d>=t)?'pl':d<t?'ms':'';
+  const wa=addDays(parse(t),-parse(t).getDay()),wk=daysBetween(wa,addDays(wa,6)),wDone=wk.filter(d=>set.has(d)).length;
+  const nowK=t.slice(0,7),[ny,nm]=nowK.split('-').map(Number),nLen=new Date(ny,nm,0).getDate();
+  const nDone=[...set].filter(d=>d.slice(0,7)===nowK).length;
+  const mk=ui.som||nowK,[my,mm]=mk.split('-').map(Number);
+  const md=daysBetween(new Date(my,mm-1,1),new Date(my,mm,0)),mDone=md.filter(d=>set.has(d)).length;
+  const hero=`<button class="vtd ${td?'ok':''}" data-act="sovtoday"><i>${td?'✓':'🎬'}</i><div><b>${td?'سويت فيديو اليوم 🔥':'سويت فيديو اليوم؟'}</b><small>${td?'اضغط للتراجع':'اضغط أول ما تخلص'}</small></div></button>`;
+  const stats=`<div class="vs3"><div><b style="color:var(--accent)">${cur}</b><span>🔥 سلسلة أيام</span></div><div><b>${wDone}<small>/7</small></b><span>هذا الأسبوع</span></div><div><b>${nDone}<small>/${nLen}</small></b><span>هذا الشهر</span></div></div>`;
+  const wkc=`<div class="card"><div class="sph"><b>الأسبوع</b><span class="muted">${wDone}/7</span></div><div class="vw">${wk.map(d=>`<button class="vd ${cls(d)} ${d===t?'td':''}" data-act="sovday" data-d="${d}"><small>${parse(d).toLocaleDateString(LOC,{weekday:'short'})}</small><b>${+d.slice(8)}</b><u>${set.has(d)?'✓':''}</u></button>`).join('')}</div></div>`;
+  const mc=`<div class="card"><div class="nav" style="margin:0 0 8px"><button data-act="sovm" data-v="-1" aria-label="السابق">›</button><div class="nav-l">${new Date(my,mm-1,1).toLocaleDateString(LOC,{month:'long',year:'numeric'})} · ${mDone}/${md.length}</div><button data-act="sovm" data-v="1" aria-label="التالي">‹</button></div>${calendar(md,d=>`<button class="vc ${cls(d)} ${d===t?'td':''}" data-act="sovday" data-d="${d}">${+d.slice(8)}</button>`)}${mk===nowK?'':`<button class="link" data-act="sovm" data-v="0">العودة لهذا الشهر</button>`}<div class="lg"><span><i style="background:var(--good)"></i>تم</span><span><i style="background:color-mix(in srgb,var(--bad) 45%,var(--soft))"></i>فاتك</span><span><i style="border:1.5px dashed var(--accent)"></i>مخطط</span></div></div>`;
+  const nUp=S.vids.filter(v=>!v.ok).length,nDn=S.vids.length-nUp;
+  const head=`<button class="btn addb" style="margin-top:4px" data-act="sopnew">+ فيديو جديد</button><div class="seg">${[['up','أفكار وسكربتات · '+nUp],['dn','تم · '+nDn]].map(([k,n])=>`<button data-act="soflt" data-v="${k}" class="${f===k?'on':''}">${n}</button>`).join('')}</div>`;
+  const L=S.vids.filter(v=>f==='up'?!v.ok:v.ok).sort((a,b)=>f==='up'?(a.d<b.d?-1:1):(a.d<b.d?1:-1));
+  const card=v=>`<div class="vcd ${v.ok?'dn':''}"><button class="vck ${v.ok?'on':''}" data-act="sovtog" data-id="${v.id}" aria-label="تم">✓</button><button class="vbd" data-act="soved" data-id="${v.id}"><b>${esc(v.h)||'فيديو بدون Hook'}</b><div class="vm">${soDayLbl(v.d)}${!v.ok&&v.d<t?' · <span style="color:var(--bad)">فات</span>':''}</div>${v.s?`<p>${esc(v.s)}</p>`:''}${v.c?`<div class="cta">📣 ${esc(v.c)}</div>`:''}</button></div>`;
+  const body=L.length?L.map(card).join(''):empty(f==='up'?'ما فيه أفكار. اضغط «فيديو جديد» 🎬':'لا يوجد فيديوهات منجزة بعد');
+  return hero+stats+wkc+mc+head+body;
 }
 function soLink(){
   const S=data.soc,a=S.api;
@@ -1211,13 +1236,13 @@ function soqModal(){
   return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>تحديث المتابعين</h3><p class="muted">القيم هي آخر رقم محفوظ (وللمرة الأولى أرقامك من لقطات الشاشة). غيّر ما تغيّر فقط.</p>${SP.map(([p])=>{const v=soLast(p);return`<div class="slr" style="grid-template-columns:96px 1fr"><b style="color:${SPC[p]}">${SPN[p]}</b><input id="sq-${p}" type="number" inputmode="numeric" min="0" value="${v===null?SPD[p]:v}"></div>`}).join('')}<div class="err" id="err"></div><div class="acts"><button class="btn" data-act="soqsave">حفظ</button><button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
 }
 function postModal(){
-  const x=data.soc.posts.find(y=>y.id===ui.soid)||{pl:[],d:fmt(addDays(parse(today()),1)),st:0,tm:''};
-  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>${x.id?'تعديل المحتوى':'محتوى جديد'}</h3>
-<input id="pct" data-enter="sopsv" value="${esc(x.t||'')}" placeholder="عنوان الفيديو / المنشور" autocomplete="off">
-<label class="fl">المنصات</label><div class="pls">${SP.map(([p])=>`<label class="pl" style="--pc:${SPC[p]}"><input type="checkbox" name="pcp" value="${p}" ${x.pl.includes(p)?'checked':''}><i style="width:10px;height:10px;border-radius:50%;background:${SPC[p]}"></i>${SPN[p]}</label>`).join('')}</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px"><input id="pcd" type="date" value="${x.d}"><input id="pctm" type="time" value="${x.tm||''}"></div>
-<label class="fl">المرحلة</label><select id="pcs">${STG.map((s,i)=>`<option value="${i}" ${x.st===i?'selected':''}>${s}</option>`).join('')}</select>
-<textarea id="pcn" dir="auto" placeholder="ملاحظات / فكرة / سكربت…" style="margin-top:8px;min-height:90px">${esc(x.n||'')}</textarea>
+  const x=data.soc.vids.find(y=>y.id===ui.soid)||{d:ui.sod||today(),h:'',s:'',c:'',ok:false};
+  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>${x.id?'تعديل الفيديو':'فيديو جديد'}</h3>
+<label class="fl" style="margin-top:0">🎣 Hook</label><input id="pct" data-enter="sopsv" value="${esc(x.h||'')}" placeholder="أول جملة تمسك المشاهد" autocomplete="off">
+<label class="fl">📝 Script</label><textarea id="pcn" dir="auto" placeholder="السكربت…" style="min-height:130px">${esc(x.s||'')}</textarea>
+<label class="fl">📣 CTA</label><input id="pcc" data-enter="sopsv" value="${esc(x.c||'')}" placeholder="مثال: تابعني للمزيد" autocomplete="off">
+<label class="fl">التاريخ</label><input id="pcd" type="date" value="${x.d}">
+<label style="display:flex;align-items:center;gap:10px;margin-top:14px;font-weight:700"><input id="pck" type="checkbox" style="width:20px;height:20px" ${x.ok?'checked':''}> سويت الفيديو ✓</label>
 <div class="err" id="err"></div><div class="acts"><button class="btn" data-act="sopsv">حفظ</button>${x.id?'<button class="btn ghost" data-act="sopdel">حذف</button>':''}<button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
 }
 
@@ -1887,7 +1912,6 @@ function handle(a,D){
     case 'soquick':ui.modal='soq';break;
     case 'sopl':ui.modal='sopl';ui.sop=D.p;break;
     case 'sofetch':soFetchAll(true);return false;
-    case 'sowg':{const S=data.soc;S.wg=S.wg>=7?1:S.wg+1;save();hVib(8);break}
     case 'soqsave':{
       SP.forEach(([p])=>{const el=$('#sq-'+p);if(!el||el.value==='')return;const n=Math.round(+el.value);if(!(n>=0))return;const old=soLast(p);soPut(p,n,old===null||n!==old,'manual')});
       ui.modal=null;save();hVib(12);break}
@@ -1898,21 +1922,34 @@ function handle(a,D){
     case 'solsave':{const S=data.soc,g=i=>($(i)?$(i).value.trim():'');
       S.api.ytKey=g('#lnyk');S.h.yt=g('#lnyh')||S.h.yt;S.api.fbPage=g('#lnfp');S.api.fbToken=g('#lnft');S.api.ttUrl=g('#lntt');
       save();soFetchAll(true);break}
-    case 'sopnew':ui.modal='post';ui.soid=null;ui.focus='#pct';break;
-    case 'soped':ui.modal='post';ui.soid=D.id;break;
-    case 'sopst':{const p=data.soc.posts.find(x=>x.id===D.id);if(!p)break;const v=+D.v,was=p.st;
-      p.st=(p.st===v&&v>0)?v-1:v;if(p.st===4){if(!p.done)p.done=Date.now()}else delete p.done;
-      save();if(p.st===4&&was!==4)ui.burst={sel:'[data-act="soflt"][data-v="dn"]',big:true,msg:'🎉 تم النشر! أحسنت'};hVib(p.st===4&&was!==4?[20,40,20]:10);break}
-    case 'sopsv':{const t=$('#pct').value.trim(),d=$('#pcd').value,tm=$('#pctm').value,n=$('#pcn').value.trim(),st=+$('#pcs').value,E=$('#err');
-      const pl=[...document.querySelectorAll('#modal input[name=pcp]:checked')].map(x=>x.value);
-      if(!t){E.textContent='اكتب عنواناً.';return false}
+    case 'soxp':ui.sox=ui.sox===D.p?null:D.p;break;
+    case 'sopnew':ui.modal='post';ui.soid=null;ui.sod=null;ui.focus='#pct';break;
+    case 'soved':ui.modal='post';ui.soid=D.id;ui.sod=null;break;
+    case 'sovday':{const g=data.soc.vids.filter(v=>v.d===D.d);ui.modal='post';ui.soid=g.length?g[0].id:null;ui.sod=D.d;if(!g.length)ui.focus='#pct';break}
+    case 'sovm':{const nk=today().slice(0,7),ck=ui.som||nk;
+      if(+D.v===0)ui.som=nk;
+      else{const[y,m]=ck.split('-').map(Number),x=new Date(y,m-1+(+D.v),1);ui.som=x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')}
+      break}
+    case 'sovtog':{const v=data.soc.vids.find(x=>x.id===D.id);if(!v)break;
+      v.ok=!v.ok;v.done=v.ok?Date.now():0;save();
+      if(v.ok&&v.d===today())ui.burst={sel:'[data-act="sovtoday"]',big:true,msg:'🎉 فيديو اليوم تم!'};
+      hVib(v.ok?[20,40,20]:10);break}
+    case 'sovtoday':{const S=data.soc,t=today(),g=S.vids.filter(v=>v.d===t);
+      if(g.some(v=>v.ok)){g.forEach(v=>{v.ok=false;v.done=0});S.vids=S.vids.filter(v=>!(v.d===t&&!v.h&&!v.s&&!v.c));hVib(10)}
+      else{
+        if(g.length){g[0].ok=true;g[0].done=Date.now()}else S.vids.push({id:uid(),d:t,h:'',s:'',c:'',ok:true,done:Date.now()});
+        ui.burst={sel:'[data-act="sovtoday"]',big:true,msg:'🎉 فيديو اليوم تم!'};hVib([20,40,20]);
+      }
+      save();break}
+    case 'sopsv':{const h=$('#pct').value.trim(),s=$('#pcn').value.trim(),c=$('#pcc').value.trim(),d=$('#pcd').value,ok=$('#pck').checked,E=$('#err');
       if(!d){E.textContent='حدد التاريخ.';return false}
-      if(!pl.length){E.textContent='اختر منصة واحدة على الأقل.';return false}
-      const L=data.soc.posts;let r=L.find(y=>y.id===ui.soid);
-      if(r)Object.assign(r,{t,d,tm,pl,n,st});else{r={id:uid(),t,d,tm,pl,n,st};L.push(r)}
-      if(r.st===4){if(!r.done)r.done=Date.now()}else delete r.done;
-      ui.sof=r.st===4?'dn':'up';ui.modal=null;save();break}
-    case 'sopdel':{if(!confirm('حذف هذا المحتوى؟'))return false;data.soc.posts=data.soc.posts.filter(x=>x.id!==ui.soid);ui.modal=null;save();break}
+      if(!h&&!s&&!c&&!ok){E.textContent='اكتب الـ Hook على الأقل.';return false}
+      const L=data.soc.vids;let r=L.find(y=>y.id===ui.soid);
+      if(r){const was=r.ok;Object.assign(r,{h,s,c,d,ok});if(ok&&!was)r.done=Date.now();if(!ok)r.done=0}
+      else{r={id:uid(),h,s,c,d,ok,done:ok?Date.now():0};L.push(r)}
+      if(ok&&d===today())ui.burst={sel:'[data-act="sovtoday"]',big:true,msg:'🎉 فيديو اليوم تم!'};
+      ui.sof=ok?'dn':'up';ui.modal=null;save();break}
+    case 'sopdel':{if(!confirm('حذف هذا الفيديو؟'))return false;data.soc.vids=data.soc.vids.filter(x=>x.id!==ui.soid);ui.modal=null;save();break}
     case 'modal':ui.modal=D.v;break;
     case 'close':ui.modal=null;break;
     case 'ovclose':return false;
