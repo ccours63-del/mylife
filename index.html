@@ -753,6 +753,65 @@ body.locked #pview{visibility:hidden}
 .pipe button:active{transform:scale(.88)}
 .pipe button.on{background:color-mix(in srgb,var(--sc) 24%,var(--soft));color:var(--sc)}
 .pipe button.cur{background:var(--sc);color:#0B0D10;box-shadow:0 4px 14px color-mix(in srgb,var(--sc) 40%,transparent)}
+
+/* ===== content periods v3 ===== */
+.pseg{--dir:1;position:relative;display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:4px;margin:12px 0 4px;isolation:isolate}
+html[dir=rtl] .pseg{--dir:-1}
+.pseg button{position:relative;z-index:1;padding:10px 0;font-weight:800;color:var(--muted);transition:color .3s}
+.pseg button.on{color:var(--accent-ink)}
+.pseg i{position:absolute;top:4px;bottom:4px;inset-inline-start:4px;width:calc((100% - 8px)/4);border-radius:12px;z-index:0;background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 55%,var(--good)));box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 40%,transparent);transform:translateX(calc(var(--k)*var(--dir)*100%));animation:thumb .55s cubic-bezier(.3,1.35,.5,1) both}
+@keyframes thumb{from{transform:translateX(calc(var(--f)*var(--dir)*100%)) scaleX(1.2)}}
+.cv-z{animation:cvZ .5s cubic-bezier(.2,.8,.2,1) both}
+.cv-n{animation:cvN .5s cubic-bezier(.2,.8,.2,1) both;transform-origin:left center}
+.cv-p{animation:cvP .5s cubic-bezier(.2,.8,.2,1) both;transform-origin:right center}
+@keyframes cvZ{from{opacity:0;transform:scale(1.08);filter:blur(8px)}}
+@keyframes cvN{from{opacity:0;transform:perspective(900px) translateX(-36px) rotateY(24deg)}}
+@keyframes cvP{from{opacity:0;transform:perspective(900px) translateX(36px) rotateY(-24deg)}}
+@keyframes rise{from{transform:scaleY(0)}}
+.mcal .cal{perspective:700px}
+.mc{position:relative;overflow:hidden;aspect-ratio:1;min-height:44px;border-radius:14px;background:var(--soft);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;animation:wave .6s calc(var(--d)*45ms) cubic-bezier(.3,1.5,.5,1) both;transition:transform .15s}
+.mc:active{transform:scale(.9)}
+.mc::before,.yt::before{content:"";position:absolute;left:0;right:0;bottom:0;height:var(--h);background:linear-gradient(to top,color-mix(in srgb,var(--good) 42%,transparent),color-mix(in srgb,var(--good) 10%,transparent));transform-origin:bottom;animation:rise .8s .25s cubic-bezier(.2,.8,.2,1) both}
+.mc b{position:relative;font-size:13px}
+.mc .md{position:relative;display:flex;gap:2px;height:6px}
+.mc .md i{width:6px;height:6px;border-radius:50%;animation:dotp .4s .5s cubic-bezier(.3,1.8,.5,1) both}
+.mc small{position:absolute;top:2px;inset-inline-end:4px;font-size:9px;color:var(--muted)}
+.mc.lt{box-shadow:inset 0 0 0 1.5px var(--bad)}
+.mc.ok{box-shadow:inset 0 0 0 1.5px var(--good)}
+.mc.ok b::after{content:"✓";margin-inline-start:2px;color:var(--good);font-size:10px}
+.mc.td{box-shadow:inset 0 0 0 2px var(--accent)}
+.mc.td::after{content:"";position:absolute;inset:0;border-radius:inherit;animation:glow2 2s 1s infinite}
+@keyframes wave{from{opacity:0;transform:translateY(20px) rotateX(75deg) scale(.7);filter:blur(3px)}}
+@keyframes dotp{from{transform:scale(0)}}
+@keyframes glow2{0%{box-shadow:inset 0 0 0 0 color-mix(in srgb,var(--accent) 55%,transparent)}100%{box-shadow:inset 0 0 16px 6px transparent}}
+.wk7{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+.wk{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0 6px;border-radius:14px;background:var(--soft);color:var(--ink);transform-origin:bottom;animation:flipIn .6s calc(var(--i)*70ms) cubic-bezier(.3,1.4,.5,1) both;transition:transform .15s}
+.wk:active{transform:scale(.92)}
+.wk small{font-size:10.5px;color:var(--muted)}.wk b{font-size:15px}
+.tube{position:relative;width:18px;height:92px;border-radius:10px;background:var(--surface);overflow:hidden}
+.tube i{position:absolute;left:0;right:0;bottom:0;border-radius:8px 8px 0 0;transform-origin:bottom;animation:rise .9s calc(var(--i)*70ms + .25s) cubic-bezier(.2,.8,.2,1) both}
+.tube .l1{height:var(--p);background:linear-gradient(to top,color-mix(in srgb,var(--accent) 55%,transparent),color-mix(in srgb,var(--accent) 22%,transparent))}
+.tube .l2{height:var(--q);background:linear-gradient(to top,var(--good),color-mix(in srgb,var(--good) 55%,transparent))}
+.wk .wn{font-size:12px;font-weight:800}
+.wk.td{box-shadow:0 0 0 2px var(--accent)}
+.wk.lt .wn{color:var(--bad)}
+@keyframes flipIn{from{opacity:0;transform:perspective(500px) rotateX(-90deg)}}
+.yg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.yt{position:relative;overflow:hidden;border-radius:16px;background:var(--soft);color:var(--ink);padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;animation:flip3 .7s calc(var(--i)*60ms) cubic-bezier(.3,1.3,.5,1) both;transition:transform .15s}
+.yt:active{transform:scale(.94)}
+.yt span,.yt b{position:relative}
+.yt span{font-size:13px;color:var(--muted)}.yt b{font-size:22px}.yt b small{font-size:12px;color:var(--muted)}
+.yt.td{box-shadow:0 0 0 2px var(--accent)}
+@keyframes flip3{from{opacity:0;transform:perspective(600px) rotateY(90deg) scale(.8)}}
+.tr{position:relative;display:grid;grid-template-columns:repeat(5,1fr);margin-top:14px}
+.tr .line{position:absolute;top:20px;inset-inline:10%;height:4px;border-radius:4px;background:var(--soft);overflow:hidden}
+.tr .line i{display:block;height:100%;background:linear-gradient(270deg,#8B94A5,#4C8DF5,#B07CFF,#F5B544,#4FC48B);transform-origin:right;animation:grow 1.1s .1s cubic-bezier(.2,.8,.2,1) both}
+.nd{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px}
+.nd u{text-decoration:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:17px;background:var(--surface);border:3px solid var(--sc);color:var(--sc);animation:nodeIn .6s calc(var(--i)*140ms + .2s) cubic-bezier(.3,1.8,.5,1) both}
+.nd.on u{background:var(--sc);color:#0B0D10;animation:nodeIn .6s calc(var(--i)*140ms + .2s) cubic-bezier(.3,1.8,.5,1) both,beat 2.2s calc(var(--i)*140ms + 1s) infinite}
+.nd span{font-size:11.5px;color:var(--muted)}
+@keyframes nodeIn{from{transform:scale(0) rotate(-120deg)}}
+@keyframes beat{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--sc) 50%,transparent)}70%,100%{box-shadow:0 0 0 12px transparent}}
 </style>
 </head>
 <body>
@@ -1074,21 +1133,40 @@ const soByDT=(a,b)=>(a.d+(a.tm||''))<(b.d+(b.tm||''))?-1:1;
 function soPostCard(p,late,k){
   return`<div class="pcd ${late?'late':''} ${p.st===4?'dn':''}" style="--sc:${STGC[p.st]};--i:${Math.min(k||0,12)}"><div class="pch"><div><b>${esc(p.t)}</b><div class="pct2">${p.pl.map(x=>`<span class="pdot"><i style="background:${SPC[x]}"></i>${SPN[x]}</span>`).join('')}${p.tm?`<span dir="ltr">${esc(p.tm)}</span>`:''}${late?'<span style="color:var(--bad)">متأخر</span>':''}</div></div><button class="x" data-act="soped" data-id="${p.id}" aria-label="تعديل">✎</button></div>${p.n?`<p class="muted" style="margin-top:6px;white-space:pre-wrap">${esc(p.n.slice(0,120))}</p>`:''}<div class="pipe">${STG.map((x,i)=>`<button class="${i<=p.st?'on':''} ${i===p.st?'cur':''} ${i===4?'fin':''}" style="--sc:${STGC[i]}" data-act="sopst" data-id="${p.id}" data-v="${i}">${x}</button>`).join('')}</div></div>`;
 }
+const SPER=[['day','يوم'],['week','أسبوع'],['month','شهر'],['year','سنة']];
+function soPeriodBar(){
+  const hasToday=range().days.includes(today()),k=SPER.findIndex(x=>x[0]===ui.period),f=ui.pf!==undefined&&ui.pf>=0?ui.pf:k;ui.pf=undefined;
+  return`<div class="pseg" style="--k:${k};--f:${f}"><i></i>${SPER.map(([v,n])=>`<button data-act="period" data-v="${v}" class="${ui.period===v?'on':''}">${n}</button>`).join('')}</div>
+<div class="nav"><button data-act="shift" data-v="-1" aria-label="السابق">›</button><div class="nav-l">${label()}</div><button data-act="shift" data-v="1" aria-label="التالي">‹</button></div>${hasToday?'':'<button class="link" data-act="today">العودة إلى اليوم</button>'}`;
+}
 function soContent(){
-  const S=data.soc,t=today(),f=ui.sof||'up',P=S.posts,wg=S.wg;
+  const S=data.soc,t=today(),f=ui.sof||'up',P=S.posts,wg=S.wg,cm=ui.cm;ui.cm=null;
   const{days}=range(),hasToday=days.includes(t),a=days[0],z=days[days.length-1];
   const R=P.filter(p=>soPd(p)>=a&&soPd(p)<=z);
   const posted=R.filter(p=>p.st===4).length,pct=R.length?Math.round(posted/R.length*100):0;
   const lateAll=P.filter(p=>p.st<4&&p.d<t).sort(soByDT);
   const late=hasToday?lateAll:R.filter(p=>p.st<4&&p.d<t).sort(soByDT);
   const up=R.filter(p=>p.st<4&&p.d>=t).sort(soByDT),dn=R.filter(p=>p.st===4).sort((x,y)=>(y.done||0)-(x.done||0));
+  const byD={};R.forEach(p=>{(byD[soPd(p)]=byD[soPd(p)]||[]).push(p)});
   const top=`<div class="card cst"><div class="ring"><svg viewBox="0 0 80 80"><circle class="bg" cx="40" cy="40" r="34"/><circle class="fg" cx="40" cy="40" r="34" style="--c:${(pct*2.136).toFixed(1)}"/></svg><b>${pct}%</b></div><div class="cs3"><div style="--i:0"><b style="color:var(--good)">${posted}</b><span>منشور</span></div><div style="--i:1"><b style="color:var(--accent)">${up.length}</b><span>قادم</span></div><div style="--i:2"><b style="color:var(--bad)">${late.length}</b><span>متأخر</span></div></div></div>`;
-  const bk=[],dense=days.length>14;
-  if(ui.period==='day')STG.forEach((n,i)=>bk.push({l:n,v:R.filter(p=>p.st===i).length,c:STGC[i]}));
-  else if(ui.period==='year')for(let m=0;m<12;m++){const k=a.slice(0,5)+String(m+1).padStart(2,'0'),g=R.filter(p=>soPd(p).slice(0,7)===k);bk.push({l:m+1,v:g.length,w:g.filter(p=>p.st===4).length})}
-  else days.forEach(d=>{const g=R.filter(p=>soPd(p)===d),n=+d.slice(8);bk.push({l:dense&&n%5&&n!==1?'':n,v:g.length,w:g.filter(p=>p.st===4).length,td:d===t})});
-  const mx=Math.max(1,...bk.map(x=>x.v));
-  const chart=`<div class="card"><b>${ui.period==='day'?'مراحل المحتوى':'نشاط المحتوى'}</b><div class="ch2 ${dense?'dense':''}">${bk.map((x,i)=>`<div class="cb ${x.td?'td':''}"><div class="ct"><i class="cp" style="--i:${i};height:${x.v/mx*100}%;${x.c?'background:'+x.c:''}">${x.c?'':`<i class="cw" style="height:${x.v?(x.w||0)/x.v*100:0}%"></i>`}</i></div><span class="cn">${x.v||''}</span><small>${x.l}</small></div>`).join('')}</div>${ui.period==='day'?'':'<div class="lg"><span><i style="background:color-mix(in srgb,var(--accent) 35%,var(--soft))"></i>مخطط</span><span><i style="background:var(--good)"></i>منشور</span></div>'}</div>`;
+  const leg=`<div class="lg">${STG.map((n,i)=>`<span><i style="background:${STGC[i]}"></i>${n}</span>`).join('')}</div>`;
+  const hd=(d,x)=>{const g=byD[d]||[];return{g,w:g.filter(y=>y.st===4).length,l:g.some(y=>y.st<4&&y.d<t)}};
+  let vis='';
+  if(ui.period==='day'){
+    const cnt=STG.map((n,i)=>R.filter(p=>p.st===i).length);
+    vis=`<div class="card"><b>مسار المحتوى</b><div class="tr"><div class="line"><i></i></div>${STG.map((n,i)=>`<div class="nd ${cnt[i]?'on':''}" style="--sc:${STGC[i]};--i:${i}"><u>${cnt[i]}</u><span>${n}</span></div>`).join('')}</div></div>`;
+  }else if(ui.period==='week'){
+    const mx=Math.max(1,...days.map(d=>(byD[d]||[]).length));
+    vis=`<div class="card"><b>أيام الأسبوع</b><div class="wk7">${days.map((d,i)=>{const{g,w,l}=hd(d);return`<button class="wk ${d===t?'td':''} ${l?'lt':''}" style="--i:${i};--p:${g.length/mx*100}%;--q:${w/mx*100}%" data-act="sogo" data-p="day" data-d="${d}"><small>${parse(d).toLocaleDateString(LOC,{weekday:'short'})}</small><b>${+d.slice(8)}</b><div class="tube"><i class="l1"></i><i class="l2"></i></div><span class="wn">${g.length||'·'}</span></button>`}).join('')}</div>${leg}</div>`;
+  }else if(ui.period==='month'){
+    const lead=parse(a).getDay();let ix=0;
+    const cal=calendar(days,d=>{const{g,w,l}=hd(d),n=ix++,r=Math.floor((lead+n)/7),c=(lead+n)%7;
+      return`<button class="mc ${d===t?'td':''} ${g.length&&w===g.length?'ok':''} ${l?'lt':''}" style="--d:${r+c};--h:${g.length?w/g.length*100:0}%" data-act="sogo" data-p="day" data-d="${d}"><b>${+d.slice(8)}</b><span class="md">${g.slice(0,3).map(x=>`<i style="background:${STGC[x.st]}"></i>`).join('')}</span>${g.length>3?`<small>+${g.length-3}</small>`:''}</button>`});
+    vis=`<div class="card"><b>تقويم المحتوى</b><div class="mcal">${cal}</div>${leg}</div>`;
+  }else{
+    const y=a.slice(0,4),cur=t.slice(0,7);
+    vis=`<div class="card"><b>أشهر السنة</b><div class="yg">${[...Array(12)].map((_,m)=>{const k=y+'-'+String(m+1).padStart(2,'0'),g=R.filter(p=>soPd(p).slice(0,7)===k),w=g.filter(p=>p.st===4).length;return`<button class="yt ${k===cur?'td':''}" style="--i:${m};--h:${g.length?w/g.length*100:0}%" data-act="sogo" data-p="month" data-d="${k}-01"><span>${new Date(+y,m,1).toLocaleDateString(LOC,{month:'long'})}</span><b>${w}<small>/${g.length}</small></b></button>`}).join('')}</div></div>`;
+  }
   const pr=SP.map(([p])=>{const g=R.filter(x=>x.pl.includes(p));return[p,g.length,g.filter(x=>x.st===4).length]}).filter(x=>x[1]);
   const plat=pr.length?`<div class="card"><b>حسب المنصة</b>${pr.map(([p,n,w])=>`<div class="plr" style="--pc:${SPC[p]}"><b>${SPN[p]}</b><div class="tk"><i style="width:${w/n*100}%"></i></div><small>${w}/${n}</small></div>`).join('')}</div>`:'';
   const goal=ui.period==='day'?0:Math.max(1,Math.round(wg*days.length/7));
@@ -1102,7 +1180,7 @@ function soContent(){
     body+=g.map(x=>`<div class="h2">${soDayLbl(x.d)}</div><div class="pcs">${x.a.map(p=>soPostCard(p,false,n++)).join('')}</div>`).join('');
     if(!late.length&&!up.length)body=empty('لا يوجد محتوى قادم في هذه الفترة 🎬');
   }else body=dn.length?`<div class="pcs">${dn.map((p,i)=>soPostCard(p,false,i)).join('')}</div>`:empty('لا يوجد محتوى منشور في هذه الفترة');
-  return periodBar()+top+chart+plat+gl+head+body;
+  return soPeriodBar()+`<div class="cv ${cm?'cv-'+cm:''}">${top}${vis}${gl}${plat}${head}${body}</div>`;
 }
 function soLink(){
   const S=data.soc,a=S.api;
@@ -1691,9 +1769,10 @@ function handle(a,D){
   if(a!=='del')ui.confirm=null;
   switch(a){
     case 'tab':ui.tab=D.v;if(D.v==='home'&&ui.period==='year')ui.period='month';window.scrollTo(0,0);break;
-    case 'period':ui.period=D.v;break;
-    case 'shift':shift(+D.v);break;
-    case 'today':ui.anchor=today();break;
+    case 'period':ui.pf=SPER.findIndex(x=>x[0]===ui.period);ui.period=D.v;ui.cm='z';break;
+    case 'sogo':ui.pf=SPER.findIndex(x=>x[0]===ui.period);ui.period=D.p;ui.anchor=D.d;ui.cm='z';break;
+    case 'shift':shift(+D.v);ui.cm=+D.v>0?'n':'p';break;
+    case 'today':ui.anchor=today();ui.cm='z';break;
     case 'openday':ui.anchor=D.d;ui.period='day';break;
     case 'openmonth':ui.anchor=D.d;ui.period='month';break;
     case 'pset':setP(D.d,D.k,getP(D.d,D.k)===+D.v?0:+D.v);break;
