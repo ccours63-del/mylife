@@ -922,9 +922,10 @@ function fixData(){
   if(!data.pt||typeof data.pt!=='object'||Array.isArray(data.pt))data.pt=null;
   if(!data.soc||typeof data.soc!=='object'||Array.isArray(data.soc))data.soc={};
   const so=data.soc;
-  ['snaps','h','goals','api','src','upd','err'].forEach(k=>{if(!so[k]||typeof so[k]!=='object'||Array.isArray(so[k]))so[k]={}});
+  ['snaps','h','goals','api','src','upd','err','vday'].forEach(k=>{if(!so[k]||typeof so[k]!=='object'||Array.isArray(so[k]))so[k]={}});
   if(!Array.isArray(so.posts))so.posts=[];
   so.posts=so.posts.filter(p=>p&&typeof p==='object'&&p.id).map(p=>Object.assign({t:'',d:today(),tm:'',n:''},p,{pl:Array.isArray(p.pl)?p.pl.filter(x=>SPC[x]):[],st:Math.max(0,Math.min(4,+p.st||0))}));
+  Object.keys(so.vday).forEach(k=>{if(!/^\d{4}-\d\d-\d\d$/.test(k)||(so.vday[k]!==1&&so.vday[k]!==2))delete so.vday[k]});
   if(!Array.isArray(so.vids))so.vids=so.posts.map(p=>({id:p.id,d:(p.st===4&&p.done)?fmt(new Date(p.done)):p.d,h:p.t||'',s:p.n||'',c:'',ok:p.st===4,done:+p.done||0}));
   so.vids=so.vids.filter(v=>v&&typeof v==='object'&&v.id&&/^\d{4}-\d\d-\d\d$/.test(v.d||'')).map(v=>({id:v.id,d:v.d,h:String(v.h||''),s:String(v.s||''),c:String(v.c||''),ok:!!v.ok,done:+v.done||0}));
   const dh={ig:'abdellah.tech',tt:'abdellah_tech0',yt:'@abdellah_tech.01',fb:'Abdellah Tech'};
@@ -1181,6 +1182,7 @@ function soGrowth(){
   return top+tbl+btns;
 }
 const soDayLbl=d=>{const t=today();return d===t?'اليوم':d===fmt(addDays(parse(t),1))?'غداً':parse(d).toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'})};
+const soEff=d=>{const S=data.soc,m=S.vday[d];return m===1||(m===undefined&&S.vids.some(v=>v.d===d&&v.ok))};
 const soVBy=()=>{const m={};data.soc.vids.forEach(v=>{(m[v.d]=m[v.d]||[]).push(v)});return m};
 function soStreak(set){
   let cur=0,d=new Date();if(!set.has(fmt(d)))d=addDays(d,-1);
@@ -1188,9 +1190,9 @@ function soStreak(set){
   return cur;
 }
 function soContent(){
-  const S=data.soc,t=today(),by=soVBy(),set=new Set(S.vids.filter(v=>v.ok).map(v=>v.d));
+  const S=data.soc,t=today(),by=soVBy(),vd=S.vday,set=new Set([...S.vids.map(v=>v.d),...Object.keys(vd)].filter(soEff));
   const f=ui.sof||'up',cur=soStreak(set),td=set.has(t);
-  const cls=d=>set.has(d)?'ok':(by[d]&&d>=t)?'pl':d<t?'ms':'';
+  const cls=d=>set.has(d)?'ok':vd[d]===2?'ms':(by[d]&&d>=t)?'pl':d<t?'ms':'';
   const wa=addDays(parse(t),-parse(t).getDay()),wk=daysBetween(wa,addDays(wa,6)),wDone=wk.filter(d=>set.has(d)).length;
   const nowK=t.slice(0,7),[ny,nm]=nowK.split('-').map(Number),nLen=new Date(ny,nm,0).getDate();
   const nDone=[...set].filter(d=>d.slice(0,7)===nowK).length;
@@ -1199,7 +1201,7 @@ function soContent(){
   const hero=`<button class="vtd ${td?'ok':''}" data-act="sovtoday"><i>${td?'✓':'🎬'}</i><div><b>${td?'سويت فيديو اليوم 🔥':'سويت فيديو اليوم؟'}</b><small>${td?'اضغط للتراجع':'اضغط أول ما تخلص'}</small></div></button>`;
   const stats=`<div class="vs3"><div><b style="color:var(--accent)">${cur}</b><span>🔥 سلسلة أيام</span></div><div><b>${wDone}<small>/7</small></b><span>هذا الأسبوع</span></div><div><b>${nDone}<small>/${nLen}</small></b><span>هذا الشهر</span></div></div>`;
   const wkc=`<div class="card"><div class="sph"><b>الأسبوع</b><span class="muted">${wDone}/7</span></div><div class="vw">${wk.map(d=>`<button class="vd ${cls(d)} ${d===t?'td':''}" data-act="sovday" data-d="${d}"><small>${parse(d).toLocaleDateString(LOC,{weekday:'short'})}</small><b>${+d.slice(8)}</b><u>${set.has(d)?'✓':''}</u></button>`).join('')}</div></div>`;
-  const mc=`<div class="card"><div class="nav" style="margin:0 0 8px"><button data-act="sovm" data-v="-1" aria-label="السابق">›</button><div class="nav-l">${new Date(my,mm-1,1).toLocaleDateString(LOC,{month:'long',year:'numeric'})} · ${mDone}/${md.length}</div><button data-act="sovm" data-v="1" aria-label="التالي">‹</button></div>${calendar(md,d=>`<button class="vc ${cls(d)} ${d===t?'td':''}" data-act="sovday" data-d="${d}">${+d.slice(8)}</button>`)}${mk===nowK?'':`<button class="link" data-act="sovm" data-v="0">العودة لهذا الشهر</button>`}<div class="lg"><span><i style="background:var(--good)"></i>تم</span><span><i style="background:color-mix(in srgb,var(--bad) 45%,var(--soft))"></i>فاتك</span><span><i style="border:1.5px dashed var(--accent)"></i>مخطط</span></div></div>`;
+  const mc=`<div class="card"><div class="nav" style="margin:0 0 8px"><button data-act="sovm" data-v="-1" aria-label="السابق">›</button><div class="nav-l">${new Date(my,mm-1,1).toLocaleDateString(LOC,{month:'long',year:'numeric'})} · ${mDone}/${md.length}</div><button data-act="sovm" data-v="1" aria-label="التالي">‹</button></div>${calendar(md,d=>`<button class="vc ${cls(d)} ${d===t?'td':''}" data-act="sovcell" data-d="${d}">${+d.slice(8)}</button>`)}${mk===nowK?'':`<button class="link" data-act="sovm" data-v="0">العودة لهذا الشهر</button>`}<div class="lg"><span><i style="background:var(--good)"></i>تم</span><span><i style="background:color-mix(in srgb,var(--bad) 45%,var(--soft))"></i>فاتك</span><span><i style="border:1.5px dashed var(--accent)"></i>مخطط</span></div></div>`;
   const nUp=S.vids.filter(v=>!v.ok).length,nDn=S.vids.length-nUp;
   const head=`<button class="btn addb" style="margin-top:4px" data-act="sopnew">+ فيديو جديد</button><div class="seg">${[['up','أفكار وسكربتات · '+nUp],['dn','تم · '+nDn]].map(([k,n])=>`<button data-act="soflt" data-v="${k}" class="${f===k?'on':''}">${n}</button>`).join('')}</div>`;
   const L=S.vids.filter(v=>f==='up'?!v.ok:v.ok).sort((a,b)=>f==='up'?(a.d<b.d?-1:1):(a.d<b.d?1:-1));
@@ -1242,7 +1244,7 @@ function postModal(){
 <label class="fl">📝 Script</label><textarea id="pcn" dir="auto" placeholder="السكربت…" style="min-height:130px">${esc(x.s||'')}</textarea>
 <label class="fl">📣 CTA</label><input id="pcc" data-enter="sopsv" value="${esc(x.c||'')}" placeholder="مثال: تابعني للمزيد" autocomplete="off">
 <label class="fl">التاريخ</label><input id="pcd" type="date" value="${x.d}">
-<label style="display:flex;align-items:center;gap:10px;margin-top:14px;font-weight:700"><input id="pck" type="checkbox" style="width:20px;height:20px" ${x.ok?'checked':''}> سويت الفيديو ✓</label>
+<label style="display:flex;align-items:center;gap:10px;margin-top:14px;font-weight:700"><input id="pck" type="checkbox" style="width:20px;height:20px" ${(data.soc.vday[x.d]===1?true:data.soc.vday[x.d]===2?false:!!x.ok)?'checked':''}> سويت الفيديو ✓</label>
 <div class="err" id="err"></div><div class="acts"><button class="btn" data-act="sopsv">حفظ</button>${x.id?'<button class="btn ghost" data-act="sopdel">حذف</button>':''}<button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
 }
 
@@ -1930,21 +1932,30 @@ function handle(a,D){
       if(+D.v===0)ui.som=nk;
       else{const[y,m]=ck.split('-').map(Number),x=new Date(y,m-1+(+D.v),1);ui.som=x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')}
       break}
-    case 'sovtog':{const v=data.soc.vids.find(x=>x.id===D.id);if(!v)break;
+    case 'sovtog':{const v=data.soc.vids.find(x=>x.id===D.id);if(!v)break;delete data.soc.vday[v.d];
       v.ok=!v.ok;v.done=v.ok?Date.now():0;save();
       if(v.ok&&v.d===today())ui.burst={sel:'[data-act="sovtoday"]',big:true,msg:'🎉 فيديو اليوم تم!'};
       hVib(v.ok?[20,40,20]:10);break}
-    case 'sovtoday':{const S=data.soc,t=today(),g=S.vids.filter(v=>v.d===t);
-      if(g.some(v=>v.ok)){g.forEach(v=>{v.ok=false;v.done=0});S.vids=S.vids.filter(v=>!(v.d===t&&!v.h&&!v.s&&!v.c));hVib(10)}
+    case 'sovtoday':{const S=data.soc,t=today(),g=S.vids.filter(v=>v.d===t),on=soEff(t);
+      delete S.vday[t];
+      if(on){g.forEach(v=>{v.ok=false;v.done=0});S.vids=S.vids.filter(v=>!(v.d===t&&!v.h&&!v.s&&!v.c));hVib(10)}
       else{
         if(g.length){g[0].ok=true;g[0].done=Date.now()}else S.vids.push({id:uid(),d:t,h:'',s:'',c:'',ok:true,done:Date.now()});
         ui.burst={sel:'[data-act="sovtoday"]',big:true,msg:'🎉 فيديو اليوم تم!'};hVib([20,40,20]);
       }
       save();break}
+    case 'sovcell':{const d=D.d,now=Date.now(),V=ui._vt;
+      if(V&&V.d===d&&now-V.t<320){
+        clearTimeout(V.h);ui._vt=null;
+        const g=data.soc.vids.filter(v=>v.d===d);ui.modal='post';ui.soid=g.length?g[0].id:null;ui.sod=d;if(!g.length)ui.focus='#pct';break}
+      if(V)clearTimeout(V.h);
+      ui._vt={d,t:now,h:setTimeout(()=>{ui._vt=null;const S=data.soc;S.vday[d]=soEff(d)?2:1;save();hVib(10);render()},300)};
+      return false}
     case 'sopsv':{const h=$('#pct').value.trim(),s=$('#pcn').value.trim(),c=$('#pcc').value.trim(),d=$('#pcd').value,ok=$('#pck').checked,E=$('#err');
       if(!d){E.textContent='حدد التاريخ.';return false}
       if(!h&&!s&&!c&&!ok){E.textContent='اكتب الـ Hook على الأقل.';return false}
       const L=data.soc.vids;let r=L.find(y=>y.id===ui.soid);
+      if(ok||data.soc.vday[d]===1)delete data.soc.vday[d];
       if(r){const was=r.ok;Object.assign(r,{h,s,c,d,ok});if(ok&&!was)r.done=Date.now();if(!ok)r.done=0}
       else{r={id:uid(),h,s,c,d,ok,done:ok?Date.now():0};L.push(r)}
       if(ok&&d===today())ui.burst={sel:'[data-act="sovtoday"]',big:true,msg:'🎉 فيديو اليوم تم!'};
@@ -2366,7 +2377,7 @@ function lockModal(){
   if(!lkActive())return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>🔒 قفل التطبيق</h3><p class="muted">اطلب رمزاً سرياً (وبصمة أو Face ID) عند فتح التطبيق، فلا يدخله أحد غيرك.</p><div class="acts"><button class="btn" data-act="lkon">تفعيل القفل</button><button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
   return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>🔒 قفل التطبيق</h3><p class="muted" style="margin-bottom:6px">القفل مفعّل · رمز من ${c.len||4} أرقام</p>
 <label class="fl">البصمة / Face ID</label><button class="btn ghost" style="width:100%" data-act="lkbio" ${lk.bioOk?'':'disabled'}>${c.bio?'✓ مفعّلة · اضغط للإيقاف':lk.bioOk?'تفعيل البصمة / الوجه':'غير مدعومة على هذا الجهاز أو المتصفح'}</button>
-<label class="fl">يُقفل التطبيق</label><select id="lkd"><option value="0" ${c.delay===0?'selected':''}>فوراً عند الخروج منه</option><option value="30" ${c.delay===30?'selected':''}>بعد 30 ثانية من الخروج</option><option value="300" ${c.delay===300?'selected':''}>بعد 5 دقائق من الخروج</option><option value="-1" ${c.delay===-1?'selected':''}>عند فتحه من جديد فقط</option></select>
+<label class="fl">يُقفل التطبيق</label><select id="lkd"><option value="120" ${(c.delay===undefined||(c.delay>=0&&c.delay<=120))?'selected':''}>بعد دقيقتين من الخروج</option><option value="300" ${c.delay===300?'selected':''}>بعد 5 دقائق من الخروج</option><option value="900" ${c.delay===900?'selected':''}>بعد 15 دقيقة من الخروج</option><option value="-1" ${c.delay===-1?'selected':''}>عند فتحه من جديد فقط</option></select>
 <div class="acts"><button class="btn" data-act="lknow">قفل الآن</button><button class="btn ghost" data-act="lkchange">تغيير الرمز</button></div>
 <div class="acts"><button class="btn ghost" data-act="lkoff">إيقاف القفل</button><button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
 }
@@ -2375,7 +2386,7 @@ document.addEventListener('keydown',e=>{if(!lk.mode)return;if(/^\d$/.test(e.key)
 function lkVisibility(){
   if(document.hidden){lk.hiddenAt=Date.now();return}
   if(!lkActive()||lk.mode)return;
-  const d=lk.cfg.delay===undefined?30:lk.cfg.delay;
+  const d0=lk.cfg.delay===undefined?120:lk.cfg.delay,d=d0<0?d0:Math.max(d0,120);
   if(d>=0&&Date.now()-lk.hiddenAt>=d*1000&&lk.hiddenAt)lkShow('unlock');
 }
 document.addEventListener('visibilitychange',lkVisibility);
