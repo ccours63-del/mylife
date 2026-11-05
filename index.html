@@ -864,6 +864,46 @@ html[dir=rtl] .pseg{--dir:-1}
 .vbd .vm{color:var(--muted);font-size:12px;margin-top:2px}
 .vbd p{color:var(--muted);font-size:13px;margin-top:6px;white-space:pre-wrap;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .vbd .cta{color:var(--accent);font-size:12.5px;margin-top:4px;font-weight:700}
+
+/* ===== social v5: motion ===== */
+@keyframes vup{from{opacity:0;transform:translateY(16px)}}
+@keyframes vpopin{from{opacity:0;transform:scale(.4)}}
+@keyframes vpop{0%{transform:scale(1)}40%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes vglow{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 38%,transparent)}60%{box-shadow:0 0 0 9px transparent}}
+@keyframes vpulse{0%,100%{box-shadow:inset 0 0 0 2px var(--accent),0 0 0 0 color-mix(in srgb,var(--accent) 40%,transparent)}60%{box-shadow:inset 0 0 0 2px var(--accent),0 0 0 7px transparent}}
+@keyframes vflame{0%,100%{transform:rotate(-7deg) scale(1)}50%{transform:rotate(7deg) scale(1.22)}}
+@keyframes vwig{0%,86%,100%{transform:rotate(0)}90%{transform:rotate(-14deg)}95%{transform:rotate(14deg)}}
+@keyframes vslN{from{opacity:0;transform:translateX(-28px)}}
+@keyframes vslP{from{opacity:0;transform:translateX(28px)}}
+@keyframes vslZ{from{opacity:0;transform:scale(.94)}}
+@keyframes vgrow{from{transform:scaleX(0)}}
+@keyframes vcheck{0%{transform:scale(0) rotate(-45deg)}65%{transform:scale(1.35) rotate(8deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes vshine{from{background-position:200% 0}to{background-position:-200% 0}}
+.vtd:not(.ok){animation:vglow 2.4s infinite}
+.vtd:not(.ok) i{animation:vwig 4.5s infinite}
+.vtd.ok{background-image:linear-gradient(110deg,transparent 30%,color-mix(in srgb,var(--good) 22%,transparent) 50%,transparent 70%);background-size:200% 100%;animation:vshine 3.6s linear infinite}
+.vtd.pop i{animation:vcheck .55s both}
+.page.enter .vtd{animation:vup .5s both}
+.page.enter .vtd:not(.ok){animation:vup .5s both,vglow 2.4s .6s infinite}
+.page.enter .vs3>div{animation:vup .5s both;animation-delay:calc(var(--i)*80ms + 120ms)}
+.vfl{font-style:normal;display:inline-block}
+.vfl.on{animation:vflame 1.3s ease-in-out infinite}
+.page.enter .vw .vd{animation:vpopin .45s cubic-bezier(.3,1.5,.5,1) both;animation-delay:calc(var(--n)*55ms + 220ms)}
+.page.enter .vcal .vc{animation:vpopin .42s cubic-bezier(.3,1.5,.5,1) both;animation-delay:calc(var(--n)*45ms + 300ms)}
+.vc,.vd{transition:background .3s,color .3s,transform .15s,box-shadow .3s}
+.vc:active,.vd:active{transform:scale(.88)}
+.vd.td{animation:vpulse 2.2s infinite}
+.vc.td{animation:vpulse 2.2s infinite}
+.vc.pop,.vd.pop{animation:vpop .45s cubic-bezier(.3,1.8,.5,1)}
+.vd.ok u{animation:vcheck .5s both}
+.vbar{height:6px;border-radius:6px;background:var(--soft);overflow:hidden;margin-bottom:10px}
+.vbar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--accent),var(--good))}
+.page.enter .vbar i{transform-origin:right;animation:vgrow .9s .3s cubic-bezier(.2,.8,.2,1) both}
+.vcal.vs-n{animation:vslN .42s cubic-bezier(.2,.8,.2,1) both}
+.vcal.vs-p{animation:vslP .42s cubic-bezier(.2,.8,.2,1) both}
+.vcal.vs-z{animation:vslZ .4s cubic-bezier(.2,.8,.2,1) both}
+.vcal.vs-n .vc,.vcal.vs-p .vc,.vcal.vs-z .vc{animation:vpopin .38s cubic-bezier(.3,1.5,.5,1) both;animation-delay:calc(var(--n)*30ms)}
+@media (prefers-reduced-motion:reduce){.vtd,.vtd i,.vfl,.vd,.vc{animation:none!important}}
 </style>
 </head>
 <body>
@@ -1192,22 +1232,19 @@ function soStreak(set){
 function soContent(){
   const S=data.soc,t=today(),by=soVBy(),vd=S.vday,set=new Set([...S.vids.map(v=>v.d),...Object.keys(vd)].filter(soEff));
   const f=ui.sof||'up',cur=soStreak(set),td=set.has(t);
-  const cls=d=>set.has(d)?'ok':vd[d]===2?'ms':(by[d]&&d>=t)?'pl':d<t?'ms':'';
+  const sl=ui.vmv;ui.vmv=null;
+  const cls=d=>set.has(d)?'ok':vd[d]===2?'ms':by[d]?'pl':'';
   const wa=addDays(parse(t),-parse(t).getDay()),wk=daysBetween(wa,addDays(wa,6)),wDone=wk.filter(d=>set.has(d)).length;
   const nowK=t.slice(0,7),[ny,nm]=nowK.split('-').map(Number),nLen=new Date(ny,nm,0).getDate();
   const nDone=[...set].filter(d=>d.slice(0,7)===nowK).length;
   const mk=ui.som||nowK,[my,mm]=mk.split('-').map(Number);
   const md=daysBetween(new Date(my,mm-1,1),new Date(my,mm,0)),mDone=md.filter(d=>set.has(d)).length;
+  let ix=0;const lead=parse(md[0]).getDay();
   const hero=`<button class="vtd ${td?'ok':''}" data-act="sovtoday"><i>${td?'✓':'🎬'}</i><div><b>${td?'سويت فيديو اليوم 🔥':'سويت فيديو اليوم؟'}</b><small>${td?'اضغط للتراجع':'اضغط أول ما تخلص'}</small></div></button>`;
-  const stats=`<div class="vs3"><div><b style="color:var(--accent)">${cur}</b><span>🔥 سلسلة أيام</span></div><div><b>${wDone}<small>/7</small></b><span>هذا الأسبوع</span></div><div><b>${nDone}<small>/${nLen}</small></b><span>هذا الشهر</span></div></div>`;
-  const wkc=`<div class="card"><div class="sph"><b>الأسبوع</b><span class="muted">${wDone}/7</span></div><div class="vw">${wk.map(d=>`<button class="vd ${cls(d)} ${d===t?'td':''}" data-act="sovday" data-d="${d}"><small>${parse(d).toLocaleDateString(LOC,{weekday:'short'})}</small><b>${+d.slice(8)}</b><u>${set.has(d)?'✓':''}</u></button>`).join('')}</div></div>`;
-  const mc=`<div class="card"><div class="nav" style="margin:0 0 8px"><button data-act="sovm" data-v="-1" aria-label="السابق">›</button><div class="nav-l">${new Date(my,mm-1,1).toLocaleDateString(LOC,{month:'long',year:'numeric'})} · ${mDone}/${md.length}</div><button data-act="sovm" data-v="1" aria-label="التالي">‹</button></div>${calendar(md,d=>`<button class="vc ${cls(d)} ${d===t?'td':''}" data-act="sovcell" data-d="${d}">${+d.slice(8)}</button>`)}${mk===nowK?'':`<button class="link" data-act="sovm" data-v="0">العودة لهذا الشهر</button>`}<div class="lg"><span><i style="background:var(--good)"></i>تم</span><span><i style="background:color-mix(in srgb,var(--bad) 45%,var(--soft))"></i>فاتك</span><span><i style="border:1.5px dashed var(--accent)"></i>مخطط</span></div></div>`;
-  const nUp=S.vids.filter(v=>!v.ok).length,nDn=S.vids.length-nUp;
-  const head=`<button class="btn addb" style="margin-top:4px" data-act="sopnew">+ فيديو جديد</button><div class="seg">${[['up','أفكار وسكربتات · '+nUp],['dn','تم · '+nDn]].map(([k,n])=>`<button data-act="soflt" data-v="${k}" class="${f===k?'on':''}">${n}</button>`).join('')}</div>`;
-  const L=S.vids.filter(v=>f==='up'?!v.ok:v.ok).sort((a,b)=>f==='up'?(a.d<b.d?-1:1):(a.d<b.d?1:-1));
-  const card=v=>`<div class="vcd ${v.ok?'dn':''}"><button class="vck ${v.ok?'on':''}" data-act="sovtog" data-id="${v.id}" aria-label="تم">✓</button><button class="vbd" data-act="soved" data-id="${v.id}"><b>${esc(v.h)||'فيديو بدون Hook'}</b><div class="vm">${soDayLbl(v.d)}${!v.ok&&v.d<t?' · <span style="color:var(--bad)">فات</span>':''}</div>${v.s?`<p>${esc(v.s)}</p>`:''}${v.c?`<div class="cta">📣 ${esc(v.c)}</div>`:''}</button></div>`;
-  const body=L.length?L.map(card).join(''):empty(f==='up'?'ما فيه أفكار. اضغط «فيديو جديد» 🎬':'لا يوجد فيديوهات منجزة بعد');
-  return hero+stats+wkc+mc+head+body;
+  const stats=`<div class="vs3"><div style="--i:0"><b style="color:var(--accent)" data-cnt="${cur}">${cur}</b><span><em class="vfl ${cur?'on':''}">🔥</em> سلسلة أيام</span></div><div style="--i:1"><b><span data-cnt="${wDone}">${wDone}</span><small>/7</small></b><span>هذا الأسبوع</span></div><div style="--i:2"><b><span data-cnt="${nDone}">${nDone}</span><small>/${nLen}</small></b><span>هذا الشهر</span></div></div>`;
+  const wkc=`<div class="card"><div class="sph"><b>الأسبوع</b><span class="muted">${wDone}/7</span></div><div class="vw">${wk.map((d,n)=>`<button class="vd ${cls(d)} ${d===t?'td':''}" style="--n:${n}" data-act="sovday" data-d="${d}"><small>${parse(d).toLocaleDateString(LOC,{weekday:'short'})}</small><b>${+d.slice(8)}</b><u>${set.has(d)?'✓':''}</u></button>`).join('')}</div></div>`;
+  const mc=`<div class="card"><div class="nav" style="margin:0 0 8px"><button data-act="sovm" data-v="-1" aria-label="السابق">›</button><div class="nav-l">${new Date(my,mm-1,1).toLocaleDateString(LOC,{month:'long',year:'numeric'})} · ${mDone}/${md.length}</div><button data-act="sovm" data-v="1" aria-label="التالي">‹</button></div><div class="vbar"><i style="width:${mDone/md.length*100}%"></i></div><div class="vcal ${sl?'vs-'+sl:''}">${calendar(md,d=>{const n=ix++,w=Math.floor((lead+n)/7)+(lead+n)%7;return`<button class="vc ${cls(d)} ${d===t?'td':''}" style="--n:${w}" data-act="sovcell" data-d="${d}">${+d.slice(8)}</button>`})}</div>${mk===nowK?'':`<button class="link" data-act="sovm" data-v="0">العودة لهذا الشهر</button>`}<div class="lg"><span><i style="background:var(--good)"></i>تم</span><span><i style="background:color-mix(in srgb,var(--bad) 45%,var(--soft))"></i>فاتك</span><span><i style="border:1.5px dashed var(--accent)"></i>مخطط</span></div></div>`;
+  return hero+stats+wkc+mc;
 }
 function soLink(){
   const S=data.soc,a=S.api;
@@ -1928,7 +1965,7 @@ function handle(a,D){
     case 'sopnew':ui.modal='post';ui.soid=null;ui.sod=null;ui.focus='#pct';break;
     case 'soved':ui.modal='post';ui.soid=D.id;ui.sod=null;break;
     case 'sovday':{const g=data.soc.vids.filter(v=>v.d===D.d);ui.modal='post';ui.soid=g.length?g[0].id:null;ui.sod=D.d;if(!g.length)ui.focus='#pct';break}
-    case 'sovm':{const nk=today().slice(0,7),ck=ui.som||nk;
+    case 'sovm':{const nk=today().slice(0,7),ck=ui.som||nk;ui.vmv=+D.v>0?'n':+D.v<0?'p':'z';
       if(+D.v===0)ui.som=nk;
       else{const[y,m]=ck.split('-').map(Number),x=new Date(y,m-1+(+D.v),1);ui.som=x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')}
       break}
@@ -1941,7 +1978,7 @@ function handle(a,D){
       if(on){g.forEach(v=>{v.ok=false;v.done=0});S.vids=S.vids.filter(v=>!(v.d===t&&!v.h&&!v.s&&!v.c));hVib(10)}
       else{
         if(g.length){g[0].ok=true;g[0].done=Date.now()}else S.vids.push({id:uid(),d:t,h:'',s:'',c:'',ok:true,done:Date.now()});
-        ui.burst={sel:'[data-act="sovtoday"]',big:true,msg:'🎉 فيديو اليوم تم!'};hVib([20,40,20]);
+        ui.burst={sel:'[data-act="sovtoday"]',big:true,msg:'🎉 فيديو اليوم تم!'};ui.pop='.vtd';hVib([20,40,20]);
       }
       save();break}
     case 'sovcell':{const d=D.d,now=Date.now(),V=ui._vt;
@@ -1949,7 +1986,7 @@ function handle(a,D){
         clearTimeout(V.h);ui._vt=null;
         const g=data.soc.vids.filter(v=>v.d===d);ui.modal='post';ui.soid=g.length?g[0].id:null;ui.sod=d;if(!g.length)ui.focus='#pct';break}
       if(V)clearTimeout(V.h);
-      ui._vt={d,t:now,h:setTimeout(()=>{ui._vt=null;const S=data.soc;S.vday[d]=soEff(d)?2:1;save();hVib(10);render()},300)};
+      ui._vt={d,t:now,h:setTimeout(()=>{ui._vt=null;const S=data.soc;S.vday[d]=soEff(d)?2:1;save();hVib(10);ui.pop='.vc[data-d="'+d+'"]';render()},300)};
       return false}
     case 'sopsv':{const h=$('#pct').value.trim(),s=$('#pcn').value.trim(),c=$('#pcc').value.trim(),d=$('#pcd').value,ok=$('#pck').checked,E=$('#err');
       if(!d){E.textContent='حدد التاريخ.';return false}
