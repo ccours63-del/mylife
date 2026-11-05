@@ -925,7 +925,9 @@ function soDelta(p,days){
 function soTD(days){let t=0,any=false;SP.forEach(([p])=>{const d=soDelta(p,days);if(d!==null){t+=d;any=true}});return any?t:null}
 const soDl=n=>n===null?'<b class="dl z">—</b>':`<b class="dl ${n>0?'up':n<0?'dn':'z'}">${n>0?'+':n<0?'−':''}${nf(Math.abs(n))}</b>`;
 const soAgo=ts=>{const m=Math.round((Date.now()-ts)/6e4);return m<1?'الآن':m<60?'قبل '+m+' د':m<1440?'قبل '+Math.round(m/60)+' س':'قبل '+Math.round(m/1440)+' يوم'};
-const soAutoOn=p=>{const S=data.soc,a=S.api;return p==='yt'?!!(a.ytKey&&S.h.yt):(p==='ig'||p==='fb')?!!(a.fbToken&&a.fbPage):false};
+const SO_W='https://muddy-meadow-3d52.ccours63.workers.dev';
+const soW=()=>{const a=data.soc.api;return a.ttUrl===undefined?SO_W:String(a.ttUrl||'').trim()};
+const soAutoOn=p=>{const S=data.soc,a=S.api;return p==='tt'?!!soW():p==='yt'?!!(a.ytKey&&S.h.yt):(p==='ig'||p==='fb')?!!(a.fbToken&&a.fbPage):false};
 const soLinked=()=>SP.some(([p])=>soAutoOn(p));
 function soSrc(p){
   const S=data.soc,e=S.err[p],u=S.upd[p];
@@ -958,6 +960,12 @@ async function soMeta(page,token){
   const j=await soGet(`https://graph.facebook.com/v21.0/${encodeURIComponent(page)}?fields=followers_count,fan_count,instagram_business_account%7Bfollowers_count%7D&access_token=${encodeURIComponent(token)}`);
   return{fb:j.followers_count!=null?j.followers_count:j.fan_count,ig:j.instagram_business_account?j.instagram_business_account.followers_count:null};
 }
+async function soWorker(u){
+  const c=new AbortController(),t=setTimeout(()=>c.abort(),15000);
+  try{const r=await fetch(u,{signal:c.signal});if(!r.ok)throw new Error('HTTP '+r.status);return await r.json()}
+  catch(e){throw new Error(e&&e.name==='AbortError'?'انتهت مهلة الاتصال بالوسيط (جرّب VPN أو نطاقاً خاصاً)':'تعذّر الاتصال بالوسيط')}
+  finally{clearTimeout(t)}
+}
 let soBusy=false;
 async function soFetchAll(force){
   const S=data.soc,a=S.api;
@@ -965,6 +973,10 @@ async function soFetchAll(force){
   if(!force&&Date.now()-(S.last||0)<108e5)return;
   soBusy=true;if(ui.tab==='social'&&!ui.modal)render();
   const jobs=[];
+  if(soAutoOn('tt'))jobs.push(soWorker(soW()).then(j=>{
+    if(j.tiktok!=null)soPut('tt',j.tiktok,true,'auto');else soErr('tt','لم يُرجع الوسيط رقم تيك توك');
+    if(j.instagram!=null&&!soAutoOn('ig'))soPut('ig',j.instagram,true,'auto');
+  },e=>soErr('tt',e)));
   if(soAutoOn('yt'))jobs.push(soYT(a.ytKey,S.h.yt).then(n=>soPut('yt',n,true,'auto'),e=>soErr('yt',e)));
   if(soAutoOn('fb'))jobs.push(soMeta(a.fbPage,a.fbToken).then(r=>{
     if(r.fb!=null)soPut('fb',r.fb,true,'auto');else soErr('fb','لا يوجد عدد متابعين لهذه الصفحة');
@@ -1038,7 +1050,9 @@ function soLink(){
 <label class="fl">معرّف الصفحة (Page ID)</label><input id="lnfp" dir="ltr" value="${esc(a.fbPage||'')}" autocomplete="off">
 <label class="fl">توكن الصفحة (Page Access Token)</label><input id="lnft" type="password" dir="ltr" value="${esc(a.fbToken||'')}" autocomplete="off">
 <details><summary>كيف أحصل عليهما؟</summary><ol><li>افتح developers.facebook.com/tools/explorer واختر تطبيقاً (أنشئ تطبيقاً من نوع Business إن لزم).</li><li>اطلب الصلاحيات: pages_show_list وpages_read_engagement وinstagram_basic.</li><li>حوّل توكن المستخدم إلى طويل المدى (fb_exchange_token)، ثم افتح me/accounts: ستجد صفحتك مع id وaccess_token، وتوكن الصفحة هذا لا ينتهي.</li><li>إنستغرام يجب أن يكون حساباً احترافياً مرتبطاً بالصفحة.</li></ol></details></div>
-<div class="card"><b style="color:var(--tt)">تيك توك</b><p class="muted" style="margin-top:6px">تيك توك لا يتيح قراءة المتابعين من صفحة ويب، فيبقى رقمه يدوياً: «إدخال سريع» ثم غيّر رقم تيك توك فقط.</p></div>
+<div class="card"><b style="color:var(--tt)">تيك توك (عبر وسيط Cloudflare)</b>
+<label class="fl">رابط الوسيط (Worker URL)</label><input id="lntt" dir="ltr" value="${esc(soW())}" placeholder="https://xxx.workers.dev" autocomplete="off">
+<p class="muted" style="margin-top:6px">يجلب رقم تيك توك تلقائياً (وإنستغرام إن أمكن). اتركه فارغاً لتعطيل الجلب والعودة للإدخال اليدوي. إن كانت شبكتك تحجب workers.dev فاستخدم VPN أو اربط الوسيط بنطاقك.</p></div>
 <button class="btn addb" data-act="solsave">حفظ وتحديث الآن</button>`;
 }
 function soplModal(){
@@ -1737,7 +1751,7 @@ function handle(a,D){
       if(v!==''&&+v>=0){const n=Math.round(+v),old=soLast(p);soPut(p,n,n!==old,'manual')}
       ui.modal=null;save();break}
     case 'solsave':{const S=data.soc,g=i=>($(i)?$(i).value.trim():'');
-      S.api.ytKey=g('#lnyk');S.h.yt=g('#lnyh')||S.h.yt;S.api.fbPage=g('#lnfp');S.api.fbToken=g('#lnft');
+      S.api.ytKey=g('#lnyk');S.h.yt=g('#lnyh')||S.h.yt;S.api.fbPage=g('#lnfp');S.api.fbToken=g('#lnft');S.api.ttUrl=g('#lntt');
       save();soFetchAll(true);break}
     case 'sopnew':ui.modal='post';ui.soid=null;ui.focus='#pct';break;
     case 'soped':ui.modal='post';ui.soid=D.id;break;
