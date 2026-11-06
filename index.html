@@ -904,6 +904,24 @@ html[dir=rtl] .pseg{--dir:-1}
 .vcal.vs-z{animation:vslZ .4s cubic-bezier(.2,.8,.2,1) both}
 .vcal.vs-n .vc,.vcal.vs-p .vc,.vcal.vs-z .vc{animation:vpopin .38s cubic-bezier(.3,1.5,.5,1) both;animation-delay:calc(var(--n)*30ms)}
 @media (prefers-reduced-motion:reduce){.vtd,.vtd i,.vfl,.vd,.vc{animation:none!important}}
+
+/* ===== toolbar customizer ===== */
+.tb-cfg{flex:none;margin-inline-start:6px;border-inline-start:1px solid var(--line)!important;border-radius:0!important;color:var(--muted)!important}
+.tbs{max-height:85vh;display:flex;flex-direction:column}
+.tbl{overflow-y:auto;overscroll-behavior:contain;flex:1;min-height:0;margin:0 -4px;padding:0 4px}
+.tbr{display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid var(--line)}
+.tbr .tbi{flex:none;width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:var(--soft)}
+.tbr b{flex:1;font-size:14px;font-weight:700;min-width:0}
+.tbr.off{opacity:.5}
+.tbc{display:flex;gap:6px;align-items:center}
+.tbc button{width:34px;height:34px;border-radius:10px;background:var(--soft);font-weight:800;font-size:16px;color:var(--ink);transition:transform .12s,background .2s}
+.tbc button:active:not(:disabled){transform:scale(.88)}
+.tbc button:disabled{opacity:.25}
+.tbc .tbe{width:auto;padding:0 10px;font-size:12.5px;color:var(--muted)}
+.tbc .tbe.on{background:color-mix(in srgb,var(--good) 22%,var(--soft));color:var(--ink)}
+.tbx{width:60px}
+.tbr.flash{animation:tbfl .6s ease}
+@keyframes tbfl{0%{background:color-mix(in srgb,var(--accent) 30%,transparent)}100%{background:transparent}}
 </style>
 </head>
 <body>
@@ -1358,7 +1376,16 @@ function viewHabit(){
 /* ---------- home (day page) ---------- */
 const TBG=[['menu'],['check','sub','bullet','number'],['h1','h2','h3','quote','callout','code','divider'],['bold','italic','underline','strike','mark'],['color','bg','size','align'],['outdent','indent','clear']];
 const TIP={menu:'كل الأدوات',check:'قائمة مهام',sub:'مهمة بمهام فرعية',bullet:'قائمة نقطية',number:'قائمة مرقمة',h1:'عنوان كبير',h2:'عنوان متوسط',h3:'عنوان صغير',quote:'اقتباس',callout:'تنبيه',code:'كود',divider:'فاصل',bold:'عريض',italic:'مائل',underline:'تسطير',strike:'يتوسطه خط',mark:'تمييز',color:'لون النص',bg:'لون الخلفية',size:'حجم الخط',align:'المحاذاة',outdent:'إخراج من الداخل',indent:'إدخال للداخل',clear:'مسح التنسيق'};
-const toolsBar=()=>`<div class="ed-tools"><div class="ed-tools-in">${TBG.map(g=>g.map(c=>`<button type="button" data-c="${c}" title="${TIP[c]}" aria-label="${TIP[c]}">${si(c,19)}</button>`).join('')).join('<i class="tsep"></i>')}</div></div>`;
+const tbAll=()=>TBG.flat();
+const tbOrder=()=>{const t=data.tb;if(!t||!Array.isArray(t.o))return null;const all=tbAll(),o=t.o.filter((k,i,a)=>all.includes(k)&&a.indexOf(k)===i);all.forEach(k=>{if(!o.includes(k))o.push(k)});return o};
+const tbHid=()=>new Set(data.tb&&Array.isArray(data.tb.h)?data.tb.h.filter(k=>k!=='menu'):[]);
+const toolsBar=()=>{const o=tbOrder(),hid=tbHid(),btn=c=>`<button type="button" data-c="${c}" title="${TIP[c]}" aria-label="${TIP[c]}">${si(c,19)}</button>`;
+  const body=o?o.filter(c=>!hid.has(c)).map(btn).join(''):TBG.map(g=>g.filter(c=>!hid.has(c)).map(btn).join('')).join('<i class="tsep"></i>');
+  return`<div class="ed-tools"><div class="ed-tools-in">${body}</div><button type="button" class="tb-cfg" data-act="tbset" aria-label="ترتيب الأدوات"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.4"/><circle cx="8" cy="17" r="2.4"/></svg></button></div>`};
+const tbRows=()=>{const o=tbOrder()||tbAll(),hid=tbHid();
+  return o.map((c,i)=>`<div class="tbr ${hid.has(c)?'off':''} ${ui.tbf===c?'flash':''}"><span class="tbi">${si(c,19)}</span><b>${TIP[c]}</b><span class="tbc"><button type="button" data-act="tbmv" data-c="${c}" data-v="-1" ${i===0?'disabled':''} aria-label="تقديم">↑</button><button type="button" data-act="tbmv" data-c="${c}" data-v="1" ${i===o.length-1?'disabled':''} aria-label="تأخير">↓</button>${c==='menu'?'<span class="tbx"></span>':`<button type="button" class="tbe ${hid.has(c)?'':'on'}" data-act="tbhd" data-c="${c}">${hid.has(c)?'مخفي':'ظاهر'}</button>`}</span></div>`).join('')};
+function tbModal(){return`<div class="ov" data-act="ovclose"><div class="sheet tbs" role="dialog" aria-modal="true"><h3>ترتيب الأدوات</h3><p class="muted" style="font-size:13px;margin:4px 0 10px">الأعلى = أول الشريط. ↑ للتقديم و↓ للتأخير، ويمكنك إخفاء ما لا تستعمله.</p><div class="tbl">${tbRows()}</div><div class="acts"><button class="btn" data-act="close">تم</button><button class="btn ghost" data-act="tbrs">الترتيب الافتراضي</button></div></div></div>`}
+const tbRefresh=()=>{const el=document.querySelector('.tbl');if(el)el.innerHTML=tbRows()};
 const HK=['day','week','month'];
 const dayLines=d=>{const doc=data.days[d];return doc?doc.blocks.filter(b=>b.type!=='divider').map(b=>({t:stripHtml(b.html),c:b.type==='check',x:b.done,h:/^h\d$/.test(b.type),i:b.type==='bullet'||b.type==='number'})).filter(l=>l.t):[]};
 const dayHas=d=>{const doc=data.days[d];return !!doc&&(!!(doc.title||'').trim()||dayLines(d).length>0)};
@@ -1778,6 +1805,7 @@ function modalHtml(){
   if(ui.modal==='soq')return soqModal();
   if(ui.modal==='post')return postModal();
   if(ui.modal==='lock')return lockModal();
+  if(ui.modal==='tbset')return tbModal();
   if(ui.modal==='tedit')return teditModal();
   if(ui.modal==='wake')return wakeModal();
   if(ui.modal==='slots')return slotsModal();
@@ -1999,7 +2027,12 @@ function handle(a,D){
       ui.sof=ok?'dn':'up';ui.modal=null;save();break}
     case 'sopdel':{if(!confirm('حذف هذا الفيديو؟'))return false;data.soc.vids=data.soc.vids.filter(x=>x.id!==ui.soid);ui.modal=null;save();break}
     case 'modal':ui.modal=D.v;break;
-    case 'close':ui.modal=null;break;
+    case 'close':ui.modal=null;ui.tbf=null;break;
+    case 'tbset':ui.modal='tbset';ui.tbf=null;break;
+    case 'tbmv':{const o=(tbOrder()||tbAll()).slice(),i=o.indexOf(D.c),j=i+(+D.v);if(i<0||j<0||j>=o.length)return false;
+      [o[i],o[j]]=[o[j],o[i]];data.tb=data.tb||{};data.tb.o=o;ui.tbf=D.c;save();tbRefresh();hVib(8);return false}
+    case 'tbhd':{const h=tbHid();h.has(D.c)?h.delete(D.c):h.add(D.c);data.tb=data.tb||{};data.tb.h=[...h];ui.tbf=D.c;save();tbRefresh();return false}
+    case 'tbrs':{data.tb=null;ui.tbf=null;save();tbRefresh();return false}
     case 'ovclose':return false;
     case 'copybk':{const ta=$('#bk');ta.select();try{navigator.clipboard.writeText(ta.value)}catch(e){try{document.execCommand('copy')}catch(_){}}$('#err').textContent='تم تحديد النص ونسخه.';$('#err').style.color='var(--good)';return false}
     case 'exportfile':{const b=new Blob([JSON.stringify(data)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='my-life-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),3000);$('#err').textContent='تم تنزيل الملف.';$('#err').style.color='var(--good)';return false}
