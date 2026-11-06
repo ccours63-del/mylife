@@ -1239,6 +1239,7 @@ function soGrowth(){
   const btns=`<div class="row" style="margin:6px 0">${soLinked()?`<button class="btn" style="flex:1" data-act="sofetch" ${soBusy?'disabled':''}>${soBusy?'جاري التحديث…':'↻ تحديث الآن'}</button>`:''}<button class="btn ghost" style="flex:1" data-act="soquick">✎ إدخال سريع</button></div>`;
   return top+tbl+btns;
 }
+const SPER=[['day','يوم'],['week','أسبوع'],['month','شهر'],['year','سنة']];
 const soDayLbl=d=>{const t=today();return d===t?'اليوم':d===fmt(addDays(parse(t),1))?'غداً':parse(d).toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'})};
 const soEff=d=>{const S=data.soc,m=S.vday[d];return m===1||(m===undefined&&S.vids.some(v=>v.d===d&&v.ok))};
 const soVBy=()=>{const m={};data.soc.vids.forEach(v=>{(m[v.d]=m[v.d]||[]).push(v)});return m};
