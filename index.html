@@ -934,6 +934,69 @@ html[dir=rtl] .pseg{--dir:-1}
 .tbx{width:60px}
 .tbr.flash{animation:tbfl .6s ease}
 @keyframes tbfl{0%{background:color-mix(in srgb,var(--accent) 30%,transparent)}100%{background:transparent}}
+
+/* ===== v6: new look, glow, lighter motion ===== */
+:root{--glow:color-mix(in srgb,var(--accent) 55%,transparent);--gglow:color-mix(in srgb,var(--good) 55%,transparent)}
+body{background:radial-gradient(900px 500px at 85% -10%,color-mix(in srgb,var(--accent) 16%,transparent),transparent 60%),radial-gradient(700px 500px at -10% 30%,color-mix(in srgb,#7C5CFF 14%,transparent),transparent 60%),radial-gradient(800px 600px at 60% 110%,color-mix(in srgb,var(--good) 10%,transparent),transparent 60%),var(--bg);background-attachment:fixed}
+.topbar{background:linear-gradient(to bottom,rgba(11,13,16,.88),rgba(11,13,16,.6));border-bottom:1px solid color-mix(in srgb,var(--accent) 18%,transparent);box-shadow:0 8px 30px -12px var(--glow)}
+.brand{background:linear-gradient(120deg,#FFD27A,var(--accent) 50%,#FF9F5A);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 10px var(--glow));letter-spacing:.3px}
+.icb{background:linear-gradient(145deg,var(--soft),var(--surface));border:1px solid var(--line);box-shadow:0 4px 14px -6px #000;transition:transform .15s,box-shadow .25s,color .25s}
+.icb:active{transform:scale(.92);box-shadow:0 0 16px var(--glow);color:var(--accent)}
+.card,.stat,.gt,.vs3>div{background:linear-gradient(160deg,color-mix(in srgb,var(--surface) 92%,#fff 8%),var(--surface) 55%);border:1px solid color-mix(in srgb,var(--line) 70%,var(--accent) 12%);box-shadow:0 10px 30px -16px #000,inset 0 1px 0 rgba(255,255,255,.04);border-radius:20px}
+.seg{background:color-mix(in srgb,var(--soft) 80%,#000);border:1px solid var(--line)}
+.seg .on{background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 60%,#FF8A4C));color:var(--accent-ink);box-shadow:0 6px 20px -4px var(--glow)}
+.btn{background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 60%,#FF8A4C));box-shadow:0 8px 22px -8px var(--glow);transition:transform .15s,box-shadow .2s}
+.btn:active{transform:scale(.96)}.btn.ghost{background:var(--soft);box-shadow:none}
+.nav button{background:linear-gradient(145deg,var(--soft),var(--surface));border-radius:14px}
+.nav button:active{box-shadow:0 0 14px var(--glow)}
+.ptitle{text-shadow:0 0 22px var(--glow)}
+/* dock glow */
+.dock{background:rgba(14,17,22,.78);border-top:1px solid color-mix(in srgb,var(--accent) 20%,var(--line));box-shadow:0 -10px 34px -14px var(--glow)}
+.dk-ind{box-shadow:0 0 26px -2px var(--glow),inset 0 0 0 1px color-mix(in srgb,var(--accent) 30%,transparent)}
+.dk-b.on{color:var(--accent)}.dk-b.on svg{filter:drop-shadow(0 0 7px var(--accent))}
+.sheet{background:linear-gradient(170deg,color-mix(in srgb,var(--surface) 90%,#fff 10%),var(--surface) 40%);border-top:1px solid color-mix(in srgb,var(--accent) 30%,var(--line));box-shadow:0 -20px 60px -20px var(--glow)}
+.ov{background:rgba(4,6,9,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+input:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent),0 0 18px -4px var(--glow)}
+/* social content: light + glowing */
+.vtd{border-radius:22px;box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 25%,transparent),0 12px 34px -14px var(--glow)}
+.vtd.ok{box-shadow:0 0 0 1px var(--good),0 12px 34px -12px var(--gglow)}
+.vtd:not(.ok){animation:none!important}.page.enter .vtd:not(.ok){animation:vup .4s both!important}
+.vs3 b{text-shadow:0 0 14px color-mix(in srgb,var(--accent) 45%,transparent)}
+.vc{background:linear-gradient(145deg,var(--soft),color-mix(in srgb,var(--soft) 80%,#000));border:1px solid rgba(255,255,255,.04);border-radius:14px;transition:background .12s,transform .1s,box-shadow .15s,color .12s}
+.vc:active:not(:disabled){transform:scale(.9)}
+.vc.ok{background:linear-gradient(145deg,#5BE0A0,#2FA874);color:#04140f;border-color:transparent;box-shadow:0 0 16px -2px var(--gglow)}
+.vc.ms{background:linear-gradient(145deg,#4A2C34,#37232A);color:#F2B8B4;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--bad) 35%,transparent)}
+.vc.pl{border:1.5px dashed var(--accent)}
+.vc.td{animation:none!important;box-shadow:inset 0 0 0 2px var(--accent),0 0 18px -2px var(--glow)}
+.vc.ok.td{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--good),0 0 20px var(--gglow)}
+.vc.fu,.vc:disabled{opacity:.28;cursor:not-allowed;background:transparent;border:1px dashed var(--line);box-shadow:none;color:var(--muted)}
+.vc.pop{animation:vpop2 .2s ease-out!important}
+@keyframes vpop2{0%{transform:scale(.88)}60%{transform:scale(1.07)}100%{transform:scale(1)}}
+.page.enter .vcal .vc{animation:vpopin .28s ease-out both;animation-delay:calc(var(--n)*14ms + 80ms)}
+.vcal.vs-n .vc,.vcal.vs-p .vc,.vcal.vs-z .vc{animation:vpopin .22s ease-out both;animation-delay:calc(var(--n)*8ms)}
+.vbar i{box-shadow:0 0 12px var(--gglow)}
+/* progress chart */
+.pgc .pgp{font-weight:800;color:var(--good);text-shadow:0 0 12px var(--gglow)}
+.pgw{margin:6px 0 4px;direction:ltr}
+.pgs{width:100%;height:130px;display:block;overflow:visible}
+.pgb{stroke:var(--line);stroke-width:1}
+.pgi{stroke:var(--muted);stroke-width:1.4;stroke-dasharray:4 5;fill:none;opacity:.55;vector-effect:non-scaling-stroke}
+.pgl{fill:none;stroke:var(--good);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 6px var(--gglow));stroke-dasharray:1;stroke-dashoffset:0}
+.page.enter .pgl{animation:pgdraw 1s .2s ease-out both}
+@keyframes pgdraw{from{stroke-dashoffset:1}}
+.pgd{fill:#fff;stroke:var(--good);stroke-width:2.5;filter:drop-shadow(0 0 8px var(--good))}
+.mbs{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:10px;direction:ltr}
+.mb{display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;border-radius:12px;transition:background .2s}
+.mb b{font-size:12px;font-weight:800}.mb small{font-size:11px;color:var(--muted)}
+.mbt{width:100%;max-width:30px;height:70px;border-radius:9px;background:var(--soft);display:flex;align-items:flex-end;overflow:hidden}
+.mbt i{display:block;width:100%;height:var(--h);border-radius:9px;background:linear-gradient(to top,color-mix(in srgb,var(--accent) 60%,#000),var(--accent));transform-origin:bottom;animation:mbup .5s calc(var(--i)*50ms) ease-out both}
+.mb.sel .mbt i{background:linear-gradient(to top,#2FA874,#5BE0A0);box-shadow:0 0 14px var(--gglow)}
+.mb.sel small{color:var(--good);font-weight:800}
+@keyframes mbup{from{transform:scaleY(0)}}
+/* post sheet: one page */
+.pm .pmt{min-height:230px;font-size:16px;line-height:1.8;border-radius:16px;padding:14px;background:color-mix(in srgb,var(--bg) 85%,#000)}
+.pmk{display:flex;align-items:center;gap:10px;margin-top:14px;font-weight:700}
+.pmk input{width:22px;height:22px;accent-color:var(--good)}
 </style>
 </head>
 <body>
@@ -1315,20 +1378,31 @@ function soStreak(set){
 }
 function soContent(){
   const S=data.soc,t=today(),by=soVBy(),vd=S.vday,set=new Set([...S.vids.map(v=>v.d),...Object.keys(vd)].filter(soEff));
-  const f=ui.sof||'up',cur=soStreak(set),td=set.has(t);
+  const cur=soStreak(set),td=set.has(t);
   const sl=ui.vmv;ui.vmv=null;
   const cls=d=>set.has(d)?'ok':vd[d]===2?'ms':by[d]?'pl':'';
-  const wa=addDays(parse(t),-parse(t).getDay()),wk=daysBetween(wa,addDays(wa,6)),wDone=wk.filter(d=>set.has(d)).length;
   const nowK=t.slice(0,7),[ny,nm]=nowK.split('-').map(Number),nLen=new Date(ny,nm,0).getDate();
   const nDone=[...set].filter(d=>d.slice(0,7)===nowK).length;
+  const arr=[...set].sort();let best=0,run=0,prev=null;
+  for(const k of arr){run=(prev&&fmt(addDays(parse(prev),1))===k)?run+1:1;prev=k;best=Math.max(best,run)}
   const mk=ui.som||nowK,[my,mm]=mk.split('-').map(Number);
   const md=daysBetween(new Date(my,mm-1,1),new Date(my,mm,0)),mDone=md.filter(d=>set.has(d)).length;
-  let ix=0;const lead=parse(md[0]).getDay();
+  const lead=parse(md[0]).getDay(),n=md.length;let ix=0;
   const hero=`<button class="vtd ${td?'ok':''}" data-act="sovtoday"><i>${td?'✓':'🎬'}</i><div><b>${td?'سويت فيديو اليوم 🔥':'سويت فيديو اليوم؟'}</b><small>${td?'اضغط للتراجع':'اضغط أول ما تخلص'}</small></div></button>`;
-  const stats=`<div class="vs3"><div style="--i:0"><b style="color:var(--accent)" data-cnt="${cur}">${cur}</b><span><em class="vfl ${cur?'on':''}">🔥</em> سلسلة أيام</span></div><div style="--i:1"><b><span data-cnt="${wDone}">${wDone}</span><small>/7</small></b><span>هذا الأسبوع</span></div><div style="--i:2"><b><span data-cnt="${nDone}">${nDone}</span><small>/${nLen}</small></b><span>هذا الشهر</span></div></div>`;
-  const wkc=`<div class="card"><div class="sph"><b>الأسبوع</b><span class="muted">${wDone}/7</span></div><div class="vw">${wk.map((d,n)=>`<button class="vd ${cls(d)} ${d===t?'td':''}" style="--n:${n}" data-act="sovday" data-d="${d}"><small>${parse(d).toLocaleDateString(LOC,{weekday:'short'})}</small><b>${+d.slice(8)}</b><u>${set.has(d)?'✓':''}</u></button>`).join('')}</div></div>`;
-  const mc=`<div class="card"><div class="nav" style="margin:0 0 8px"><button data-act="sovm" data-v="-1" aria-label="السابق">›</button><div class="nav-l">${new Date(my,mm-1,1).toLocaleDateString(LOC,{month:'long',year:'numeric'})} · ${mDone}/${md.length}</div><button data-act="sovm" data-v="1" aria-label="التالي">‹</button></div><div class="vbar"><i style="width:${mDone/md.length*100}%"></i></div><div class="vcal ${sl?'vs-'+sl:''}">${calendar(md,d=>{const n=ix++,w=Math.floor((lead+n)/7)+(lead+n)%7;return`<button class="vc ${cls(d)} ${d===t?'td':''}" style="--n:${w}" data-act="sovcell" data-d="${d}">${+d.slice(8)}</button>`})}</div>${mk===nowK?'':`<button class="link" data-act="sovm" data-v="0">العودة لهذا الشهر</button>`}<div class="lg"><span><i style="background:var(--good)"></i>تم</span><span><i style="background:color-mix(in srgb,var(--bad) 45%,var(--soft))"></i>فاتك</span><span><i style="border:1.5px dashed var(--accent)"></i>مخطط</span></div></div>`;
-  return hero+stats+wkc+mc;
+  const stats=`<div class="vs3"><div style="--i:0"><b style="color:var(--accent)" data-cnt="${cur}">${cur}</b><span><em class="vfl ${cur?'on':''}">🔥</em> سلسلة أيام</span></div><div style="--i:1"><b data-cnt="${best}">${best}</b><span>🏆 أفضل سلسلة</span></div><div style="--i:2"><b><span data-cnt="${nDone}">${nDone}</span><small>/${nLen}</small></b><span>هذا الشهر</span></div></div>`;
+  /* progress chart: cumulative videos in viewed month vs ideal pace */
+  const W=300,H=120,P=10,X=i=>P+i/(n-1)*(W-2*P),Y=v=>H-P-v/n*(H-2*P);
+  let c=0;const pts=[];md.forEach((d,i)=>{if(d<=t){if(set.has(d))c++;pts.push([X(i),Y(c)])}});
+  const line=pts.map((q,i)=>(i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' ');
+  const area=pts.length?line+` L${pts[pts.length-1][0].toFixed(1)} ${H-P} L${pts[0][0].toFixed(1)} ${H-P} Z`:'';
+  const lp=pts[pts.length-1];
+  const chart=pts.length?`<svg class="pgs" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="pgf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4FC48B" stop-opacity=".45"/><stop offset="1" stop-color="#4FC48B" stop-opacity="0"/></linearGradient></defs><line x1="${P}" y1="${Y(0)}" x2="${W-P}" y2="${Y(0)}" class="pgb"/><path d="M${X(0)} ${Y(0)} L${X(n-1)} ${Y(n)}" class="pgi"/><path d="${area}" fill="url(#pgf)"/><path d="${line}" class="pgl" pathLength="1"/>${lp?`<circle cx="${lp[0]}" cy="${lp[1]}" r="4.5" class="pgd"/>`:''}</svg>`:`<div class="empty" style="padding:26px 0">لا توجد بيانات بعد لهذا الشهر</div>`;
+  const bars=[5,4,3,2,1,0].map(i=>{const x=new Date(ny,nm-1-i,1),key=fmt(x).slice(0,7),len=new Date(x.getFullYear(),x.getMonth()+1,0).getDate(),cnt=[...set].filter(d=>d.slice(0,7)===key).length;
+    return`<button class="mb ${key===mk?'sel':''}" style="--h:${Math.max(cnt/len*100,3)}%;--i:${5-i}" data-act="sovmk" data-k="${key}"><b>${cnt}</b><span class="mbt"><i></i></span><small>${x.toLocaleDateString(LOC,{month:'short'})}</small></button>`}).join('');
+  const pct=Math.round(mDone/n*100);
+  const prog=`<div class="card pgc"><div class="sph"><b>📈 تقدّمي في المحتوى</b><span class="pgp">${pct}%</span></div><p class="muted" style="margin:2px 0 6px">الخط الأخضر إنجازك · المتقطّع الوتيرة المثالية (فيديو كل يوم)</p><div class="pgw">${chart}</div><div class="mbs">${bars}</div></div>`;
+  const mc=`<div class="card"><div class="nav" style="margin:0 0 8px"><button data-act="sovm" data-v="-1" aria-label="السابق">›</button><div class="nav-l">${new Date(my,mm-1,1).toLocaleDateString(LOC,{month:'long',year:'numeric'})} · ${mDone}/${n}</div><button data-act="sovm" data-v="1" aria-label="التالي">‹</button></div><div class="vbar"><i style="width:${mDone/n*100}%"></i></div><div class="vcal ${sl?'vs-'+sl:''}">${calendar(md,d=>{const k=ix++,fu=d>t;return`<button class="vc ${cls(d)} ${d===t?'td':''} ${fu?'fu':''}" style="--n:${k}" data-act="sovcell" data-d="${d}" ${fu?'disabled aria-disabled="true"':''}>${+d.slice(8)}</button>`})}</div>${mk===nowK?'':`<button class="link" data-act="sovm" data-v="0">العودة لهذا الشهر</button>`}<div class="lg"><span><i style="background:var(--good)"></i>تم</span><span><i style="background:color-mix(in srgb,var(--bad) 45%,var(--soft))"></i>فاتك</span><span><i style="border:1.5px dashed var(--accent)"></i>مخطط</span></div><p class="muted" style="margin-top:8px;font-size:12px">ضغطة = تم/فاتك · ضغطتان = كتابة الفيديو</p></div>`;
+  return hero+stats+mc+prog;
 }
 function soLink(){
   const S=data.soc,a=S.api;
@@ -1360,12 +1434,11 @@ function soqModal(){
 }
 function postModal(){
   const x=data.soc.vids.find(y=>y.id===ui.soid)||{d:ui.sod||today(),h:'',s:'',c:'',ok:false};
-  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>${x.id?'تعديل الفيديو':'فيديو جديد'}</h3>
-<label class="fl" style="margin-top:0">🎣 Hook</label><input id="pct" data-enter="sopsv" value="${esc(x.h||'')}" placeholder="أول جملة تمسك المشاهد" autocomplete="off">
-<label class="fl">📝 Script</label><textarea id="pcn" dir="auto" placeholder="السكربت…" style="min-height:130px">${esc(x.s||'')}</textarea>
-<label class="fl">📣 CTA</label><input id="pcc" data-enter="sopsv" value="${esc(x.c||'')}" placeholder="مثال: تابعني للمزيد" autocomplete="off">
+  const txt=[x.h,x.s,x.c].filter(Boolean).join('\n\n');
+  return`<div class="ov" data-act="ovclose"><div class="sheet pm" role="dialog" aria-modal="true"><h3>${x.id?'تعديل الفيديو':'فيديو جديد'}</h3>
+<textarea id="pcn" dir="auto" class="pmt" placeholder="اكتب كل شيء هنا: الفكرة، الهوك، السكربت، الـ CTA…">${esc(txt)}</textarea>
 <label class="fl">التاريخ</label><input id="pcd" type="date" value="${x.d}">
-<label style="display:flex;align-items:center;gap:10px;margin-top:14px;font-weight:700"><input id="pck" type="checkbox" style="width:20px;height:20px" ${(data.soc.vday[x.d]===1?true:data.soc.vday[x.d]===2?false:!!x.ok)?'checked':''}> سويت الفيديو ✓</label>
+<label class="pmk"><input id="pck" type="checkbox" ${(data.soc.vday[x.d]===1?true:data.soc.vday[x.d]===2?false:!!x.ok)?'checked':''}> سويت الفيديو ✓</label>
 <div class="err" id="err"></div><div class="acts"><button class="btn" data-act="sopsv">حفظ</button>${x.id?'<button class="btn ghost" data-act="sopdel">حذف</button>':''}<button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
 }
 
@@ -2058,9 +2131,9 @@ function handle(a,D){
       S.api.ytKey=g('#lnyk');S.h.yt=g('#lnyh')||S.h.yt;S.api.fbPage=g('#lnfp');S.api.fbToken=g('#lnft');S.api.ttUrl=g('#lntt');
       save();soFetchAll(true);break}
     case 'soxp':ui.sox=ui.sox===D.p?null:D.p;break;
-    case 'sopnew':ui.modal='post';ui.soid=null;ui.sod=null;ui.focus='#pct';break;
+    case 'sopnew':ui.modal='post';ui.soid=null;ui.sod=null;ui.focus='#pcn';break;
     case 'soved':ui.modal='post';ui.soid=D.id;ui.sod=null;break;
-    case 'sovday':{const g=data.soc.vids.filter(v=>v.d===D.d);ui.modal='post';ui.soid=g.length?g[0].id:null;ui.sod=D.d;if(!g.length)ui.focus='#pct';break}
+    case 'sovday':{const g=data.soc.vids.filter(v=>v.d===D.d);ui.modal='post';ui.soid=g.length?g[0].id:null;ui.sod=D.d;if(!g.length)ui.focus='#pcn';break}
     case 'sovm':{const nk=today().slice(0,7),ck=ui.som||nk;ui.vmv=+D.v>0?'n':+D.v<0?'p':'z';
       if(+D.v===0)ui.som=nk;
       else{const[y,m]=ck.split('-').map(Number),x=new Date(y,m-1+(+D.v),1);ui.som=x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')}
@@ -2077,22 +2150,25 @@ function handle(a,D){
         ui.burst={sel:'[data-act="sovtoday"]',big:true,msg:'🎉 فيديو اليوم تم!'};ui.pop='.vtd';hVib([20,40,20]);
       }
       save();break}
-    case 'sovcell':{const d=D.d,now=Date.now(),V=ui._vt;
-      if(V&&V.d===d&&now-V.t<320){
-        clearTimeout(V.h);ui._vt=null;
-        const g=data.soc.vids.filter(v=>v.d===d);ui.modal='post';ui.soid=g.length?g[0].id:null;ui.sod=d;if(!g.length)ui.focus='#pct';break}
-      if(V)clearTimeout(V.h);
-      ui._vt={d,t:now,h:setTimeout(()=>{ui._vt=null;const S=data.soc;S.vday[d]=soEff(d)?2:1;save();hVib(10);ui.pop='.vc[data-d="'+d+'"]';render()},300)};
-      return false}
-    case 'sopsv':{const h=$('#pct').value.trim(),s=$('#pcn').value.trim(),c=$('#pcc').value.trim(),d=$('#pcd').value,ok=$('#pck').checked,E=$('#err');
+    case 'sovcell':{const d=D.d,now=Date.now(),V=ui._vt,S=data.soc;
+      if(d>today())return false;
+      const flip=()=>{S.vday[d]=soEff(d)?2:1};
+      if(V&&V.d===d&&now-V.t<350){
+        ui._vt=null;flip();save();
+        const g=S.vids.filter(v=>v.d===d);ui.modal='post';ui.soid=g.length?g[0].id:null;ui.sod=d;ui.focus='#pcn';break}
+      flip();save();ui._vt={d,t:now};hVib(8);
+      ui.pop='.vc[data-d="'+d+'"]';render();return false}
+    case 'sovmk':ui.vmv='z';ui.som=D.k;break;
+    case 'sopsv':{const tx=$('#pcn').value.trim(),d=$('#pcd').value;let ok=$('#pck').checked;const E=$('#err');
       if(!d){E.textContent='حدد التاريخ.';return false}
-      if(!h&&!s&&!c&&!ok){E.textContent='اكتب الـ Hook على الأقل.';return false}
+      if(!tx&&!ok){E.textContent='اكتب شيئاً أو علّم الفيديو كمنجز.';return false}
+      if(d>today())ok=false;
       const L=data.soc.vids;let r=L.find(y=>y.id===ui.soid);
       if(ok||data.soc.vday[d]===1)delete data.soc.vday[d];
-      if(r){const was=r.ok;Object.assign(r,{h,s,c,d,ok});if(ok&&!was)r.done=Date.now();if(!ok)r.done=0}
-      else{r={id:uid(),h,s,c,d,ok,done:ok?Date.now():0};L.push(r)}
+      if(r){const was=r.ok;Object.assign(r,{h:'',s:tx,c:'',d,ok});if(ok&&!was)r.done=Date.now();if(!ok)r.done=0}
+      else{r={id:uid(),h:'',s:tx,c:'',d,ok,done:ok?Date.now():0};L.push(r)}
       if(ok&&d===today())ui.burst={sel:'[data-act="sovtoday"]',big:true,msg:'🎉 فيديو اليوم تم!'};
-      ui.sof=ok?'dn':'up';ui.modal=null;save();break}
+      ui.modal=null;save();break}
     case 'sopdel':{if(!confirm('حذف هذا الفيديو؟'))return false;data.soc.vids=data.soc.vids.filter(x=>x.id!==ui.soid);ui.modal=null;save();break}
     case 'modal':ui.modal=D.v;break;
     case 'close':ui.modal=null;ui.tbf=null;break;
