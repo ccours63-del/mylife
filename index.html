@@ -997,6 +997,23 @@ input:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 
 .pm .pmt{min-height:230px;font-size:16px;line-height:1.8;border-radius:16px;padding:14px;background:color-mix(in srgb,var(--bg) 85%,#000)}
 .pmk{display:flex;align-items:center;gap:10px;margin-top:14px;font-weight:700}
 .pmk input{width:22px;height:22px;accent-color:var(--good)}
+
+/* ===== v7: glow removed ===== */
+:root{--glow:transparent;--gglow:transparent}
+body{background:var(--bg)}
+.topbar,.dock,.sheet,.icb,.btn,.seg .on,.vtd,.vtd.ok,.vbar i,.mb.sel .mbt i,.dk-ind{box-shadow:none}
+.icb:active,.nav button:active{box-shadow:none}
+.brand,.dk-b.on svg,.pgl,.pgd{filter:none}
+.ptitle,.vs3 b,.pgc .pgp{text-shadow:none}
+.vc.ok,.vc.td,.vc.ok.td,.vc.ms{box-shadow:none}
+.vc.td{box-shadow:inset 0 0 0 2px var(--accent)}
+.vc.ok.td{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--good)}
+.vc.ms{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--bad) 35%,transparent)}
+.vtd{box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 25%,transparent)}
+.vtd.ok{box-shadow:0 0 0 1px var(--good)}
+input:focus,textarea:focus{box-shadow:none}
+.ov{-webkit-backdrop-filter:none;backdrop-filter:none}
+.page.enter .vtd{animation:none}
 </style>
 </head>
 <body>
