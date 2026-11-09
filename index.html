@@ -1418,7 +1418,7 @@ function soContent(){
     return`<button class="mb ${key===mk?'sel':''}" style="--h:${Math.max(cnt/len*100,3)}%;--i:${5-i}" data-act="sovmk" data-k="${key}"><b>${cnt}</b><span class="mbt"><i></i></span><small>${x.toLocaleDateString(LOC,{month:'short'})}</small></button>`}).join('');
   const pct=Math.round(mDone/n*100);
   const prog=`<div class="card pgc"><div class="sph"><b>📈 تقدّمي في المحتوى</b><span class="pgp">${pct}%</span></div><p class="muted" style="margin:2px 0 6px">الخط الأخضر إنجازك · المتقطّع الوتيرة المثالية (فيديو كل يوم)</p><div class="pgw">${chart}</div><div class="mbs">${bars}</div></div>`;
-  const mc=`<div class="card"><div class="nav" style="margin:0 0 8px"><button data-act="sovm" data-v="-1" aria-label="السابق">›</button><div class="nav-l">${new Date(my,mm-1,1).toLocaleDateString(LOC,{month:'long',year:'numeric'})} · ${mDone}/${n}</div><button data-act="sovm" data-v="1" aria-label="التالي">‹</button></div><div class="vbar"><i style="width:${mDone/n*100}%"></i></div><div class="vcal ${sl?'vs-'+sl:''}">${calendar(md,d=>{const k=ix++,fu=d>t;return`<button class="vc ${cls(d)} ${d===t?'td':''} ${fu?'fu':''}" style="--n:${k}" data-act="sovcell" data-d="${d}" ${fu?'disabled aria-disabled="true"':''}>${+d.slice(8)}</button>`})}</div>${mk===nowK?'':`<button class="link" data-act="sovm" data-v="0">العودة لهذا الشهر</button>`}<div class="lg"><span><i style="background:var(--good)"></i>تم</span><span><i style="background:color-mix(in srgb,var(--bad) 45%,var(--soft))"></i>فاتك</span><span><i style="border:1.5px dashed var(--accent)"></i>مخطط</span></div><p class="muted" style="margin-top:8px;font-size:12px">ضغطة = تم/فاتك · ضغطتان = كتابة الفيديو</p></div>`;
+  const mc=`<div class="card"><div class="nav" style="margin:0 0 8px"><button data-act="sovm" data-v="-1" aria-label="السابق">›</button><div class="nav-l">${new Date(my,mm-1,1).toLocaleDateString(LOC,{month:'long',year:'numeric'})} · ${mDone}/${n}</div><button data-act="sovm" data-v="1" aria-label="التالي">‹</button></div><div class="vbar"><i style="width:${mDone/n*100}%"></i></div><div class="vcal ${sl?'vs-'+sl:''}">${calendar(md,d=>{const k=ix++,fu=d>t;return`<button class="vc ${cls(d)} ${d===t?'td':''} ${fu?'fu':''}" style="--n:${k}" data-act="sovcell" data-d="${d}" ${fu?'disabled aria-disabled="true"':''}>${+d.slice(8)}</button>`})}</div>${mk===nowK?'':`<button class="link" data-act="sovm" data-v="0">العودة لهذا الشهر</button>`}<div class="lg"><span><i style="background:var(--good)"></i>تم</span><span><i style="background:color-mix(in srgb,var(--bad) 45%,var(--soft))"></i>فاتك</span><span><i style="border:1.5px dashed var(--accent)"></i>مخطط</span></div><p class="muted" style="margin-top:8px;font-size:12px">ضغطة: أخضر ← أحمر ← بدون · ضغطتان: كتابة الفيديو</p></div>`;
   return hero+stats+mc+prog;
 }
 function soLink(){
@@ -2169,11 +2169,16 @@ function handle(a,D){
       save();break}
     case 'sovcell':{const d=D.d,now=Date.now(),V=ui._vt,S=data.soc;
       if(d>today())return false;
-      const flip=()=>{S.vday[d]=soEff(d)?2:1};
+      const get=()=>soEff(d)?'ok':S.vday[d]===2?'ms':'no';
+      const set=st=>{
+        if(st==='ok')S.vday[d]=1;
+        else if(st==='ms')S.vday[d]=2;
+        else{delete S.vday[d];S.vids.forEach(v=>{if(v.d===d){v.ok=false;v.done=0}});S.vids=S.vids.filter(v=>!(v.d===d&&!v.h&&!v.s&&!v.c))}};
       if(V&&V.d===d&&now-V.t<350){
-        ui._vt=null;flip();save();
+        set(V.prev);ui._vt=null;save();
         const g=S.vids.filter(v=>v.d===d);ui.modal='post';ui.soid=g.length?g[0].id:null;ui.sod=d;ui.focus='#pcn';break}
-      flip();save();ui._vt={d,t:now};hVib(8);
+      const cur=get();set(cur==='no'?'ok':cur==='ok'?'ms':'no');
+      save();ui._vt={d,t:now,prev:cur};hVib(8);
       ui.pop='.vc[data-d="'+d+'"]';render();return false}
     case 'sovmk':ui.vmv='z';ui.som=D.k;break;
     case 'sopsv':{const tx=$('#pcn').value.trim(),d=$('#pcd').value;let ok=$('#pck').checked;const E=$('#err');
