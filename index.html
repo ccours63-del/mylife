@@ -212,8 +212,8 @@ button:active:not(:disabled){transform:scale(.95)}
 /* dock */
 .dock{position:fixed;bottom:0;left:0;right:0;z-index:5;background:rgba(16,19,24,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
 body.kb .dock{transform:translateY(110%)}
-.dk-in{position:relative;max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr);padding:6px 4px}
-.dk-ind{position:absolute;top:6px;bottom:6px;inset-inline-start:calc(var(--i,0)*100%/6);width:calc(100%/6);padding:0 3px;transition:inset-inline-start .38s cubic-bezier(.3,1.25,.4,1);pointer-events:none}
+.dk-in{position:relative;max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(7,1fr);padding:6px 4px}
+.dk-ind{position:absolute;top:6px;bottom:6px;inset-inline-start:calc(var(--i,0)*100%/7);width:calc(100%/7);padding:0 3px;transition:inset-inline-start .38s cubic-bezier(.3,1.25,.4,1);pointer-events:none}
 .dk-ind::before{content:"";display:block;height:100%;border-radius:14px;background:color-mix(in srgb,var(--accent) 16%,transparent)}
 .dk-b{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 6px;color:var(--muted);font-size:10.5px;font-weight:600;min-width:0}
 .dk-b span{white-space:nowrap;transition:color .25s}
@@ -1014,6 +1014,48 @@ body{background:var(--bg)}
 input:focus,textarea:focus{box-shadow:none}
 .ov{-webkit-backdrop-filter:none;backdrop-filter:none}
 .page.enter .vtd{animation:none}
+/* ===== sleeping tab ===== */
+.sleep{display:flex;flex-direction:column;gap:12px}
+.slhero i{font-size:26px}
+.slc{padding:16px}
+.slhd{display:flex;justify-content:space-between;align-items:center;direction:ltr;margin-bottom:10px}
+.sly{display:flex;align-items:center;gap:6px}
+.sly b{font-size:34px;font-weight:300;letter-spacing:.5px;min-width:92px;text-align:center}
+.sly button{width:32px;height:32px;border-radius:10px;background:var(--soft);font-size:18px;color:var(--muted)}
+.sln{font-weight:700;color:var(--muted)}
+.slgw{direction:ltr}
+.slm{position:relative;height:14px;margin-bottom:4px}
+.slm span{position:absolute;top:0;font-size:9px;color:var(--muted);white-space:nowrap}
+.slg{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,1fr);gap:2px}
+.sd{aspect-ratio:1;border-radius:50%;padding:0;min-width:0;border:1px solid color-mix(in srgb,var(--muted) 55%,transparent);background:transparent;touch-action:manipulation}
+.sd.e{border:0}
+.sd.l{background:var(--c);border-color:var(--c)}
+.sd.fu,.sd:disabled{border-color:color-mix(in srgb,var(--muted) 30%,transparent);cursor:default}
+.sd.td{outline:1.5px solid var(--accent);outline-offset:1px}
+.slleg{margin-top:12px;justify-content:center}
+.sl4{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sl4>div{padding:14px 10px;text-align:center;border-radius:20px;background:linear-gradient(160deg,color-mix(in srgb,var(--surface) 92%,#fff 8%),var(--surface) 55%);border:1px solid var(--line);display:flex;flex-direction:column;gap:4px}
+.sl4 b{font-size:24px;font-weight:800}.sl4 b small{font-size:12px;font-weight:600;color:var(--muted);margin-inline-start:2px}
+.sl4 span{font-size:12px;color:var(--muted)}
+.slrec{display:grid;grid-template-columns:repeat(7,1fr);gap:8px 4px;direction:ltr}
+.sr{display:flex;flex-direction:column;align-items:center;gap:4px;padding:2px 0}
+.sr small{font-size:11px;color:var(--muted)}
+.sr.td small{color:var(--accent);font-weight:800}
+.sc{width:100%;max-width:40px;aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:12px;font-weight:800;border:1.5px dashed color-mix(in srgb,var(--muted) 55%,transparent);color:#06150f;transition:transform .12s}
+.sc.l{background:var(--c);border:0}
+.sr:active .sc{transform:scale(.9)}
+.slbig{display:flex;align-items:center;justify-content:center;gap:22px;margin:10px 0}
+.slbig>div{text-align:center;min-width:110px}
+.slbig b{font-size:54px;font-weight:800;display:block;line-height:1}
+.slbig small{color:var(--muted)}
+.slbig button{width:54px;height:54px;border-radius:50%;background:var(--soft);font-size:28px;font-weight:700}
+.slbig button:active{transform:scale(.92)}
+.slchips{display:flex;justify-content:center;gap:8px;margin-bottom:6px}
+.slchips button{min-width:46px;height:38px;border-radius:12px;background:var(--soft);font-weight:700}
+.slchips .on,.slq .on{background:var(--accent);color:var(--accent-ink)}
+.slq{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.slq button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;border-radius:14px;background:var(--soft)}
+.slq i{font-style:normal;font-size:22px}.slq small{font-size:10.5px}
 </style>
 </head>
 <body>
@@ -1042,7 +1084,7 @@ const monthName=d=>parse(d).toLocaleDateString(LOC,{month:'long'});
 const monthsOfYear=y=>[...Array(12)].map((_,m)=>daysBetween(new Date(y,m,1),new Date(y,m+1,0)));
 
 const PR=[['fajr','الفجر'],['dhuhr','الظهر'],['asr','العصر'],['maghrib','المغرب'],['isha','العشاء']];
-const TABS=[['home','الرئيسية'],['prayers','الصلوات'],['habit','العادة'],['study','الدراسة'],['eyes','Eyes'],['social','السوشل']];
+const TABS=[['home','الرئيسية'],['prayers','الصلوات'],['habit','العادة'],['sleep','Sleeping'],['study','الدراسة'],['eyes','Eyes'],['social','السوشل']];
 
 let data={prayers:{},habit:{},notes:{},docs:[],days:{},hnotes:{},hgoal:0,quran:{},hcol:'#4FC48B',hbad:'#F2726C'};
 let ui={tab:'home',period:'day',anchor:today(),modal:null,confirm:null,focus:null,editing:null,anim:false,pop:null};
@@ -1107,6 +1149,10 @@ function fixData(){
   if(!Array.isArray(ey.books))ey.books=[];
   if(!ey.pill)ey.pill=today().slice(0,7);
   if(!ey.doc||typeof ey.doc!=='object')ey.doc=null;
+  if(!data.sleep||typeof data.sleep!=='object'||Array.isArray(data.sleep))data.sleep={};
+  const sl=data.sleep;if(!sl.log||typeof sl.log!=='object'||Array.isArray(sl.log))sl.log={};
+  Object.keys(sl.log).forEach(k=>{const r=sl.log[k];if(!/^\d{4}-\d\d-\d\d$/.test(k)||!r||typeof r.h!=='number'||!isFinite(r.h))delete sl.log[k];else{r.q=+r.q>=1&&+r.q<=5?Math.round(r.q):3;r.n=typeof r.n==='string'?r.n:''}});
+  if(sl.mode!=='q')sl.mode='h';
 }
 let saveT;
 function save(){
@@ -1449,6 +1495,52 @@ function soplModal(){
 function soqModal(){
   return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>تحديث المتابعين</h3><p class="muted">القيم هي آخر رقم محفوظ (وللمرة الأولى أرقامك من لقطات الشاشة). غيّر ما تغيّر فقط.</p>${SP.map(([p])=>{const v=soLast(p);return`<div class="slr" style="grid-template-columns:96px 1fr"><b style="color:${SPC[p]}">${SPN[p]}</b><input id="sq-${p}" type="number" inputmode="numeric" min="0" value="${v===null?SPD[p]:v}"></div>`}).join('')}<div class="err" id="err"></div><div class="acts"><button class="btn" data-act="soqsave">حفظ</button><button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
 }
+/* ---------- sleeping: yearly dot tracker ---------- */
+const SLC={h:['#F2726C','#2F7F73','#3FBF7F','#7CF0B0','#F2B84B'],q:['#F2726C','#E8944F','#2F7F73','#3FBF7F','#7CF0B0']};
+const SLQ=[['😫','سيئ'],['😕','ضعيف'],['😐','عادي'],['🙂','جيد'],['😄','ممتاز']];
+const SLT=8;
+const slFmt=h=>String(Math.round(h*10)/10);
+const slLv=(r,m)=>m==='q'?(r.q>0?r.q-1:-1):(r.h<6?0:r.h<7?1:r.h<8?2:r.h<9?3:4);
+const slCol=(r,m)=>{const l=r?slLv(r,m):-1;return l<0?'':`style="--c:${SLC[m][l]}"`};
+function viewSleep(){
+  const S=data.sleep,L=S.log,m=S.mode==='q'?'q':'h',t=today(),Y=ui.sy||+t.slice(0,4);ui.sy=Y;
+  const keys=Object.keys(L).filter(k=>k.startsWith(Y+'-')),n=keys.length;
+  const avgH=n?keys.reduce((a,k)=>a+L[k].h,0)/n:0;
+  const qk=keys.filter(k=>L[k].q>0),avgQ=qk.length?qk.reduce((a,k)=>a+L[k].q,0)/qk.length:0;
+  const good=n?Math.round(keys.filter(k=>L[k].h>=7).length/n*100):0;
+  const first=new Date(Y,0,1),pad=first.getDay(),days=Math.round((new Date(Y+1,0,1)-first)/864e5),cols=Math.ceil((pad+days)/7);
+  let cells='';for(let i=0;i<pad;i++)cells+='<i class="sd e"></i>';
+  for(let i=0;i<days;i++){const d=fmt(new Date(Y,0,1+i)),r=L[d],fu=d>t,c=slCol(r,m);
+    cells+=`<button class="sd ${c?'l':''} ${fu?'fu':''} ${d===t?'td':''}" ${c} data-act="slop" data-d="${d}" ${fu?'disabled aria-disabled="true"':''} aria-label="${d}"></button>`}
+  let mons='';for(let mo=0;mo<12;mo++){const idx=Math.round((new Date(Y,mo,1)-first)/864e5),col=Math.floor((pad+idx)/7);
+    mons+=`<span style="left:${col/cols*100}%">${new Date(Y,mo,1).toLocaleDateString(LOC,{month:'short'})}</span>`}
+  const lg=m==='h'?[['#F2726C','< 6'],['#2F7F73','6'],['#3FBF7F','7'],['#7CF0B0','8'],['#F2B84B','+9']].map(([c,x])=>`<span><i style="background:${c}"></i>${x}</span>`).join('')
+    :SLQ.map((q,i)=>`<span><i style="background:${SLC.q[i]}"></i>${q[1]}</span>`).join('');
+  let rec='';for(let i=13;i>=0;i--){const d=fmt(addDays(new Date(),-i)),r=L[d],c=slCol(r,m);
+    rec+=`<button class="sr ${d===t?'td':''}" data-act="slop" data-d="${d}"><small>${+d.slice(8)}</small><i class="sc ${c?'l':''}" ${c}>${r?slFmt(r.h):''}</i></button>`}
+  let debt=0,dn=0;for(let i=0;i<7;i++){const r=L[fmt(addDays(new Date(),-i))];if(r){debt+=SLT-r.h;dn++}}
+  const r0=L[t];
+  const hero=`<button class="vtd slhero ${r0?'ok':''}" data-act="slop" data-d="${t}"><i>${r0?SLQ[Math.max(0,(r0.q||3)-1)][0]:'😴'}</i><div><b>${r0?`نمت ${slFmt(r0.h)} ساعة الليلة الماضية`:'كيف نمت الليلة الماضية؟'}</b><small>${r0?'اضغط للتعديل':'سجّل ساعات نومك وجودته'}</small></div></button>`;
+  const stat=(v,l,i)=>`<div style="--i:${i}"><b>${v}</b><span>${l}</span></div>`;
+  return `<div class="sleep">${hero}
+<div class="card slc"><div class="slhd"><div class="sly"><button data-act="sly" data-v="-1" aria-label="السنة السابقة">‹</button><b>${Y}</b><button data-act="sly" data-v="1" aria-label="السنة التالية">›</button></div><span class="sln">${n} ليلة</span></div>
+<div class="slgw"><div class="slm">${mons}</div><div class="slg" style="grid-template-columns:repeat(${cols},1fr)">${cells}</div></div>
+<div class="lg slleg">${lg}</div>
+<div class="seg" style="margin-top:12px">${[['h','حسب الساعات'],['q','حسب الجودة']].map(([k,x])=>`<button data-act="slview" data-v="${k}" class="${m===k?'on':''}">${x}</button>`).join('')}</div></div>
+<div class="sl4">${stat(n?slFmt(avgH)+'<small>س</small>':'—','متوسط النوم',0)}${stat(qk.length?slFmt(avgQ)+'<small>/5</small>':'—','متوسط الجودة',1)}${stat(n?good+'<small>%</small>':'—','ليالٍ ≥ 7 ساعات',2)}${stat(dn?(debt>0?'−':'+')+slFmt(Math.abs(debt))+'<small>س</small>':'—','رصيد آخر 7 ليالٍ',3)}</div>
+<div class="card"><div class="sph"><b>🗓️ آخر 14 ليلة</b></div><p class="muted" style="margin:2px 0 8px;font-size:12px">كل نقطة = ليلة تنتهي صباح ذلك اليوم · اضغط للتسجيل أو التعديل</p><div class="slrec">${rec}</div></div></div>`;
+}
+function sleepModal(){
+  const d=ui.sld,ex=data.sleep.log[d];
+  const lab=parse(d).toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'});
+  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>نوم ليلة ${lab}</h3>
+<div class="slbig"><button data-act="slhd" data-v="-0.5" aria-label="أقل">−</button><div><b>${slFmt(ui.slh)}</b><small>ساعة</small></div><button data-act="slhd" data-v="0.5" aria-label="أكثر">+</button></div>
+<div class="slchips">${[5,6,7,8,9].map(h=>`<button class="${ui.slh===h?'on':''}" data-act="slhs" data-v="${h}">${h}</button>`).join('')}</div>
+<label class="fl">جودة النوم</label><div class="slq">${SLQ.map((q,i)=>`<button class="${ui.slq===i+1?'on':''}" data-act="slq" data-v="${i+1}"><i>${q[0]}</i><small>${q[1]}</small></button>`).join('')}</div>
+<label class="fl">ملاحظة (اختياري)</label><input id="sln" dir="auto" value="${esc(ui.sln||'')}" placeholder="قهوة متأخرة، سهر، ضوضاء…">
+<div class="acts"><button class="btn" data-act="slsv">حفظ</button>${ex?'<button class="btn ghost" data-act="sldel">حذف</button>':''}<button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
+}
+
 function postModal(){
   const x=data.soc.vids.find(y=>y.id===ui.soid)||{d:ui.sod||today(),h:'',s:'',c:'',ok:false};
   const txt=[x.h,x.s,x.c].filter(Boolean).join('\n\n');
@@ -1960,6 +2052,7 @@ function modalHtml(){
   if(ui.modal==='sopl')return soplModal();
   if(ui.modal==='soq')return soqModal();
   if(ui.modal==='post')return postModal();
+  if(ui.modal==='sleep')return sleepModal();
   if(ui.modal==='lock')return lockModal();
   if(ui.modal==='tbset')return tbModal();
   if(ui.modal==='tedit')return teditModal();
@@ -1984,6 +2077,7 @@ const ICON={
   study:'<path d="M2 9 12 4l10 5-10 5L2 9z"/><path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5"/><path d="M22 9v6"/>',
   habit:'<path d="M12 3 5 6v5.5c0 4.2 2.9 7.6 7 9 4.1-1.4 7-4.8 7-9V6l-7-3z"/><path d="m9 12 2.2 2.2L15.5 10"/>',
 };
+ICON.sleep='<path d="M3 19v-8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8"/><path d="M3 15.5h18"/><path d="M7 9V7.5A1.5 1.5 0 0 1 8.5 6h2A1.5 1.5 0 0 1 12 7.5V9"/><path d="M3 21v-2M21 21v-2"/>';
 ICON.social='<path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/>';
 const ico=k=>`<svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k]}</svg>`;
 function buildNav(){
@@ -1996,7 +2090,7 @@ function updateNav(){
 
 /* ---------- render ---------- */
 function render(){
-  const V={home:()=>netCard()+viewHome(),prayers:viewPrayers,habit:viewHabit,study:viewStudy,eyes:viewEyes,social:viewSocial};
+  const V={home:()=>netCard()+viewHome(),prayers:viewPrayers,habit:viewHabit,study:viewStudy,eyes:viewEyes,social:viewSocial,sleep:viewSleep};
   const anim=ui.anim;ui.anim=false;
   const title=ui.tab==='home'?'':`<h1 class="ptitle">${TABS.find(t=>t[0]===ui.tab)[1]}</h1>`;
   $('#app').innerHTML=`<div class="page ${anim?'enter':''}"${ui.tab==='habit'?' style="--accent:var(--hcol);--accent-ink:var(--hink);--bad:var(--hbadc)"':''}>${title}${V[ui.tab]()}</div>`;
@@ -2180,6 +2274,15 @@ function handle(a,D){
       const cur=get();set(cur==='no'?'ok':cur==='ok'?'ms':'no');
       save();ui._vt={d,t:now,prev:cur};hVib(8);
       ui.pop='.vc[data-d="'+d+'"]';render();return false}
+    case 'slop':{const d=D.d;if(d>today())return false;const L=data.sleep.log,r=L[d];
+      const last=Object.keys(L).sort().pop();
+      ui.modal='sleep';ui.sld=d;ui.slh=r?r.h:(last?L[last].h:7.5);ui.slq=r?r.q:3;ui.sln=r?r.n||'':'';break}
+    case 'slhd':case 'slhs':case 'slq':{const n=$('#sln');if(n)ui.sln=n.value;
+      if(a==='slq')ui.slq=+D.v;else if(a==='slhs')ui.slh=+D.v;else ui.slh=Math.min(16,Math.max(0,Math.round((ui.slh+ +D.v)*2)/2));hVib(6);break}
+    case 'slsv':{const n=$('#sln');data.sleep.log[ui.sld]={h:ui.slh,q:ui.slq,n:n?n.value.trim():''};ui.modal=null;save();hVib(12);break}
+    case 'sldel':delete data.sleep.log[ui.sld];ui.modal=null;save();break;
+    case 'slview':data.sleep.mode=D.v;save();break;
+    case 'sly':ui.sy=(ui.sy||+today().slice(0,4))+ +D.v;break;
     case 'sovmk':ui.vmv='z';ui.som=D.k;break;
     case 'sopsv':{const tx=$('#pcn').value.trim(),d=$('#pcd').value;let ok=$('#pck').checked;const E=$('#err');
       if(!d){E.textContent='حدد التاريخ.';return false}
