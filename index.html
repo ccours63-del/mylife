@@ -1041,9 +1041,9 @@ input:focus,textarea:focus{box-shadow:none}
 .sr{display:flex;flex-direction:column;align-items:center;gap:4px;padding:2px 0}
 .sr small{font-size:11px;color:var(--muted)}
 .sr.td small{color:var(--accent);font-weight:800}
-.sc{width:100%;max-width:40px;aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:12px;font-weight:800;border:1.5px dashed color-mix(in srgb,var(--muted) 55%,transparent);color:#06150f;transition:transform .12s}
-.sc.l{background:var(--c);border:0}
-.sr:active .sc{transform:scale(.9)}
+.slcir{width:100%;max-width:40px;aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:12px;font-weight:800;border:1.5px dashed color-mix(in srgb,var(--muted) 55%,transparent);color:#06150f;transition:transform .12s}
+.slcir.l{background:var(--c);border:0}
+.sr:active .slcir{transform:scale(.9)}
 .slbig{display:flex;align-items:center;justify-content:center;gap:22px;margin:10px 0}
 .slbig>div{text-align:center;min-width:110px}
 .slbig b{font-size:54px;font-weight:800;display:block;line-height:1}
@@ -1517,7 +1517,7 @@ function viewSleep(){
   const lg=m==='h'?[['#F2726C','< 6'],['#2F7F73','6'],['#3FBF7F','7'],['#7CF0B0','8'],['#F2B84B','+9']].map(([c,x])=>`<span><i style="background:${c}"></i>${x}</span>`).join('')
     :SLQ.map((q,i)=>`<span><i style="background:${SLC.q[i]}"></i>${q[1]}</span>`).join('');
   let rec='';for(let i=13;i>=0;i--){const d=fmt(addDays(new Date(),-i)),r=L[d],c=slCol(r,m);
-    rec+=`<button class="sr ${d===t?'td':''}" data-act="slop" data-d="${d}"><small>${+d.slice(8)}</small><i class="sc ${c?'l':''}" ${c}>${r?slFmt(r.h):''}</i></button>`}
+    rec+=`<button class="sr ${d===t?'td':''}" data-act="slop" data-d="${d}"><small>${+d.slice(8)}</small><i class="slcir ${c?'l':''}" ${c}>${r?slFmt(r.h):''}</i></button>`}
   let debt=0,dn=0;for(let i=0;i<7;i++){const r=L[fmt(addDays(new Date(),-i))];if(r){debt+=SLT-r.h;dn++}}
   const r0=L[t];
   const hero=`<button class="vtd slhero ${r0?'ok':''}" data-act="slop" data-d="${t}"><i>${r0?SLQ[Math.max(0,(r0.q||3)-1)][0]:'😴'}</i><div><b>${r0?`نمت ${slFmt(r0.h)} ساعة الليلة الماضية`:'كيف نمت الليلة الماضية؟'}</b><small>${r0?'اضغط للتعديل':'سجّل ساعات نومك وجودته'}</small></div></button>`;
