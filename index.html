@@ -1061,6 +1061,10 @@ input:focus,textarea:focus{box-shadow:none}
 .bkb{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;margin-bottom:12px;border-radius:18px;background:color-mix(in srgb,var(--bad) 14%,var(--surface));border:1px solid color-mix(in srgb,var(--bad) 45%,transparent)}
 .bkb b{display:block;font-size:14px}.bkb small{display:block;font-size:11.5px;color:var(--muted);margin-top:2px}
 .bkb .btn{white-space:nowrap;padding:10px 14px;font-size:14px}
+
+.syb{margin:10px 0;padding:12px;border-radius:16px;background:color-mix(in srgb,var(--good) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--good) 35%,transparent)}
+.syb input{margin-top:4px}
+.bkbs{display:flex;flex-direction:column;gap:6px}
 </style>
 </head>
 <body>
@@ -1103,6 +1107,99 @@ const ICON512='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAIAAAB7GkO
   const l=document.createElement('link');l.rel='manifest';l.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/manifest+json'}));document.head.appendChild(l)}catch(e){}
   try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}})();
 function snapshot(raw){try{const k='hayati-snap-'+today();if(localStorage.getItem(k))return;localStorage.setItem(k,raw);const ks=Object.keys(localStorage).filter(x=>x.startsWith('hayati-snap-')).sort();while(ks.length>7)localStorage.removeItem(ks.shift())}catch(e){}}
+/* ---------- cloud sync (secret GitHub gist) ---------- */
+const SYK=KEY+'-sync',SYF='my-life.json',SYD='my-life-app-data';
+const SY={cfg:(()=>{try{return JSON.parse(localStorage.getItem(SYK)||'{}')||{}}catch(e){return{}}})(),st:'off',msg:'',fresh:false,pend:null,ready:false,busy:false,dirty:false,t:0};
+let syT=0;
+const syCfg=()=>{try{localStorage.setItem(SYK,JSON.stringify(SY.cfg))}catch(e){}};
+async function syApi(path,opt){
+  const o=Object.assign({headers:{'Authorization':'Bearer '+SY.cfg.t,'Accept':'application/vnd.github+json','Content-Type':'application/json'}},opt||{});
+  const r=await fetch('https://api.github.com'+path,o);
+  if(!r.ok){const e=new Error('http '+r.status);e.status=r.status;throw e}
+  return r.json();
+}
+async function syRead(g){
+  const f=g.files&&g.files[SYF];if(!f)return null;
+  let c=f.content;if(f.truncated||c==null){const r=await fetch(f.raw_url);c=await r.text()}
+  const o=JSON.parse(c);return o&&typeof o==='object'?o:null;
+}
+function syStatus(st,msg){SY.st=st;SY.msg=msg||'';if(!ui.modal||ui.modal==='backup')render()}
+function syErr(e){return e&&e.status===401?'الرمز غير صالح أو منتهي':e&&e.status===403?'تم تجاوز حد الطلبات، سنعيد المحاولة':'تعذّر الاتصال، سنعيد المحاولة'}
+async function syCreate(){
+  const r=await syApi('/gists',{method:'POST',body:JSON.stringify({description:SYD,public:false,files:{[SYF]:{content:JSON.stringify(data)}}})});
+  SY.cfg.g=r.id;SY.cfg.rv=r.updated_at;syCfg();SY.t=Date.now();
+}
+async function syPush(force){
+  if(!force){
+    const cur=await syApi('/gists/'+SY.cfg.g);
+    if(cur.updated_at!==SY.cfg.rv){const obj=await syRead(cur);SY.pend=obj?{obj,ua:cur.updated_at}:null;if(obj)return false}
+  }
+  const r=await syApi('/gists/'+SY.cfg.g,{method:'PATCH',body:JSON.stringify({files:{[SYF]:{content:JSON.stringify(data)}}})});
+  SY.cfg.rv=r.updated_at;syCfg();SY.t=Date.now();return true;
+}
+async function syAdopt(obj,ua){
+  try{localStorage.setItem(KEY+'-before-sync',JSON.stringify(data))}catch(e){}
+  Object.keys(data).forEach(k=>delete data[k]);Object.assign(data,obj);fixData();
+  try{await store.set(JSON.stringify(data))}catch(e){}
+  SY.cfg.rv=ua;syCfg();SY.fresh=false;SY.pend=null;SY.t=Date.now();
+}
+async function syInit(){
+  if(!SY.cfg.t)return;
+  try{
+    SY.st='busy';
+    if(!SY.cfg.g){const L=await syApi('/gists?per_page=100');const f=L.find(x=>x.description===SYD&&x.files&&x.files[SYF]);if(f)SY.cfg.g=f.id}
+    if(!SY.cfg.g){await syCreate();SY.ready=true;syStatus('ok');return}
+    const g=await syApi('/gists/'+SY.cfg.g);
+    if(g.updated_at===SY.cfg.rv){SY.ready=true;syStatus('ok');if(SY.dirty)syncSoon();return}
+    const obj=await syRead(g);
+    if(!obj){await syPush(true);SY.ready=true;syStatus('ok');return}
+    if(SY.fresh){await syAdopt(obj,g.updated_at);SY.ready=true;syStatus('ok');return}
+    SY.pend={obj,ua:g.updated_at};syStatus('conflict');
+  }catch(e){
+    if(e&&e.status===404){SY.cfg.g='';syCfg()}
+    syStatus('err',syErr(e));
+  }
+}
+function syncSoon(){
+  if(!SY.cfg.t)return;SY.dirty=true;
+  if(!SY.ready||SY.st==='conflict')return;
+  clearTimeout(syT);syT=setTimeout(syRun,4000);
+}
+async function syRun(){
+  if(!SY.dirty||SY.busy||!SY.ready||SY.st==='conflict')return;
+  SY.busy=true;SY.dirty=false;
+  try{
+    const ok=await syPush(false);
+    if(ok){SY.st='ok';SY.msg=''}else{SY.st='conflict';SY.dirty=true}
+  }catch(e){SY.st='err';SY.msg=syErr(e);SY.dirty=true;clearTimeout(syT);syT=setTimeout(syRun,60000)}
+  SY.busy=false;
+  if(SY.st==='conflict'||SY.st==='err'){if(!ui.modal||ui.modal==='backup')render()}
+  else if(SY.dirty)syncSoon();
+  else if(ui.modal==='backup')render();
+}
+document.addEventListener('visibilitychange',()=>{
+  if(!SY.cfg.t)return;
+  if(document.visibilityState==='hidden'){if(SY.dirty){clearTimeout(syT);syRun()}}
+  else if(!SY.ready)syInit();
+});
+window.addEventListener('online',()=>{if(SY.cfg.t){if(!SY.ready)syInit();else if(SY.dirty)syRun()}});
+const syTime=()=>SY.t?new Date(SY.t).toLocaleTimeString(LOC,{hour:'2-digit',minute:'2-digit'}):'';
+function syBlock(){
+  if(SY.cfg.t){
+    const txt=SY.st==='ok'?`✓ متصلة${SY.t?' · آخر مزامنة '+syTime():''}`:SY.st==='busy'?'جارٍ المزامنة…':SY.st==='conflict'?'⚠️ تعارض مع نسخة السحابة':SY.st==='err'?'⚠️ '+SY.msg:'غير متصلة';
+    return`<div class="syb"><b>☁️ المزامنة التلقائية</b><p class="muted" style="margin:4px 0 8px">${txt}<br>تُحفظ بياناتك تلقائياً بعد كل تغيير. لإعادتها على جهاز جديد أو بعد مسح المتصفح: افتح هذه النافذة والصق نفس الرمز.</p><div class="acts"><button class="btn ghost" data-act="sysync">مزامنة الآن</button><button class="btn ghost" data-act="sooff">فصل</button></div></div>`}
+  return`<div class="syb"><b>☁️ مزامنة تلقائية — تبقى بياناتك حتى لو حُذف Chrome</b>
+<ol class="muted" style="margin:6px 0 8px;padding-inline-start:20px;font-size:12.5px;line-height:1.8"><li>سجّل حساباً مجانياً في github.com</li><li>Settings ← Developer settings ← Personal access tokens ← Tokens (classic) ← Generate new token</li><li>فعّل صلاحية <b>gist</b> فقط واجعل المدة بلا انتهاء</li><li>انسخ الرمز والصقه هنا، واحفظه في مكان آمن لتعيد استخدامه</li></ol>
+<input id="syt" dir="ltr" placeholder="ghp_xxxxxxxx" autocomplete="off"><div class="acts" style="margin-top:8px"><button class="btn" data-act="syon">ربط وبدء المزامنة</button></div>
+<p class="muted" style="font-size:11.5px;margin-top:6px">تُحفظ بياناتك في ملف سرّي (غير مُفهرس) في حسابك، ويستطيع قراءته من يملك رابطه فقط. ملفات PDF لا تدخل في المزامنة.</p></div>`;
+}
+function syBanner(){
+  if(!SY.cfg.t)return'';
+  if(SY.st==='conflict')return`<div class="bkb"><div><b>⚠️ نسخة السحابة تختلف عن نسخة هذا الجهاز</b><small>اختر أيهما تريد أن يبقى. لن يُرفع شيء قبل اختيارك.</small></div><div class="bkbs"><button class="btn" data-act="syrestore">استعادة من السحابة</button><button class="btn ghost" data-act="syforce">رفع نسختي</button></div></div>`;
+  if(SY.st==='err'&&!SY.ready)return`<div class="bkb"><div><b>⚠️ ${SY.msg}</b><small>بياناتك على هذا الجهاز سليمة.</small></div><button class="btn" data-act="modal" data-v="backup">الإعدادات</button></div>`;
+  return'';
+}
+
 const store={
   async get(){try{if(window.storage){const r=await window.storage.get(KEY);if(r&&r.value)return r.value}}catch(e){}try{return localStorage.getItem(KEY)}catch(e){return null}},
   async set(v){let ok=false;try{if(window.storage)ok=!!(await window.storage.set(KEY,v))}catch(e){}try{localStorage.setItem(KEY,v);ok=true}catch(e){}return ok}
@@ -1111,6 +1208,7 @@ async function load(){
   let bad=false,v=null;
   try{v=await store.get();if(v)data=Object.assign(data,JSON.parse(v));}
   catch(e){bad=true;if(v){try{localStorage.setItem(KEY+'-corrupt',v)}catch(_){}}}
+  SY.fresh=!v;
   if(v&&!bad)snapshot(v);
   fixData();
   try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
@@ -1167,6 +1265,7 @@ function save(){
   saveT=setTimeout(async()=>{
     try{storageOk=await store.set(JSON.stringify(data));}
     catch(e){storageOk=false;}
+    syncSoon();
   },300);
 }
 
@@ -1509,8 +1608,8 @@ const SLT=8;
 const slFmt=h=>String(Math.round(h*10)/10);
 const slLv=(r,m)=>m==='q'?(r.q>0?r.q-1:-1):(r.h<6?0:r.h<7?1:r.h<8?2:r.h<9?3:4);
 const slCol=(r,m)=>{const l=r?slLv(r,m):-1;return l<0?'':`style="--c:${SLC[m][l]}"`};
-function bkBanner(){const l=data.lastBk||0,d=Math.floor((Date.now()-l)/864e5);if(l&&d<3)return'';
-  return`<div class="bkb"><div><b>⚠️ ${l?`آخر نسخة احتياطية قبل ${d} أيام`:'لا توجد نسخة احتياطية بعد'}</b><small>بياناتك مخزّنة في المتصفح فقط، وحذف السجل يمسحها</small></div><button class="btn" data-act="bkquick">حفظ نسخة</button></div>`}
+function bkBanner(){const sb=syBanner();if(sb)return sb;if(SY.cfg.t&&SY.st!=='off')return'';const l=data.lastBk||0,d=Math.floor((Date.now()-l)/864e5);if(l&&d<3)return'';
+  return`<div class="bkb"><div><b>⚠️ ${l?`آخر نسخة احتياطية قبل ${d} أيام`:'لا توجد نسخة احتياطية بعد'}</b><small>بياناتك مخزّنة في المتصفح فقط، وحذف السجل يمسحها</small></div><div class="bkbs"><button class="btn" data-act="modal" data-v="backup">تفعيل المزامنة التلقائية</button><button class="btn ghost" data-act="bkquick">حفظ ملف</button></div></div>`}
 function bkDownload(){const b=new Blob([JSON.stringify(data)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='my-life-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),3000);data.lastBk=Date.now();save()}
 function viewSleep(){
   const S=data.sleep,L=S.log,m=S.mode==='q'?'q':'h',t=today(),Y=ui.sy||+t.slice(0,4);ui.sy=Y;
@@ -2074,6 +2173,7 @@ function modalHtml(){
   if(ui.modal==='book')return bookModal();
   const body=`<h3>نسخة احتياطية</h3><p class="muted">انسخ هذا النص واحفظه في مكان آمن. للاستعادة الصقه هنا ثم اضغط «استيراد».<br>ملاحظة: ملفات الكتب (PDF) تبقى على هذا الجهاز ولا تدخل في النسخة، أما تظليلاتك وملاحظاتك فتدخل.</p>
 <textarea id="bk" style="margin-top:10px;min-height:160px;direction:ltr;font-size:12px">${esc(JSON.stringify(data))}</textarea>
+${syBlock()}
 <div class="err" id="err"></div><div class="acts"><button class="btn" data-act="copybk">نسخ</button><button class="btn ghost" data-act="importbk">استيراد</button><button class="btn ghost" data-act="close">إغلاق</button></div>
 <div class="acts"><button class="btn ghost" data-act="exportfile">تنزيل ملف النسخة</button><button class="btn ghost" data-act="importfile">استيراد من ملف</button></div><input id="bkf" type="file" accept=".json,application/json" hidden>`;
   return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true">${body}</div></div>`;
@@ -2314,6 +2414,13 @@ function handle(a,D){
     case 'tbrs':{data.tb=null;ui.tbf=null;save();tbRefresh();return false}
     case 'ovclose':return false;
     case 'copybk':{const ta=$('#bk');ta.select();try{navigator.clipboard.writeText(ta.value)}catch(e){try{document.execCommand('copy')}catch(_){}}$('#err').textContent='تم تحديد النص ونسخه.';$('#err').style.color='var(--good)';return false}
+    case 'syon':{const t=($('#syt')||{}).value;const v=(t||'').trim();
+      if(!v){const E=$('#err');if(E)E.textContent='الصق الرمز أولاً.';return false}
+      SY.cfg={t:v};syCfg();SY.ready=false;SY.pend=null;SY.dirty=true;syInit();ui.modal='backup';break}
+    case 'sysync':SY.dirty=true;if(SY.ready){clearTimeout(syT);syRun()}else syInit();break;
+    case 'sooff':SY.cfg={};syCfg();SY.st='off';SY.ready=false;SY.dirty=false;SY.pend=null;break;
+    case 'syrestore':if(SY.pend){syAdopt(SY.pend.obj,SY.pend.ua).then(()=>{SY.ready=true;syStatus('ok')})}return false;
+    case 'syforce':syPush(true).then(()=>{SY.ready=true;SY.dirty=false;syStatus('ok')}).catch(e=>syStatus('err',syErr(e)));return false;
     case 'bkquick':bkDownload();break;
     case 'exportfile':{data.lastBk=Date.now();save();const b=new Blob([JSON.stringify(data)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='my-life-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),3000);$('#err').textContent='تم تنزيل الملف.';$('#err').style.color='var(--good)';return false}
     case 'importfile':$('#bkf').click();return false
@@ -3069,7 +3176,7 @@ document.addEventListener('keydown',e=>{
   else if(e.key==='Escape'){if(!$('#rdsh').hidden)rdSheet('');else rdClose()}
 });
 buildNav();
-load().then(netIngest).then(render).then(lkBoot).then(()=>soFetchAll());
+load().then(netIngest).then(render).then(syInit).then(lkBoot).then(()=>soFetchAll());
 
 /* ---------- keyboard: hide dock only while the keyboard is really open ---------- */
 (function(){
