@@ -1115,34 +1115,89 @@ let syT=0;
 const syCfg=()=>{try{localStorage.setItem(SYK,JSON.stringify(SY.cfg))}catch(e){}};
 async function syApi(path,opt){
   const o=Object.assign({headers:{'Authorization':'Bearer '+SY.cfg.t,'Accept':'application/vnd.github+json','Content-Type':'application/json'}},opt||{});
-  const r=await fetch('https://api.github.com'+path,o);
+  o.cache='no-cache';const r=await fetch('https://api.github.com'+path,o);
   if(!r.ok){const e=new Error('http '+r.status);e.status=r.status;throw e}
   return r.json();
 }
 async function syRead(g){
   const f=g.files&&g.files[SYF];if(!f)return null;
-  let c=f.content;if(f.truncated||c==null){const r=await fetch(f.raw_url);c=await r.text()}
+  let c=f.content;if(f.truncated||c==null){const r=await fetch(f.raw_url,{cache:'no-store'});c=await r.text()}
   const o=JSON.parse(c);return o&&typeof o==='object'?o:null;
 }
 function syStatus(st,msg){SY.st=st;SY.msg=msg||'';if(!ui.modal||ui.modal==='backup')render()}
 function syErr(e){return e&&e.status===401?'الرمز غير صالح أو منتهي':e&&e.status===403?'تم تجاوز حد الطلبات، سنعيد المحاولة':'تعذّر الاتصال، سنعيد المحاولة'}
+const SYB=KEY+'-sybase';
+const syBaseGet=()=>{try{const v=localStorage.getItem(SYB);return v?JSON.parse(v):undefined}catch(e){return undefined}};
+const syBaseSet=str=>{try{localStorage.setItem(SYB,str)}catch(e){try{localStorage.removeItem(SYB)}catch(_){}}};
+const syEq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+const syIsO=x=>x&&typeof x==='object'&&!Array.isArray(x);
+/* 3-way merge: B = last synced state, R = cloud, L = this device. Never drops edits made on either side. */
+function syM(b,r,l){
+  if(syEq(r,l))return l;
+  if(b!==undefined&&syEq(b,l))return r;
+  if(b!==undefined&&syEq(b,r))return l;
+  if(syIsO(r)&&syIsO(l)){
+    if(typeof r.updated==='number'&&typeof l.updated==='number'&&r.updated!==l.updated)return r.updated>l.updated?r:l;
+    const bb=syIsO(b)?b:{},o={};
+    new Set([...Object.keys(l),...Object.keys(r)]).forEach(k=>{
+      const iL=k in l,iR=k in r,iB=k in bb;
+      if(iL&&iR)o[k]=syM(bb[k],r[k],l[k]);
+      else if(iL){if(!(iB&&syEq(bb[k],l[k])))o[k]=l[k]}
+      else{if(!(iB&&syEq(bb[k],r[k])))o[k]=r[k]}
+    });
+    return o;
+  }
+  if(Array.isArray(r)&&Array.isArray(l)){
+    const idd=a=>a.every(x=>x&&typeof x==='object'&&x.id!==undefined);
+    if(idd(r)&&idd(l)&&(!Array.isArray(b)||idd(b))){
+      const bm=new Map((Array.isArray(b)?b:[]).map(x=>[x.id,x])),rm=new Map(r.map(x=>[x.id,x])),seen=new Set(),out=[];
+      l.forEach(x=>{seen.add(x.id);
+        if(rm.has(x.id))out.push(syM(bm.get(x.id),rm.get(x.id),x));
+        else if(!(bm.has(x.id)&&syEq(bm.get(x.id),x)))out.push(x)});
+      r.forEach(x=>{if(seen.has(x.id))return;if(!(bm.has(x.id)&&syEq(bm.get(x.id),x)))out.push(x)});
+      return out;
+    }
+  }
+  return l;
+}
+function syMergeIn(obj){
+  const live=ui.editing?data.docs.find(x=>x.id===ui.editing):null;
+  const before=JSON.stringify(data);
+  const m=syM(syBaseGet(),obj,JSON.parse(before));
+  if(JSON.stringify(m)===before)return false;
+  try{localStorage.setItem(KEY+'-before-sync',before)}catch(e){}
+  Object.keys(data).forEach(k=>delete data[k]);Object.assign(data,m);
+  if(live&&Array.isArray(data.docs)){const i=data.docs.findIndex(x=>x.id===live.id);if(i>=0)data.docs[i]=live;else data.docs.push(live)}
+  fixData();
+  try{store.set(JSON.stringify(data))}catch(e){}
+  SY.rr=true;
+  return true;
+}
+function syRender(){
+  if(!SY.rr)return;
+  const ae=document.activeElement;
+  if(ui.editing||(ae&&/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))||(ui.modal&&ui.modal!=='backup'))return;
+  SY.rr=false;render();
+}
 async function syCreate(){
-  const r=await syApi('/gists',{method:'POST',body:JSON.stringify({description:SYD,public:false,files:{[SYF]:{content:JSON.stringify(data)}}})});
-  SY.cfg.g=r.id;SY.cfg.rv=r.updated_at;syCfg();SY.t=Date.now();
+  const body=JSON.stringify(data);
+  const r=await syApi('/gists',{method:'POST',body:JSON.stringify({description:SYD,public:false,files:{[SYF]:{content:body}}})});
+  SY.cfg.g=r.id;SY.cfg.rv=r.updated_at;syCfg();syBaseSet(body);SY.t=Date.now();
 }
 async function syPush(force){
   if(!force){
     const cur=await syApi('/gists/'+SY.cfg.g);
-    if(cur.updated_at!==SY.cfg.rv){const obj=await syRead(cur);SY.pend=obj?{obj,ua:cur.updated_at}:null;if(obj)return false}
+    if(cur.updated_at!==SY.cfg.rv){const obj=await syRead(cur);if(obj){syMergeIn(obj);SY.cfg.rv=cur.updated_at}}
   }
-  const r=await syApi('/gists/'+SY.cfg.g,{method:'PATCH',body:JSON.stringify({files:{[SYF]:{content:JSON.stringify(data)}}})});
-  SY.cfg.rv=r.updated_at;syCfg();SY.t=Date.now();return true;
+  const body=JSON.stringify(data);
+  const r=await syApi('/gists/'+SY.cfg.g,{method:'PATCH',keepalive:body.length<55000,body:JSON.stringify({files:{[SYF]:{content:body}}})});
+  SY.cfg.rv=r.updated_at;syCfg();syBaseSet(body);SY.t=Date.now();return true;
 }
 async function syAdopt(obj,ua){
   try{localStorage.setItem(KEY+'-before-sync',JSON.stringify(data))}catch(e){}
   Object.keys(data).forEach(k=>delete data[k]);Object.assign(data,obj);fixData();
   try{await store.set(JSON.stringify(data))}catch(e){}
-  SY.cfg.rv=ua;SY.cfg.d=0;syCfg();SY.fresh=false;SY.pend=null;SY.dirty=false;SY.d0=false;SY.t=Date.now();
+  SY.cfg.rv=ua;SY.cfg.d=0;syCfg();syBaseSet(JSON.stringify(obj));SY.fresh=false;SY.pend=null;SY.dirty=false;SY.d0=false;SY.t=Date.now();
 }
 async function syInit(){
   if(!SY.cfg.t)return;
@@ -1154,8 +1209,11 @@ async function syInit(){
     if(g.updated_at===SY.cfg.rv){SY.ready=true;syStatus('ok');if(SY.dirty)syncSoon();return}
     const obj=await syRead(g);
     if(!obj){await syPush(true);SY.ready=true;syStatus('ok');return}
-    if(SY.fresh||!SY.d0){await syAdopt(obj,g.updated_at);SY.ready=true;syStatus('ok');return}
-    SY.pend={obj,ua:g.updated_at};syStatus('conflict');
+    if(SY.fresh){await syAdopt(obj,g.updated_at);SY.ready=true;syStatus('ok');syRender();return}
+    syMergeIn(obj);SY.cfg.rv=g.updated_at;syCfg();syBaseSet(JSON.stringify(obj));
+    SY.ready=true;
+    if(!syEq(obj,data)){SY.dirty=true;syncSoon()}else{SY.cfg.d=0;syCfg();SY.dirty=false}
+    syStatus('ok');syRender();
   }catch(e){
     if(e&&e.status===404){SY.cfg.g='';syCfg()}
     syStatus('err',syErr(e));
@@ -1163,33 +1221,53 @@ async function syInit(){
 }
 function syncSoon(){
   if(!SY.cfg.t)return;SY.dirty=true;if(!SY.cfg.d){SY.cfg.d=1;syCfg()}
-  if(!SY.ready||SY.st==='conflict')return;
-  clearTimeout(syT);syT=setTimeout(syRun,4000);
+  if(!SY.ready)return;
+  clearTimeout(syT);syT=setTimeout(syRun,1500);
 }
 async function syRun(){
-  if(!SY.dirty||SY.busy||!SY.ready||SY.st==='conflict')return;
+  if(!SY.dirty||SY.busy||!SY.ready)return;
   SY.busy=true;SY.dirty=false;
   try{
-    const ok=await syPush(false);
-    if(ok){SY.st='ok';SY.msg='';if(!SY.dirty){SY.cfg.d=0;syCfg()}}else{SY.st='conflict';SY.dirty=true}
-  }catch(e){SY.st='err';SY.msg=syErr(e);SY.dirty=true;clearTimeout(syT);syT=setTimeout(syRun,60000)}
+    await syPush(false);
+    SY.st='ok';SY.msg='';if(!SY.dirty){SY.cfg.d=0;syCfg()}
+  }catch(e){SY.st='err';SY.msg=syErr(e);SY.dirty=true;clearTimeout(syT);syT=setTimeout(syRun,15000)}
   SY.busy=false;
-  if(SY.st==='conflict'||SY.st==='err'){if(!ui.modal||ui.modal==='backup')render()}
+  if(SY.st==='err'){if(!ui.modal||ui.modal==='backup')render()}
   else if(SY.dirty)syncSoon();
-  else if(ui.modal==='backup')render();
+  else{syRender();if(ui.modal==='backup')render()}
 }
 async function syPull(){
-  if(!SY.cfg.t||!SY.ready||SY.busy||SY.dirty||SY.pulling||SY.st==='conflict'||ui.modal)return;
-  const ae=document.activeElement;if(ae&&/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))return;
+  if(!SY.cfg.t||!SY.ready||SY.busy||SY.pulling)return;
   SY.pulling=true;
   try{
     const g=await syApi('/gists/'+SY.cfg.g);
     if(g.updated_at!==SY.cfg.rv){
       const obj=await syRead(g);
-      if(obj&&!SY.dirty&&!ui.modal){await syAdopt(obj,g.updated_at);SY.st='ok';render()}
+      if(obj){
+        syMergeIn(obj);SY.cfg.rv=g.updated_at;syCfg();syBaseSet(JSON.stringify(obj));SY.t=Date.now();
+        if(!syEq(obj,data))syncSoon();else{SY.dirty=false;SY.cfg.d=0;syCfg()}
+        SY.st='ok';
+      }
     }
   }catch(e){}
-  SY.pulling=false;
+  SY.pulling=false;syRender();
+}
+/* cloud version history (GitHub keeps every save) */
+async function syHist(){
+  try{const L=await syApi('/gists/'+SY.cfg.g+'/commits?per_page=20');SY.hist=L.map(x=>({v:x.version,t:x.committed_at}));}
+  catch(e){SY.hist=[];SY.msg=syErr(e)}
+  if(ui.modal==='backup')render();
+}
+async function syVer(sha){
+  try{
+    const g=await syApi('/gists/'+SY.cfg.g+'/'+sha);const obj=await syRead(g);
+    if(!obj)throw new Error('empty');
+    if(!confirm('استعادة هذه النسخة؟ سيتم حفظ نسختك الحالية احتياطياً أولاً.'))return;
+    try{localStorage.setItem(KEY+'-before-restore',JSON.stringify(data))}catch(e){}
+    Object.keys(data).forEach(k=>delete data[k]);Object.assign(data,obj);fixData();
+    try{await store.set(JSON.stringify(data))}catch(e){}
+    SY.hist=null;await syPush(true);SY.st='ok';ui.modal=null;render();
+  }catch(e){alert('تعذّرت الاستعادة')}
 }
 document.addEventListener('visibilitychange',()=>{
   if(!SY.cfg.t)return;
@@ -1197,13 +1275,18 @@ document.addEventListener('visibilitychange',()=>{
   else if(!SY.ready)syInit();else syPull();
 });
 window.addEventListener('focus',()=>{if(SY.cfg.t&&SY.ready)syPull()});
-setInterval(()=>{if(document.visibilityState==='visible')syPull()},30000);
+setInterval(()=>{if(document.visibilityState==='visible'){syPull();syRender()}},8000);
 window.addEventListener('online',()=>{if(SY.cfg.t){if(!SY.ready)syInit();else if(SY.dirty)syRun()}});
 const syTime=()=>SY.t?new Date(SY.t).toLocaleTimeString(LOC,{hour:'2-digit',minute:'2-digit'}):'';
+function syHistList(){
+  if(!SY.hist)return'';
+  if(!SY.hist.length)return'<p class="muted" style="margin-top:8px">لا توجد نسخ سابقة.</p>';
+  return'<div style="margin-top:10px;display:grid;gap:6px">'+SY.hist.map(h=>`<button class="btn ghost" data-act="syver" data-v="${h.v}" style="justify-content:space-between">${new Date(h.t).toLocaleString(LOC,{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})} — استعادة</button>`).join('')+'</div>';
+}
 function syBlock(){
   if(SY.cfg.t){
     const txt=SY.st==='ok'?`✓ متصلة${SY.t?' · آخر مزامنة '+syTime():''}`:SY.st==='busy'?'جارٍ المزامنة…':SY.st==='conflict'?'⚠️ تعارض مع نسخة السحابة':SY.st==='err'?'⚠️ '+SY.msg:'غير متصلة';
-    return`<div class="syb"><b>☁️ المزامنة التلقائية</b><p class="muted" style="margin:4px 0 8px">${txt}<br>تتزامن بياناتك تلقائياً بين الهاتف والكمبيوتر: ما تكتبه في أحدهما يظهر في الآخر خلال ثوانٍ. لإعادتها على جهاز جديد أو بعد مسح المتصفح: افتح هذه النافذة والصق نفس الرمز.</p><div class="acts"><button class="btn ghost" data-act="sysync">مزامنة الآن</button><button class="btn ghost" data-act="sooff">فصل</button></div></div>`}
+    return`<div class="syb"><b>☁️ المزامنة التلقائية</b><p class="muted" style="margin:4px 0 8px">${txt}<br>تتزامن بياناتك تلقائياً بين الهاتف والكمبيوتر: ما تكتبه في أحدهما يظهر في الآخر خلال ثوانٍ. لإعادتها على جهاز جديد أو بعد مسح المتصفح: افتح هذه النافذة والصق نفس الرمز.</p><div class="acts"><button class="btn ghost" data-act="sysync">مزامنة الآن</button><button class="btn ghost" data-act="syhist">النسخ السابقة</button><button class="btn ghost" data-act="sooff">فصل</button></div>${syHistList()}</div>`}
   return`<div class="syb"><b>☁️ مزامنة تلقائية — تبقى بياناتك حتى لو حُذف Chrome</b>
 <ol class="muted" style="margin:6px 0 8px;padding-inline-start:20px;font-size:12.5px;line-height:1.8"><li>سجّل حساباً مجانياً في github.com</li><li>Settings ← Developer settings ← Personal access tokens ← Tokens (classic) ← Generate new token</li><li>فعّل صلاحية <b>gist</b> فقط واجعل المدة بلا انتهاء</li><li>انسخ الرمز والصقه هنا، واحفظه في مكان آمن لتعيد استخدامه</li></ol>
 <input id="syt" dir="ltr" placeholder="ghp_xxxxxxxx" autocomplete="off"><div class="acts" style="margin-top:8px"><button class="btn" data-act="syon">ربط وبدء المزامنة</button></div>
@@ -2433,6 +2516,8 @@ function handle(a,D){
     case 'syon':{const t=($('#syt')||{}).value;const v=(t||'').trim();
       if(!v){const E=$('#err');if(E)E.textContent='الصق الرمز أولاً.';return false}
       SY.cfg={t:v};syCfg();SY.ready=false;SY.pend=null;SY.dirty=true;syInit();ui.modal='backup';break}
+    case 'syhist':syHist();return false;
+    case 'syver':syVer(D.v);return false;
     case 'sysync':SY.dirty=true;if(SY.ready){clearTimeout(syT);syRun()}else syInit();break;
     case 'sooff':SY.cfg={};syCfg();SY.st='off';SY.ready=false;SY.dirty=false;SY.pend=null;break;
     case 'syrestore':if(SY.pend){syAdopt(SY.pend.obj,SY.pend.ua).then(()=>{SY.ready=true;syStatus('ok')})}return false;
