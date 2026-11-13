@@ -376,14 +376,14 @@ button.chip:active{transform:scale(.94)}
 .dchip i{position:absolute;top:5px;right:7px;width:6px;height:6px;border-radius:50%;background:var(--st)}
 .dchip.on i{background:#04140f}
 .scs{display:grid;gap:10px}
-.sc{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;text-align:start;padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--line);border-inline-start:4px solid var(--st);animation:stIn .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*70ms);transition:transform .15s}
-.sc:active,.ex:active{transform:scale(.97)}
-.sc.td{border-inline-start-color:var(--td)}.sc.tp{border-inline-start-color:var(--tp)}
-.sc b{font-size:16px}
+.stc{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;text-align:start;padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--line);border-inline-start:4px solid var(--st);animation:stIn .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*70ms);transition:transform .15s}
+.stc:active,.ex:active{transform:scale(.97)}
+.stc.td{border-inline-start-color:var(--td)}.stc.tp{border-inline-start-color:var(--tp)}
+.stc b{font-size:16px}
 .stime{font-size:12px;color:var(--muted);font-weight:700;direction:ltr;min-width:74px;text-align:center}
-.sc em{font-style:normal;font-size:11.5px;font-weight:800;padding:3px 10px;border-radius:99px;background:color-mix(in srgb,var(--st) 18%,transparent);color:var(--st)}
-.sc.td em{background:color-mix(in srgb,var(--td) 18%,transparent);color:var(--td)}
-.sc.tp em{background:color-mix(in srgb,var(--tp) 18%,transparent);color:var(--tp)}
+.stc em{font-style:normal;font-size:11.5px;font-weight:800;padding:3px 10px;border-radius:99px;background:color-mix(in srgb,var(--st) 18%,transparent);color:var(--st)}
+.stc.td em{background:color-mix(in srgb,var(--td) 18%,transparent);color:var(--td)}
+.stc.tp em{background:color-mix(in srgb,var(--tp) 18%,transparent);color:var(--tp)}
 .wk-scroll{overflow-x:auto;margin-top:8px}
 .wg{border-collapse:separate;border-spacing:4px;min-width:540px;width:100%;font-size:11.5px}
 .wg th{color:var(--muted);font-weight:700;padding:4px;white-space:nowrap;direction:ltr}
@@ -424,7 +424,7 @@ button.chip:active{transform:scale(.94)}
 .abb{height:6px;border-radius:9px;background:var(--soft);overflow:hidden}
 .abb i{display:block;height:100%;border-radius:9px;margin-inline-start:0;transform-origin:right;animation:grow .8s cubic-bezier(.2,.8,.2,1)}
 .ab.good i{background:var(--good)}.ab.warn i{background:var(--warn)}.ab.bad i{background:var(--bad)}
-@media (prefers-reduced-motion:reduce){.cd,.sc,.ex,.ab,.abb i{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.cd,.stc,.sc,.ex,.ab,.abb i{animation:none!important}}
 
 /* ===== social ===== */
 .soc{--ig:#E1306C;--tt:#25D1D8;--yt:#FF4D4D;--fb:#4C8DF5}
@@ -2791,7 +2791,7 @@ function stTT(){
   const u=data.uni,td=new Date().getDay(),sd=ui.sd??(td<5?td:0);
   const chips=DN.map((n,i)=>`<button data-act="sday" data-v="${i}" class="dchip ${sd===i?'on':''}">${n}${i===td?'<i></i>':''}</button>`).join('');
   const L=u.tt[sd].map((t,s)=>({t:t.trim(),s})).filter(x=>stType(x.t));
-  const cards=L.length?L.map((x,k)=>{const ty=stType(x.t);return`<button class="sc ${ty}" style="--i:${k}" data-act="tedit" data-d="${sd}" data-s="${x.s}"><div class="stime">${esc(u.slots[x.s])}</div><b>${esc(x.t)}</b><em>${stTag[ty]}</em></button>`}).join(''):empty('لا توجد حصص هذا اليوم 🎉');
+  const cards=L.length?L.map((x,k)=>{const ty=stType(x.t);return`<button class="stc ${ty}" style="--i:${k}" data-act="tedit" data-d="${sd}" data-s="${x.s}"><div class="stime">${esc(u.slots[x.s])}</div><b>${esc(x.t)}</b><em>${stTag[ty]}</em></button>`}).join(''):empty('لا توجد حصص هذا اليوم 🎉');
   const grid=`<div class="wk-scroll"><table class="wg"><tr><th></th>${u.slots.map(x=>`<th><button class="thb" data-act="slotsedit">${esc(x)}</button></th>`).join('')}</tr>${u.tt.map((r,d)=>`<tr><th>${DN[d]}</th>${r.map((t,s)=>{const ty=stType(t);return`<td><button class="wc ${ty}" data-act="tedit" data-d="${d}" data-s="${s}">${ty?esc(t):'·'}</button></td>`}).join('')}</tr>`).join('')}</table></div>`;
   return wakeCard(sd)+`<div class="dchips">${chips}</div><div class="scs">${cards}</div><div class="card"><div class="hn-h"><b>الأسبوع كاملاً</b><button class="chip" data-act="slotsedit">⏱ أوقات الحصص</button></div>${grid}</div>`;
 }
