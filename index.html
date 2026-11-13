@@ -1016,7 +1016,7 @@ input:focus,textarea:focus{box-shadow:none}
 .ov{-webkit-backdrop-filter:none;backdrop-filter:none}
 .page.enter .vtd{animation:none}
 /* ===== sleeping tab ===== */
-.sleep{display:flex;flex-direction:column;gap:12px}
+.sleep{display:block}
 .slhero i{font-size:26px}
 .slc{padding:16px}
 .slhd{display:flex;justify-content:space-between;align-items:center;direction:ltr;margin-bottom:10px}
@@ -1111,6 +1111,23 @@ input:focus,textarea:focus{box-shadow:none}
 .slrul{display:flex;height:12px;border-radius:99px;overflow:hidden;gap:2px;direction:ltr;margin:6px 0 4px}
 .slrul i{display:block;margin:0;border-radius:0}
 .slrull{display:flex;justify-content:space-between;direction:ltr;font-size:10.5px;color:var(--muted)}
+
+/* ===== sleep v3: same look as habit (heatmap + chips + month calendar) ===== */
+.hm i.l{background:var(--c);box-shadow:0 0 8px color-mix(in srgb,var(--c) 45%,transparent)}
+.hm i{transition:opacity .3s}
+.hm i.dim{opacity:.16}
+.stat b small{font-size:12px;font-weight:600;color:var(--muted);margin-inline-start:2px}
+.chip b small{font-size:12px;font-weight:700;margin-inline-start:2px;opacity:.8}
+.sc{aspect-ratio:1;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;font-size:16px;line-height:1.1;position:relative;color:var(--ink);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation;transition:transform .12s,background .25s,opacity .3s}
+.sc:active{transform:scale(.9)}
+.sc small{font-size:10px;font-weight:800;margin-top:3px;font-variant-numeric:tabular-nums;color:var(--muted)}
+.sc.l{background:color-mix(in srgb,var(--c) 24%,var(--surface))}
+.sc.l small{color:var(--c)}
+.sc.today{outline:2.5px solid var(--accent);outline-offset:-2px}
+.sc:disabled{opacity:.3}
+.sc.dim{opacity:.16}
+.sc svg{position:absolute;top:6px;right:7px;opacity:.75}
+.sc-hint{margin:10px 0 0;font-size:12px}
 
 
 /* backup reminder */
@@ -1792,39 +1809,67 @@ const slSet=m=>m==='q'?SLQ.map((q,i)=>({c:SLC.q[i],t:q[1]})):data.sleep.bands.ma
 function bkBanner(){const sb=syBanner();if(sb)return sb;if(SY.cfg.t&&SY.st!=='off')return'';const l=data.lastBk||0,d=Math.floor((Date.now()-l)/864e5);if(l&&d<3)return'';
   return`<div class="bkb"><div><b>⚠️ ${l?`آخر نسخة احتياطية قبل ${d} أيام`:'لا توجد نسخة احتياطية بعد'}</b><small>بياناتك مخزّنة في المتصفح فقط، وحذف السجل يمسحها</small></div><div class="bkbs"><button class="btn" data-act="modal" data-v="backup">تفعيل المزامنة التلقائية</button><button class="btn ghost" data-act="bkquick">حفظ ملف</button></div></div>`}
 function bkDownload(){const b=new Blob([JSON.stringify(data)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='my-life-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),3000);data.lastBk=Date.now();save()}
+function slStreaks(){
+  const L=data.sleep.log,tg=slTg(),ok=d=>L[d]&&L[d].h>=tg;
+  let cur=0,d=new Date();
+  if(!L[fmt(d)])d=addDays(d,-1);
+  while(ok(fmt(d))){cur++;d=addDays(d,-1)}
+  const keys=Object.keys(L).sort();let best=0,run=0,prev=null;
+  for(const k of keys){
+    if(ok(k)){run=(prev&&fmt(addDays(parse(prev),1))===k)?run+1:1;prev=k;best=Math.max(best,run)}
+    else{run=0;prev=null}
+  }
+  return{cur,best};
+}
+function sleepAccent(){const c=data.sleep.bands[slLvH(slTg())].c;return` style="--accent:${c};--accent-ink:${slInk(c)}"`}
+const SLMOON='<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>';
+function slHeatmap(L,set,m,f){
+  const W=22,t=today(),now=new Date(),start=addDays(now,6-now.getDay()-(W*7-1));
+  let cells='',mon='',last=-1;
+  for(let i=0;i<W*7;i++){
+    const k=fmt(addDays(start,i)),r=L[k],lv=r?slLv(r,m):-1,c=lv>=0?set[lv].c:'';
+    const cl=[c?'l':'',k>t?'f':'',k===t?'t':'',(f!==null&&c&&lv!==f)?'dim':''].filter(Boolean).join(' ');
+    cells+=`<i class="${cl}" data-lv="${lv}" style="--i:${i}${c?';--c:'+c:''}"></i>`;
+  }
+  for(let w=0;w<W;w++){const d=addDays(start,w*7);if(d.getMonth()!==last&&(w===0||d.getDate()<=7)){last=d.getMonth();mon+=`<span style="grid-column:${w+1}">${d.toLocaleDateString(LOC,{month:'short'})}</span>`}}
+  return`<div class="hm-wrap"><div class="hm-m">${mon}</div><div class="hm">${cells}</div></div>`;
+}
 function viewSleep(){
-  const S=data.sleep,L=S.log,m=S.mode==='q'?'q':'h',t=today(),curY=+t.slice(0,4),Y=Math.min(ui.sy||curY,curY);ui.sy=Y;
-  const tg=slTg(),wv=ui.slw?'wv':'';ui.slw=false;
-  const keys=Object.keys(L).filter(k=>k.startsWith(Y+'-')),n=keys.length;
-  const avgH=n?keys.reduce((a,k)=>a+L[k].h,0)/n:0;
-  const qk=keys.filter(k=>L[k].q>0),avgQ=qk.length?qk.reduce((a,k)=>a+L[k].q,0)/qk.length:0;
-  const good=n?Math.round(keys.filter(k=>L[k].h>=tg).length/n*100):0;
-  const set=slSet(m),cnt=set.map(()=>0);keys.forEach(k=>{const l=slLv(L[k],m);if(l>=0&&l<cnt.length)cnt[l]++});
-  const tot=cnt.reduce((a,b)=>a+b,0);
+  const S=data.sleep,L=S.log,m=S.mode==='q'?'q':'h',t=today(),tg=slTg(),wv=ui.slw?'wv':'';ui.slw=false;
+  const ms=ui.sms||0;ui.sms=0;ui.slm=ui.slm||t;
+  const a=parse(ui.slm),days=daysBetween(new Date(a.getFullYear(),a.getMonth(),1),new Date(a.getFullYear(),a.getMonth()+1,0));
+  const set=slSet(m),st=slStreaks();
   const f=(typeof ui.slf==='number'&&ui.slf<set.length)?ui.slf:null;ui.slf=f;
-  const first=new Date(Y,0,1),pad=first.getDay(),days=Math.round((new Date(Y+1,0,1)-first)/864e5),cols=Math.ceil((pad+days)/7);
-  let cells='';for(let i=0;i<pad;i++)cells+='<i class="sd e"></i>';
-  for(let i=0;i<days;i++){const d=fmt(new Date(Y,0,1+i)),r=L[d],fu=d>t,lv=r?slLv(r,m):-1,c=lv>=0?set[lv].c:'',col=Math.floor((pad+i)/7);
-    cells+=`<button class="sd ${c?'l':''} ${fu?'fu':''} ${d===t?'td':''} ${f!==null&&c&&lv!==f?'dim':''}" style="--k:${col}${c?';--c:'+c:''}" data-lv="${lv}" data-act="slop" data-d="${d}" ${fu?'disabled aria-disabled="true"':''} aria-label="${d}"></button>`}
-  let mons='';for(let mo=0;mo<12;mo++){const idx=Math.round((new Date(Y,mo,1)-first)/864e5),col=Math.floor((pad+idx)/7);
-    mons+=`<span style="left:${col/cols*100}%">${new Date(Y,mo,1).toLocaleDateString(LOC,{month:'short'})}</span>`}
+  const lvOf=r=>r?slLv(r,m):-1;
+  const keys=days.filter(d=>L[d]),n=keys.length;
+  const avgH=n?keys.reduce((x,k)=>x+L[k].h,0)/n:0;
+  const qk=keys.filter(k=>L[k].q>0),avgQ=qk.length?qk.reduce((x,k)=>x+L[k].q,0)/qk.length:0;
+  const cnt=set.map(()=>0);keys.forEach(k=>{const l=lvOf(L[k]);if(l>=0&&l<cnt.length)cnt[l]++});
+  const tot=cnt.reduce((x,y)=>x+y,0);
+  let debt=0,dn=0;for(let i=0;i<7;i++){const r=L[fmt(addDays(new Date(),-i))];if(r){debt+=tg-r.h;dn++}}
+  const avg7=dn?(dn*tg-debt)/dn:0,p=dn?Math.min(1,avg7/tg):0,hit=dn&&avg7>=tg;
+  const num=(v,dec)=>{const txt=dec?String(Math.round(v*10)/10):String(Math.round(v));return `<span class="cu" data-v="${v}" data-d="${dec}" data-f="${txt}">${txt}</span>`};
+  const cell=d=>{const r=L[d],lv=lvOf(r),c=lv>=0?set[lv].c:'',has=r&&(r.n||'').trim();
+    const cl=['sc',c?'l':'',d===t?'today':'',(f!==null&&c&&lv!==f)?'dim':''].filter(Boolean).join(' ');
+    return`<button class="${cl}" data-act="slop" data-d="${d}" data-lv="${lv}" ${c?`style="--c:${c}"`:''} ${d>t?'disabled':''}>${+d.slice(8)}${r?`<small>${slFmt(r.h)}</small>`:''}${has?hsvg(HI.note,13,2.4):''}</button>`};
+  const chips=`<div class="chips"><div class="chip ${st.cur?'hot':''}"><span class="flame">${hsvg(SLMOON,22)}</span><b>${num(st.cur,0)}</b><span>ليلة متتالية</span></div><button class="chip goal ${hit?'hot':''}" data-act="modal" data-v="slset" style="--p:${p}">${hsvg(HI.goal,20)}<span>${hit?'متوسط أسبوعك ≥ الهدف ✓ · ':'الهدف '}${slFmt(tg)} س</span><i></i></button><div class="chip"><b>${dn?(debt>0?'−':'+')+num(Math.abs(debt),1)+'<small>س</small>':'—'}</b><span>رصيد 7 ليالٍ</span></div></div>`;
+  const stats=`<div class="grid3"><div class="stat"><b class="${n&&avgH>=tg?'good':''}">${n?num(avgH,1)+'<small>س</small>':'—'}</b><span>متوسط النوم</span></div><div class="stat"><b>${qk.length?num(avgQ,1)+'<small>/5</small>':'—'}</b><span>متوسط الجودة</span></div><div class="stat"><b>${num(st.best,0)}</b><span>أفضل سلسلة</span></div></div>`;
   const dist=tot?`<div class="sldist ${wv}">${set.map((x,i)=>cnt[i]?`<i style="flex:${cnt[i]};background:${x.c};--k:${i}"></i>`:'').join('')}</div>`:'';
   const lg=`<div class="slchs">${set.map((x,i)=>`<button class="slch ${f===i?'on':''}" data-act="slflt" data-v="${i}" style="--c:${x.c}"><i></i>${x.t}<small>${cnt[i]}</small></button>`).join('')}</div>`;
-  let rec='';for(let i=13;i>=0;i--){const d=fmt(addDays(new Date(),-i)),r=L[d],lv=r?slLv(r,m):-1,c=lv>=0?set[lv].c:'';
-    rec+=`<button class="sr ${d===t?'td':''}" style="--k:${13-i}" data-act="slop" data-d="${d}"><small>${+d.slice(8)}</small><i class="slcir ${c?'l':''} ${f!==null&&c&&lv!==f?'dim':''}" data-lv="${lv}" ${c?`style="--c:${c};color:${slInk(c)}"`:''}>${r?slFmt(r.h):''}</i></button>`}
-  let debt=0,dn=0;for(let i=0;i<7;i++){const r=L[fmt(addDays(new Date(),-i))];if(r){debt+=tg-r.h;dn++}}
-  const r0=L[t],pct=r0?Math.min(100,Math.round(r0.h/tg*100)):0,hc=r0?slClr(r0,'h'):'var(--muted)';
-  const hero=`<button class="vtd slhero ${r0?'ok':''}" data-act="slop" data-d="${t}"><span class="slrg"><svg viewBox="0 0 36 36" aria-hidden="true"><circle class="t" cx="18" cy="18" r="15.5"/>${pct?`<circle class="p" cx="18" cy="18" r="15.5" pathLength="100" style="stroke:${hc};stroke-dasharray:${pct} 100"/>`:''}</svg><i>${r0?SLQ[Math.max(0,(r0.q||3)-1)][0]:'😴'}</i></span><div><b>${r0?`نمت ${slFmt(r0.h)} ساعة الليلة الماضية`:'كيف نمت الليلة الماضية؟'}</b><small>${r0?(r0.h>=tg?'وصلت هدفك ✨ · اضغط للتعديل':`ناقص ${slFmt(tg-r0.h)} ساعة عن هدفك · اضغط للتعديل`):'سجّل ساعات نومك وجودته'}</small></div></button>`;
-  const num=(v,dec)=>{const txt=dec?String(Math.round(v*10)/10):String(Math.round(v));return `<span class="cu" data-v="${v}" data-d="${dec}" data-f="${txt}">${txt}</span>`};
-  const stat=(v,l,i)=>`<div style="--i:${i}"><b>${v}</b><span>${l}</span></div>`;
-  const gear=`<button class="slgear" data-act="modal" data-v="slset" aria-label="تخصيص الساعات والألوان"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h9M19 6h1M4 12h3M13 12h7M4 18h11M21 18h-1"/><circle cx="16" cy="6" r="2.2"/><circle cx="10" cy="12" r="2.2"/><circle cx="18" cy="18" r="2.2"/></svg>تخصيص</button>`;
-  return `<div class="sleep">${hero}
-<div class="card slc"><div class="slhd"><div class="sly"><button data-act="sly" data-v="-1" aria-label="السنة السابقة">‹</button><b>${Y}</b><button data-act="sly" data-v="1" aria-label="السنة التالية" ${Y>=curY?'disabled':''}>›</button></div><div class="slr2"><span class="sln">${n} ليلة</span>${gear}</div></div>
-<div class="slgw"><div class="slm">${mons}</div><div class="slg ${wv}" style="grid-template-columns:repeat(${cols},1fr)">${cells}</div></div>
-${dist}${lg}
-<div class="seg" style="margin-top:12px">${[['h','حسب الساعات'],['q','حسب الجودة']].map(([k,x])=>`<button data-act="slview" data-v="${k}" class="${m===k?'on':''}">${x}</button>`).join('')}</div></div>
-<div class="sl4">${stat(n?num(avgH,1)+'<small>س</small>':'—','متوسط النوم',0)}${stat(qk.length?num(avgQ,1)+'<small>/5</small>':'—','متوسط الجودة',1)}${stat(n?num(good,0)+'<small>%</small>':'—',`ليالٍ ≥ ${slFmt(tg)} ساعات`,2)}${stat(dn?(debt>0?'−':'+')+num(Math.abs(debt),1)+'<small>س</small>':'—','رصيد آخر 7 ليالٍ',3)}</div>
-<div class="card"><div class="sph"><b>🗓️ آخر 14 ليلة</b></div><p class="muted" style="margin:2px 0 8px;font-size:12px">كل نقطة = ليلة تنتهي صباح ذلك اليوم · اضغط للتسجيل أو التعديل (الأيام القادمة مقفلة)</p><div class="slrec">${rec}</div></div></div>`;
+  const seg=`<div class="seg" style="margin-top:0">${[['h','حسب الساعات'],['q','حسب الجودة']].map(([k,x])=>`<button data-act="slview" data-v="${k}" class="${m===k?'on':''}">${x}</button>`).join('')}</div>`;
+  const nk=Object.keys(L).filter(k=>(L[k].n||'').trim()).sort().reverse();
+  const notes=`<div class="card"><div class="hn-h"><b>الملاحظات</b><span class="muted">${nk.length}</span></div>`+(nk.length?nk.slice(0,10).map(k=>`<button class="hn" data-act="slop" data-d="${k}"><small>${k===t?'اليوم':parse(k).toLocaleDateString(LOC,{weekday:'short',day:'numeric',month:'short'})} · ${slFmt(L[k].h)} ساعة</small><span>${esc(L[k].n)}</span></button>`).join(''):empty('لا توجد ملاحظات'))+`</div>`;
+  return `<div class="sleep">`+slHeatmap(L,set,m,f)
+  +chips
+  +`<button class="link" data-act="modal" data-v="slset" style="margin:0 0 6px;display:inline-flex;gap:6px;align-items:center">🎨 ألوان النوم</button>`
+  +stats
+  +`<div class="card">${seg}${lg}${dist}</div>`
+  +`<div class="card ms${ms}"><div class="nav"><button data-act="slmonth" data-v="-1" aria-label="السابق">›</button><div class="nav-l">${a.toLocaleDateString(LOC,{month:'long',year:'numeric'})}</div><button data-act="slmonth" data-v="1" aria-label="التالي">‹</button></div>`
+  +calendar(days,cell)
+  +`<p class="muted sc-hint">اضغط على يوم لتسجيل نوم الليلة التي تنتهي صباحه</p>`
+  +(fmt(a).slice(0,7)===t.slice(0,7)?'':`<button class="link" data-act="sltoday">العودة إلى هذا الشهر</button>`)
+  +`</div>`
+  +notes+`</div>`;
 }
 function mountSleep(){
   if(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches)return;
@@ -2411,7 +2456,7 @@ function render(){
   const V={home:()=>netCard()+viewHome(),prayers:viewPrayers,habit:viewHabit,study:viewStudy,eyes:viewEyes,social:viewSocial,sleep:viewSleep};
   const anim=ui.anim;ui.anim=false;
   const title=ui.tab==='home'?'':`<h1 class="ptitle">${TABS.find(t=>t[0]===ui.tab)[1]}</h1>`;
-  $('#app').innerHTML=`<div class="page ${anim?'enter':''}"${ui.tab==='habit'?' style="--accent:var(--hcol);--accent-ink:var(--hink);--bad:var(--hbadc)"':''}>${title}${bkBanner()}${V[ui.tab]()}</div>`;
+  $('#app').innerHTML=`<div class="page ${anim?'enter':''}"${ui.tab==='habit'?' style="--accent:var(--hcol);--accent-ink:var(--hink);--bad:var(--hbadc)"':ui.tab==='sleep'?sleepAccent():''}>${title}${bkBanner()}${V[ui.tab]()}</div>`;
   updateNav();
   if(ui.tab==='home')mountHome();
   if(ui.tab==='habit')mountHabit();
@@ -2599,11 +2644,11 @@ function handle(a,D){
     case 'slhd':case 'slhs':case 'slq':{const n=$('#sln');if(n)ui.sln=n.value;
       if(a==='slq')ui.slq=+D.v;else if(a==='slhs')ui.slh=+D.v;else ui.slh=Math.min(16,Math.max(0,Math.round((ui.slh+ +D.v)*2)/2));hVib(6);break}
     case 'slsv':{const n=$('#sln'),dd=ui.sld;if(dd>today())return false;data.sleep.log[dd]={h:ui.slh,q:ui.slq,n:n?n.value.trim():''};ui.modal=null;save();hVib(12);
-      ui.pop='.sd[data-d="'+dd+'"]';if(ui.slh>=slTg())ui.burst={sel:'.sd[data-d="'+dd+'"]',msg:'🌙 نوم مثالي!'};break}
+      ui.pop='.sc[data-d="'+dd+'"]';if(ui.slh>=slTg())ui.burst={sel:'.sc[data-d="'+dd+'"]',msg:'🌙 نوم مثالي!'};break}
     case 'sldel':delete data.sleep.log[ui.sld];ui.modal=null;save();break;
     case 'slview':data.sleep.mode=D.v==='q'?'q':'h';ui.slf=null;ui.slw=true;save();break;
     case 'slflt':{const v=+D.v;ui.slf=ui.slf===v?null:v;
-      document.querySelectorAll('.sd.l,.slcir.l').forEach(el=>el.classList.toggle('dim',ui.slf!==null&&+el.dataset.lv!==ui.slf));
+      document.querySelectorAll('.hm i.l,.sc.l').forEach(el=>el.classList.toggle('dim',ui.slf!==null&&+el.dataset.lv!==ui.slf));
       document.querySelectorAll('.slch').forEach((el,i)=>el.classList.toggle('on',ui.slf===i));hVib(5);return false}
     case 'slbm':{const B=data.sleep.bands,i=+D.i;if(!B[i]||i<1)break;const lo=B[i-1].m+.5,hi=B[i+1]?B[i+1].m-.5:16;B[i].m=Math.min(hi,Math.max(lo,Math.round((B[i].m+ +D.v)*2)/2));save();hVib(6);break}
     case 'slbc':{const b=data.sleep.bands[+D.i];if(b&&/^#[0-9a-f]{6}$/i.test(D.v)){b.c=D.v;save();hVib(6)}break}
@@ -2611,7 +2656,8 @@ function handle(a,D){
     case 'slba':{const B=data.sleep.bands;if(B.length>=8)break;const nm=B[B.length-1].m+1;if(nm>16)break;B.push({m:nm,c:SLP[(B.length*2+1)%SLP.length]});save();break}
     case 'slbr':data.sleep.bands=slDefBands();data.sleep.tg=8;save();break;
     case 'sltg':data.sleep.tg=Math.min(14,Math.max(4,Math.round((slTg()+ +D.v)*2)/2));save();hVib(6);break;
-    case 'sly':{const cy=+today().slice(0,4),ny=(ui.sy||cy)+ +D.v;if(ny>cy)return false;ui.sy=ny;ui.slw=true;break}
+    case 'slmonth':{const a=parse(ui.slm||today());a.setDate(1);a.setMonth(a.getMonth()+(+D.v));ui.slm=fmt(a);ui.sms=+D.v>0?1:-1;ui.slw=true;hVib(8);break}
+    case 'sltoday':ui.slm=today();ui.sms=0;ui.slw=true;break;
     case 'sovmk':ui.vmv='z';ui.som=D.k;break;
     case 'sopsv':{const tx=$('#pcn').value.trim(),d=$('#pcd').value;let ok=$('#pck').checked;const E=$('#err');
       if(!d){E.textContent='حدد التاريخ.';return false}
