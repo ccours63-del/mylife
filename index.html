@@ -1113,7 +1113,8 @@ input:focus,textarea:focus{box-shadow:none}
 .slrull{display:flex;justify-content:space-between;direction:ltr;font-size:10.5px;color:var(--muted)}
 
 /* ===== sleep v3: same look as habit (heatmap + chips + month calendar) ===== */
-.hm i.l{background:var(--c);box-shadow:0 0 8px color-mix(in srgb,var(--c) 45%,transparent)}
+.hm i.l{background:var(--c);box-shadow:none}
+.sleep .chip.hot{box-shadow:none}
 .hm i{transition:opacity .3s}
 .hm i.dim{opacity:.16}
 .stat b small{font-size:12px;font-weight:600;color:var(--muted);margin-inline-start:2px}
@@ -1170,6 +1171,7 @@ const TABS=[['home','الرئيسية'],['prayers','الصلوات'],['habit','�
 
 let data={prayers:{},habit:{},notes:{},docs:[],days:{},hnotes:{},hgoal:0,quran:{},hcol:'#4FC48B',hbad:'#F2726C'};
 let ui={tab:'home',period:'day',anchor:today(),modal:null,confirm:null,focus:null,editing:null,anim:false,pop:null};
+try{const lt=localStorage.getItem('hayati-tab');if(lt&&TABS.some(t=>t[0]===lt))ui.tab=lt}catch(e){}
 let storageOk=true;
 
 /* ---------- storage ---------- */
@@ -2476,7 +2478,7 @@ function handle(a,D){
   switch(a){
     case 'netcfg':netManual(confirm('تعديل حجم الباقة الكلي؟\n(إلغاء = إدخال قراءة يدوية)')?'tot':'rem');return;
     case 'netadd':netManual('rem');return;
-    case 'tab':ui.tab=D.v;if(D.v==='home'&&ui.period==='year')ui.period='month';window.scrollTo(0,0);break;
+    case 'tab':ui.tab=D.v;try{localStorage.setItem('hayati-tab',D.v)}catch(e){}if(D.v==='home'&&ui.period==='year')ui.period='month';window.scrollTo(0,0);break;
     case 'period':ui.pf=SPER.findIndex(x=>x[0]===ui.period);ui.period=D.v;ui.cm='z';break;
     case 'sogo':ui.pf=SPER.findIndex(x=>x[0]===ui.period);ui.period=D.p;ui.anchor=D.d;ui.cm='z';break;
     case 'shift':shift(+D.v);ui.cm=+D.v>0?'n':'p';break;
