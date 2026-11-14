@@ -213,8 +213,8 @@ button:active:not(:disabled){transform:scale(.95)}
 /* dock */
 .dock{position:fixed;bottom:0;left:0;right:0;z-index:5;background:rgba(16,19,24,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
 body.kb .dock{transform:translateY(110%)}
-.dk-in{position:relative;max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(7,1fr);padding:6px 4px}
-.dk-ind{position:absolute;top:6px;bottom:6px;inset-inline-start:calc(var(--i,0)*100%/7);width:calc(100%/7);padding:0 3px;transition:inset-inline-start .38s cubic-bezier(.3,1.25,.4,1);pointer-events:none}
+.dk-in{position:relative;max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(8,1fr);padding:6px 4px}
+.dk-ind{position:absolute;top:6px;bottom:6px;inset-inline-start:calc(var(--i,0)*100%/8);width:calc(100%/8);padding:0 3px;transition:inset-inline-start .38s cubic-bezier(.3,1.25,.4,1);pointer-events:none}
 .dk-ind::before{content:"";display:block;height:100%;border-radius:14px;background:color-mix(in srgb,var(--accent) 16%,transparent)}
 .dk-b{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 6px;color:var(--muted);font-size:10.5px;font-weight:600;min-width:0}
 .dk-b span{white-space:nowrap;transition:color .25s}
@@ -1139,6 +1139,32 @@ input:focus,textarea:focus{box-shadow:none}
 .syb{margin:10px 0;padding:12px;border-radius:16px;background:color-mix(in srgb,var(--good) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--good) 35%,transparent)}
 .syb input{margin-top:4px}
 .bkbs{display:flex;flex-direction:column;gap:6px}
+
+/* ===== phone usage ===== */
+.ph .phhero{text-align:center;padding:18px 14px}
+.ph .phbig{font-size:44px;font-weight:800;line-height:1.15;margin-top:2px}
+.ph .phst{font-size:13.5px;font-weight:800;margin-top:4px}
+.phb{height:10px;border-radius:99px;background:var(--soft);overflow:hidden;margin-top:14px;direction:rtl}
+.phb i{display:block;height:100%;border-radius:99px;background:var(--c)}
+.phlim{display:flex;align-items:center;justify-content:center;gap:14px;margin:4px 0 8px;font-size:14px}
+.phlim .chip{padding:8px 16px;font-size:18px}
+.pwk{display:flex;align-items:stretch;gap:4px;height:150px;direction:ltr;position:relative;margin-top:12px}
+.pwk .ln{position:absolute;left:0;right:0;border-top:1.5px dashed var(--warn);opacity:.8;pointer-events:none;z-index:1}
+.pwb{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:0}
+.pwb .pwt{flex:1;width:100%;display:flex;align-items:flex-end;min-height:0}
+.pwb i{display:block;width:100%;border-radius:5px 5px 2px 2px;background:var(--c)}
+.pwb small{font-size:9.5px;color:var(--muted);height:12px;line-height:12px}
+.pwb.sel i{outline:2px solid var(--ink);outline-offset:1px}
+.pwb.sel small{color:var(--accent);font-weight:800}
+.pwb:disabled{opacity:.35}
+.phr{display:grid;grid-template-columns:1fr 1fr 66px;gap:10px;align-items:center;padding:7px 0;font-size:13.5px}
+.phn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.phv{height:8px;border-radius:8px;background:var(--soft);overflow:hidden;direction:rtl}
+.phv i{display:block;height:100%;border-radius:8px;background:var(--accent)}
+.phr b{text-align:end;font-size:12.5px;white-space:nowrap}
+.ph details{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin:8px 0}
+.ph summary{cursor:pointer;font-weight:700;font-size:14px}
+.ph ol{padding-inline-start:20px;margin-top:8px;color:var(--muted);font-size:13.5px;line-height:1.9}
 </style>
 </head>
 <body>
@@ -1167,7 +1193,7 @@ const monthName=d=>parse(d).toLocaleDateString(LOC,{month:'long'});
 const monthsOfYear=y=>[...Array(12)].map((_,m)=>daysBetween(new Date(y,m,1),new Date(y,m+1,0)));
 
 const PR=[['fajr','الفجر'],['dhuhr','الظهر'],['asr','العصر'],['maghrib','المغرب'],['isha','العشاء']];
-const TABS=[['home','الرئيسية'],['prayers','الصلوات'],['habit','العادة'],['sleep','Sleeping'],['study','الدراسة'],['eyes','Eyes'],['social','السوشل']];
+const TABS=[['home','الرئيسية'],['prayers','الصلوات'],['habit','العادة'],['sleep','Sleeping'],['phone','الهاتف'],['study','الدراسة'],['eyes','Eyes'],['social','السوشل']];
 
 let data={prayers:{},habit:{},notes:{},docs:[],days:{},hnotes:{},hgoal:0,quran:{},hcol:'#4FC48B',hbad:'#F2726C'};
 let ui={tab:'home',period:'day',anchor:today(),modal:null,confirm:null,focus:null,editing:null,anim:false,pop:null};
@@ -1279,6 +1305,7 @@ async function syInit(){
     if(!SY.cfg.g){const L=await syApi('/gists?per_page=100');const f=L.find(x=>x.description===SYD&&x.files&&x.files[SYF]);if(f)SY.cfg.g=f.id}
     if(!SY.cfg.g){await syCreate();SY.ready=true;syStatus('ok');return}
     const g=await syApi('/gists/'+SY.cfg.g);
+    phIngest(g);
     if(g.updated_at===SY.cfg.rv){SY.ready=true;syStatus('ok');if(SY.dirty)syncSoon();return}
     const obj=await syRead(g);
     if(!obj){await syPush(true);SY.ready=true;syStatus('ok');return}
@@ -1314,6 +1341,7 @@ async function syPull(){
   SY.pulling=true;
   try{
     const g=await syApi('/gists/'+SY.cfg.g);
+    phIngest(g);
     if(g.updated_at!==SY.cfg.rv){
       const obj=await syRead(g);
       if(obj){
@@ -1421,6 +1449,8 @@ function fixData(){
   if(!data.days||typeof data.days!=='object')data.days={};
   if(!data.hnotes||typeof data.hnotes!=='object'||Array.isArray(data.hnotes))data.hnotes={};
   data.hgoal=+data.hgoal||0;
+  if(!data.phone||typeof data.phone!=='object'||Array.isArray(data.phone))data.phone={};
+  data.phone.lim=(+data.phone.lim>=30&&+data.phone.lim<=1440)?Math.round(+data.phone.lim):300;
   if(!data.quran||typeof data.quran!=='object'||Array.isArray(data.quran))data.quran={};
   if(!/^#[0-9a-f]{6}$/i.test(data.hcol||''))data.hcol='#4FC48B';
   if(!/^#[0-9a-f]{6}$/i.test(data.hbad||''))data.hbad='#F2726C';
@@ -2443,6 +2473,7 @@ const ICON={
   habit:'<path d="M12 3 5 6v5.5c0 4.2 2.9 7.6 7 9 4.1-1.4 7-4.8 7-9V6l-7-3z"/><path d="m9 12 2.2 2.2L15.5 10"/>',
 };
 ICON.sleep='<path d="M3 19v-8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8"/><path d="M3 15.5h18"/><path d="M7 9V7.5A1.5 1.5 0 0 1 8.5 6h2A1.5 1.5 0 0 1 12 7.5V9"/><path d="M3 21v-2M21 21v-2"/>';
+ICON.phone='<rect x="6.5" y="2.5" width="11" height="19" rx="2.8"/><path d="M10.5 18.5h3"/><path d="M9.5 9.5v2.5M12 7v5M14.5 10.5V12"/>';
 ICON.social='<path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/>';
 const ico=k=>`<svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k]}</svg>`;
 function buildNav(){
@@ -2455,7 +2486,7 @@ function updateNav(){
 
 /* ---------- render ---------- */
 function render(){
-  const V={home:()=>netCard()+viewHome(),prayers:viewPrayers,habit:viewHabit,study:viewStudy,eyes:viewEyes,social:viewSocial,sleep:viewSleep};
+  const V={home:()=>netCard()+viewHome(),prayers:viewPrayers,habit:viewHabit,study:viewStudy,eyes:viewEyes,social:viewSocial,sleep:viewSleep,phone:viewPhone};
   const anim=ui.anim;ui.anim=false;
   const title=ui.tab==='home'?'':`<h1 class="ptitle">${TABS.find(t=>t[0]===ui.tab)[1]}</h1>`;
   $('#app').innerHTML=`<div class="page ${anim?'enter':''}"${ui.tab==='habit'?' style="--accent:var(--hcol);--accent-ink:var(--hink);--bad:var(--hbadc)"':ui.tab==='sleep'?sleepAccent():''}>${title}${bkBanner()}${V[ui.tab]()}</div>`;
@@ -2660,6 +2691,8 @@ function handle(a,D){
     case 'sltg':data.sleep.tg=Math.min(14,Math.max(4,Math.round((slTg()+ +D.v)*2)/2));save();hVib(6);break;
     case 'slmonth':{const a=parse(ui.slm||today());a.setDate(1);a.setMonth(a.getMonth()+(+D.v));ui.slm=fmt(a);ui.sms=+D.v>0?1:-1;ui.slw=true;hVib(8);break}
     case 'sltoday':ui.slm=today();ui.sms=0;ui.slw=true;break;
+    case 'phlim':data.phone.lim=Math.max(30,Math.min(1440,data.phone.lim+(+D.v)));save();hVib(6);break;
+    case 'phday':ui.phd=D.d;hVib(6);break;
     case 'sovmk':ui.vmv='z';ui.som=D.k;break;
     case 'sopsv':{const tx=$('#pcn').value.trim(),d=$('#pcd').value;let ok=$('#pck').checked;const E=$('#err');
       if(!d){E.textContent='حدد التاريخ.';return false}
@@ -3445,6 +3478,45 @@ document.addEventListener('keydown',e=>{
   if(e.key==='ArrowRight')rdGo(RD.n+(RD.b.rtl?-1:1));else if(e.key==='ArrowLeft')rdGo(RD.n-(RD.b.rtl?-1:1));
   else if(e.key==='Escape'){if(!$('#rdsh').hidden)rdSheet('');else rdClose()}
 });
+/* ---------- phone usage: filled automatically by the Android helper app through the gist ---------- */
+const PHK='hayati-phone';
+let PHN=(()=>{try{const o=JSON.parse(localStorage.getItem(PHK)||'null');return o&&o.days&&typeof o.days==='object'?o:{days:{},updated:0}}catch(e){return{days:{},updated:0}}})();
+const PHAPK='https://github.com/ccours63-del/mylife/releases/download/phone-app/my-life-phone.apk';
+async function phIngest(g){
+  try{
+    const f=g&&g.files&&g.files['phone-usage.json'];if(!f)return;
+    let c=f.content;if(f.truncated||c==null){const r=await fetch(f.raw_url,{cache:'no-store'});c=await r.text()}
+    const o=JSON.parse(c);if(!o||typeof o!=='object'||!o.days||typeof o.days!=='object')return;
+    if(o.updated===PHN.updated)return;
+    PHN=o;try{localStorage.setItem(PHK,c)}catch(e){}
+    if(ui.tab==='phone'){const ae=document.activeElement;if(!ui.modal&&!ui.editing&&!(ae&&/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)))render()}
+  }catch(e){}
+}
+const phFm=m=>{m=Math.max(0,Math.round(m));const h=Math.floor(m/60),r=m%60;return h?(r?`${h} س ${r} د`:`${h} س`):`${r} د`};
+const phCol=(m,l)=>m>l?'var(--bad)':m>l*.8?'var(--warn)':'var(--good)';
+function phStreak(D,lim){let n=0,d=new Date();if(!D[fmt(d)])d=addDays(d,-1);while(D[fmt(d)]&&D[fmt(d)].tot<=lim){n++;d=addDays(d,-1)}return n}
+function phAvg(D,from,n){let s=0,c=0;for(let i=from;i<from+n;i++){const r=D[fmt(addDays(new Date(),-i))];if(r){s+=r.tot;c++}}return c?s/c:null}
+function viewPhone(){
+  const D=PHN.days||{},t=today(),lim=data.phone.lim,keys=Object.keys(D).sort();
+  const help=`<details class="phhelp" ${keys.length?'':'open'}><summary>كيف أربط هاتفي؟</summary><ol><li>نزّل التطبيق من <a href="${PHAPK}" style="color:var(--accent)">هذا الرابط</a> وثبّته.</li><li>افتحه والصق نفس رمز GitHub الذي تستخدمه في المزامنة، ثم «حفظ وربط».</li><li>اضغط «منح صلاحية الاستخدام» وفعّل My Life Usage.</li><li>في إعدادات الهاتف اجعل بطارية التطبيق «بلا قيود» وفعّل التشغيل التلقائي، حتى لا يوقفه النظام.</li></ol></details>`;
+  if(!keys.length)return`<div class="ph"><div class="card phhero"><div class="empty">لم تصل أي بيانات من الهاتف بعد.<br>ثبّت تطبيق الأندرويد الصغير وسيبدأ الإرسال تلقائياً.</div></div>${SY.cfg.t?'':'<div class="card"><b>⚠️ فعّل المزامنة أولاً</b><p class="muted">من أيقونة النسخ الاحتياطي في الأعلى، الصق رمز GitHub.</p></div>'}${help}</div>`;
+  const sel=(ui.phd&&D[ui.phd])?ui.phd:(D[t]?t:keys[keys.length-1]),r=D[sel],tot=r.tot,c=phCol(tot,lim),pct=Math.min(100,tot/lim*100);
+  const st=tot>lim?`تجاوزت الحد بـ ${phFm(tot-lim)}`:`متبقي ${phFm(lim-tot)} من حدّك`;
+  const lab=sel===t?'اليوم':parse(sel).toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long'});
+  const old=PHN.updated&&Date.now()-PHN.updated>6*36e5;
+  const hero=`<div class="card phhero" style="--c:${c}"><span class="muted">${lab}</span><div class="phbig">${phFm(tot)}</div><div class="phst" style="color:${c}">${st}</div><div class="phb"><i style="width:${pct}%"></i></div><p class="muted" style="margin-top:10px;font-size:12px">${PHN.updated?'آخر تحديث '+soAgo(PHN.updated):''}${old?' · ⚠️ تأخر التحديث، تحقق من التطبيق على الهاتف':''}</p></div>`;
+  const lc=`<div class="phlim"><button class="chip" data-act="phlim" data-v="-30" aria-label="أقل">−</button><span>الحد اليومي <b>${phFm(lim)}</b></span><button class="chip" data-act="phlim" data-v="30" aria-label="أكثر">+</button></div>`;
+  const a7=phAvg(D,0,7),p7=phAvg(D,7,7);let dl='—',dc='';
+  if(a7!==null&&p7){const x=Math.round((a7-p7)/p7*100);dl=(x>0?'+':x<0?'−':'')+Math.abs(x)+'%';dc=x<0?'good':x>0?'bad':''}
+  const stats=`<div class="grid3"><div class="stat"><b class="good">${phStreak(D,lim)}</b><span>يوم تحت الحد</span></div><div class="stat"><b>${a7===null?'—':phFm(a7)}</b><span>متوسط 7 أيام</span></div><div class="stat"><b class="${dc}" dir="ltr">${dl}</b><span>مقارنة بالأسبوع قبله</span></div></div>`;
+  const days=[];for(let i=13;i>=0;i--)days.push(fmt(addDays(new Date(),-i)));
+  const mx=Math.max(lim*1.15,...days.map(d=>D[d]?D[d].tot:0));
+  const bars=`<div class="pwk"><div class="ln" style="bottom:calc(15px + (100% - 15px) * ${(lim/mx).toFixed(4)})"></div>${days.map(d=>{const x=D[d];return`<button class="pwb ${d===sel?'sel':''}" style="--c:${x?phCol(x.tot,lim):'var(--soft)'}" data-act="phday" data-d="${d}" ${x?'':'disabled'}><span class="pwt"><i style="height:${x?Math.max(2,x.tot/mx*100):0}%"></i></span><small>${+d.slice(8)}</small></button>`}).join('')}</div>`;
+  const ap=Object.entries(r.apps||{}).sort((a,b)=>b[1]-a[1]).slice(0,12),am=ap.length?ap[0][1]:1;
+  const apps=ap.length?ap.map(([n,m])=>`<div class="phr"><span class="phn">${esc(n)}</span><span class="phv"><i style="width:${Math.max(3,m/am*100)}%"></i></span><b>${phFm(m)}</b></div>`).join(''):empty('لا تفاصيل للتطبيقات');
+  return`<div class="ph">${hero}${lc}${stats}<div class="card"><b>آخر 14 يوماً</b><p class="muted" style="font-size:12px;margin-top:2px">الخط المتقطع = حدّك · اضغط على يوم لعرض تفاصيله</p>${bars}</div><div class="card"><b>التطبيقات · ${lab}</b><div style="margin-top:6px">${apps}</div></div>${help}</div>`;
+}
+
 buildNav();
 load().then(netIngest).then(render).then(syInit).then(lkBoot).then(()=>soFetchAll());
 
