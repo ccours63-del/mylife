@@ -250,6 +250,10 @@ html[dir=rtl] .page.enter .bar i{transform-origin:right;animation:grow .7s cubic
 .blk[data-type=h3] .bt{font-size:17px;font-weight:700}
 .blk[data-type=bullet]::before{content:"•";color:var(--accent);font-size:20px;line-height:1.55;flex:none;width:26px;text-align:center}
 .blk[data-type=number]::before{content:attr(data-n) ".";color:var(--muted);font-weight:700;font-size:16px;line-height:1.85;flex:none;min-width:26px;text-align:center}
+.blk[data-type=toggle] .bt{font-weight:600}
+.blk[data-type=toggle] .bt:empty::before{content:attr(data-ph);color:var(--muted);opacity:.55}
+.blk[data-type=toggle] .tgl{display:grid;position:static;inset:auto;flex:none;margin:0;color:var(--accent)}
+.blk[data-type=toggle] .tgl svg{width:18px;height:18px}
 .blk[data-type=quote]{border-inline-start:3px solid var(--accent);padding-inline-start:12px;margin:4px 0}
 .blk[data-type=quote] .bt{color:#C5CBD8}
 .blk[data-type=callout]{background:var(--soft);border-radius:12px;padding:10px 12px;margin:6px 0}
@@ -2011,8 +2015,8 @@ function viewHabit(){
 }
 
 /* ---------- home (day page) ---------- */
-const TBG=[['menu'],['check','sub','bullet','number'],['h1','h2','h3','quote','callout','code','divider'],['bold','italic','underline','strike','mark'],['color','bg','size','align'],['outdent','indent','clear']];
-const TIP={menu:'كل الأدوات',check:'قائمة مهام',sub:'مهمة بمهام فرعية',bullet:'قائمة نقطية',number:'قائمة مرقمة',h1:'عنوان كبير',h2:'عنوان متوسط',h3:'عنوان صغير',quote:'اقتباس',callout:'تنبيه',code:'كود',divider:'فاصل',bold:'عريض',italic:'مائل',underline:'تسطير',strike:'يتوسطه خط',mark:'تمييز',color:'لون النص',bg:'لون الخلفية',size:'حجم الخط',align:'المحاذاة',outdent:'إخراج من الداخل',indent:'إدخال للداخل',clear:'مسح التنسيق'};
+const TBG=[['menu'],['check','sub','toggle','bullet','number'],['h1','h2','h3','quote','callout','code','divider'],['bold','italic','underline','strike','mark'],['color','bg','size','align'],['outdent','indent','clear']];
+const TIP={menu:'كل الأدوات',toggle:'قائمة منسدلة',check:'قائمة مهام',sub:'مهمة بمهام فرعية',bullet:'قائمة نقطية',number:'قائمة مرقمة',h1:'عنوان كبير',h2:'عنوان متوسط',h3:'عنوان صغير',quote:'اقتباس',callout:'تنبيه',code:'كود',divider:'فاصل',bold:'عريض',italic:'مائل',underline:'تسطير',strike:'يتوسطه خط',mark:'تمييز',color:'لون النص',bg:'لون الخلفية',size:'حجم الخط',align:'المحاذاة',outdent:'إخراج من الداخل',indent:'إدخال للداخل',clear:'مسح التنسيق'};
 const tbAll=()=>TBG.flat();
 const tbOrder=()=>{const t=data.tb;if(!t||!Array.isArray(t.o))return null;const all=tbAll(),o=t.o.filter((k,i,a)=>all.includes(k)&&a.indexOf(k)===i);all.forEach(k=>{if(!o.includes(k))o.push(k)});return o};
 const tbHid=()=>new Set(data.tb&&Array.isArray(data.tb.h)?data.tb.h.filter(k=>k!=='menu'):[]);
@@ -2090,7 +2094,8 @@ const IC={
  align:'<path d="M4 6.5h16M4 12h10M4 17.5h13"/>',alr:'<path d="M4 6.5h16M10 12h10M7 17.5h13"/>',alc:'<path d="M4 6.5h16M7 12h10M5.5 17.5h13"/>',all:'<path d="M4 6.5h16M4 12h10M4 17.5h13"/>',
  clear:'<path d="m7.5 19-3-3a1.6 1.6 0 0 1 0-2.2L13 5.4a1.6 1.6 0 0 1 2.2 0l3.4 3.4a1.6 1.6 0 0 1 0 2.2L12.5 19zM9 11.5l5 5M12.5 19H20"/>',
  date:'<rect x="4" y="5.5" width="16" height="14.5" rx="3.5"/><path d="M4 10.5h16M8.5 3.5v4M15.5 3.5v4"/>',time:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
- indent:'<path d="M4 6h16M4 12h11M4 18h16"/><path d="m20 9.2-3 2.8 3 2.8"/>',outdent:'<path d="M4 6h16M4 12h11M4 18h16"/><path d="m17 9.2 3 2.8-3 2.8"/>',chev:'<path d="m15 6-6 6 6 6"/>'
+ indent:'<path d="M4 6h16M4 12h11M4 18h16"/><path d="m20 9.2-3 2.8 3 2.8"/>',outdent:'<path d="M4 6h16M4 12h11M4 18h16"/><path d="m17 9.2 3 2.8-3 2.8"/>',chev:'<path d="m15 6-6 6 6 6"/>',
+ toggle:'<path d="m4 4.5 4 3-4 3zM4 13.5l4 3-4 3z" fill="currentColor"/><path d="M12 7.5h8M12 16.5h8"/>'
 };
 const si=(k,z=18)=>`<svg viewBox="0 0 24 24" width="${z}" height="${z}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]}</svg>`;
 function layout(root){
@@ -2098,7 +2103,7 @@ function layout(root){
   bs.forEach((el,i)=>{
     const n=IND(el),nx=bs[i+1];
     if(hide>=0&&n>hide)el.dataset.hid='1';else{delete el.dataset.hid;hide=-1}
-    const par=!!(nx&&IND(nx)>n&&el.dataset.type!=='divider');
+    const par=!!((nx&&IND(nx)>n&&el.dataset.type!=='divider')||el.dataset.type==='toggle');
     if(par)el.dataset.par='1';else{delete el.dataset.par;delete el.dataset.col}
     if(par&&el.dataset.col==='1'&&hide<0)hide=n;
     if(par&&el.dataset.type==='check'){let t=0,d=0;for(let j=i+1;j<bs.length&&IND(bs[j])>n;j++)if(bs[j].dataset.type==='check'){t++;if(bs[j].dataset.done==='1')d++}el.dataset.prog=t?`${d}/${t}`:''}else delete el.dataset.prog;
@@ -2123,7 +2128,7 @@ const FKEYS=['fb','fi','fu','fs','color','bg','size','align','ind','col'],LISTS=
 const PAL={red:'#F2726C',orange:'#F59A4A',yellow:'#F5C84A',green:'#4FC48B',blue:'#5B9CF5',purple:'#A98BF2',pink:'#EE7FB6',gray:'#8B94A5'};
 (function(){let c='';for(const[k,v]of Object.entries(PAL))c+=`.blk[data-color=${k}] .bt,.bt .c-${k}{color:${v}}.blk[data-bg=${k}] .bt,.bt .b-${k}{background:color-mix(in srgb,${v} 26%,transparent)}`;const st=document.createElement('style');st.textContent=c;document.head.appendChild(st)})();
 const getF=el=>{const f={};FKEYS.forEach(k=>{const v=el.dataset[k];if(v&&v!=='0')f[k]=v});return f};
-function fixDir(el){const bt=el.querySelector('.bt');if(!bt)return;const d=el.dataset.type==='code'?'ltr':(bt.textContent.trim()?'auto':'rtl');el.setAttribute('dir',d);bt.setAttribute('dir',d)}
+function fixDir(el){const bt=el.querySelector('.bt');if(!bt)return;const d=el.dataset.type==='code'?'ltr':(bt.textContent.trim()?'auto':'rtl');el.setAttribute('dir',el.dataset.type==='toggle'?'rtl':d);bt.setAttribute('dir',d)}
 function renumber(root){let n=0;root.querySelectorAll('.blk').forEach(el=>{if(el.dataset.type==='number'){n++;el.dataset.n=n}else n=0})}
 function sanitize(html){
   const t=document.createElement('template');t.innerHTML=html||'';
@@ -2147,7 +2152,7 @@ function notesSection(){
     return`<button class="nc" data-act="opennote" data-id="${n.id}"><b>${esc(n.title||lines[0]||'بدون عنوان')}</b><span class="np">${esc(lines.slice(n.title?0:1,3).join(' · '))}</span><small>${ch.length?`${dn}/${ch.length} مهام · `:''}${new Date(n.updated).toLocaleDateString(LOC,{day:'numeric',month:'long'})}</small></button>`;
   }).join('')+`</div>`;
 }
-const PH={text:'',h1:'عنوان كبير',h2:'عنوان متوسط',h3:'عنوان صغير',check:'مهمة جديدة',bullet:'عنصر',number:'عنصر',quote:'اقتباس',callout:'اكتب ملاحظة…',code:'كود'};
+const PH={text:'',h1:'عنوان كبير',h2:'عنوان متوسط',h3:'عنوان صغير',check:'مهمة جديدة',bullet:'عنصر',number:'عنصر',quote:'اقتباس',callout:'اكتب ملاحظة…',code:'كود',toggle:'قائمة منسدلة'};
 function blockEl(b){
   const d=document.createElement('div');d.className='blk';d.setAttribute('dir','auto');
   d.dataset.id=b.id||uid();d.dataset.type=b.type;d.dataset.done=b.done?'1':'0';
@@ -2192,7 +2197,7 @@ function insertDivider(el){
 const COLORS=[['default','افتراضي'],['red','أحمر'],['orange','برتقالي'],['yellow','أصفر'],['green','أخضر'],['blue','أزرق'],['purple','بنفسجي'],['pink','وردي'],['gray','رمادي']];
 const SIZES=[['sm','صغير'],['md','عادي'],['lg','كبير'],['xl','ضخم']];
 const ALIGNS=[['auto','تلقائي'],['right','يمين'],['center','وسط'],['left','يسار']];
-const BLOCKS=[['text','نص عادي','¶','text paragraph'],['h1','عنوان كبير','H1','heading h1 title'],['h2','عنوان متوسط','H2','heading h2'],['h3','عنوان صغير','H3','heading h3'],['check','قائمة مهام','☑','todo task check list'],['bullet','قائمة نقطية','•','bullet list ul'],['number','قائمة مرقمة','1.','number numbered list ol'],['quote','اقتباس','❝','quote'],['callout','تنبيه','💡','callout note tip'],['code','كود','‹/›','code'],['divider','فاصل','—','divider line hr']];
+const BLOCKS=[['text','نص عادي','¶','text paragraph'],['h1','عنوان كبير','H1','heading h1 title'],['h2','عنوان متوسط','H2','heading h2'],['h3','عنوان صغير','H3','heading h3'],['check','قائمة مهام','☑','todo task check list'],['toggle','قائمة منسدلة','▸','toggle dropdown collapse'],['bullet','قائمة نقطية','•','bullet list ul'],['number','قائمة مرقمة','1.','number numbered list ol'],['quote','اقتباس','❝','quote'],['callout','تنبيه','💡','callout note tip'],['code','كود','‹/›','code'],['divider','فاصل','—','divider line hr']];
 const TITLES={color:'لون النص',bg:'لون الخلفية',size:'حجم الخط',align:'المحاذاة'};
 let SM=null;
 function blockCmd(el,t,tool){if(t==='divider')insertDivider(el);else setType(el,tool&&el.dataset.type===t?'text':t)}
@@ -2207,7 +2212,7 @@ function menuItems(p){
   const F=(l,t,k,kind)=>({g:'تنسيق',l,ic:si(t,16),k,run:(el,i)=>applyFormat(kind,0,el,i)});
   const S=(l,t,k,sub)=>({g:'تنسيق',l,ic:si(t,16),k,sub});
   return[B('text','نص عادي','text paragraph','أساسي'),B('h1','عنوان كبير','heading h1 title','أساسي'),B('h2','عنوان متوسط','heading h2','أساسي'),B('h3','عنوان صغير','heading h3','أساسي'),
-    B('check','قائمة مهام','todo task check list','قوائم'),{g:'قوائم',l:'مهمة + فرعية',ic:si('sub',16),k:'subtask nested parent toggle',run:el=>subtask(el)},B('bullet','قائمة نقطية','bullet list ul','قوائم'),B('number','قائمة مرقمة','number numbered list ol','قوائم'),
+    B('check','قائمة مهام','todo task check list','قوائم'),{g:'قوائم',l:'مهمة + فرعية',ic:si('sub',16),k:'subtask nested parent toggle',run:el=>subtask(el)},B('toggle','قائمة منسدلة','toggle dropdown collapse menu','قوائم'),B('bullet','قائمة نقطية','bullet list ul','قوائم'),B('number','قائمة مرقمة','number numbered list ol','قوائم'),
     B('quote','اقتباس','quote','كتل'),B('callout','تنبيه','callout note tip','كتل'),B('code','كود','code','كتل'),B('divider','فاصل','divider line hr','كتل'),
     F('عريض','bold','bold','bold'),F('مائل','italic','italic','italic'),F('تسطير','underline','underline','underline'),F('يتوسطه خط','strike','strike','strike'),F('تمييز','mark','highlight mark','mark'),
     S('لون النص','color','color','color'),S('لون الخلفية','bg','background bg','bg'),S('حجم الخط','size','size font','size'),S('المحاذاة','align','align','align'),F('مسح التنسيق','clear','clear','clear'),
@@ -2327,6 +2332,7 @@ function doEnter(bt){
   if(s.rangeCount){const r=s.getRangeAt(0);if(bt.contains(r.endContainer)){const r2=document.createRange();r2.selectNodeContents(bt);r2.setStart(r.endContainer,r.endOffset);const tmp=document.createElement('div');tmp.appendChild(r2.extractContents());tail=tmp.innerHTML}}
   let a=el,ni=IND(el);const nx=el.nextElementSibling;
   if(nx&&IND(nx)>IND(el)){if(el.dataset.col==='1'){let x=nx;while(x&&IND(x)>IND(el)){a=x;x=x.nextElementSibling}}else ni=IND(el)+1}
+  else if(t==='toggle'&&IND(el)<3){ni=IND(el)+1;el.dataset.col='0'}
   const n=newAfter(a,{type:LISTS.includes(t)?t:'text',html:sanitize(tail),f:ni?{ind:ni}:{}});
   focusAt(n.querySelector('.bt'),false);collect();
 }
@@ -2368,7 +2374,9 @@ function mountEditor(root,peek,make){
   });
   wrap.addEventListener('click',e=>{
     const tg=e.target.closest('.tgl');
-    if(tg){const el=tg.closest('.blk');CR=root;el.dataset.col=el.dataset.col==='1'?'0':'1';collect();return}
+    if(tg){const el=tg.closest('.blk');CR=root;
+      if(el.dataset.type==='toggle'&&!(el.nextElementSibling&&IND(el.nextElementSibling)>IND(el))&&IND(el)<3){el.dataset.col='0';const c=newAfter(el,{type:'text',f:{ind:IND(el)+1}});focusAt(c.querySelector('.bt'));collect();return}
+      el.dataset.col=el.dataset.col==='1'?'0':'1';collect();return}
     const cb=e.target.closest('.cbx');if(!cb)return;
     const el=cb.closest('.blk');CR=root;
     el.dataset.done=el.dataset.done==='1'?'0':'1';
