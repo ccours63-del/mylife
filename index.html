@@ -1253,6 +1253,7 @@ function syM(b,r,l){
 }
 function syMergeIn(obj){
   const live=ui.editing?data.docs.find(x=>x.id===ui.editing):null;
+  const lp=ui.editing&&data.fin?data.fin.proj.find(x=>x.id===ui.editing):null,lpd=lp?lp.doc:null;
   const before=JSON.stringify(data);
   const m=syM(syBaseGet(),obj,JSON.parse(before));
   if(JSON.stringify(m)===before)return false;
@@ -1260,6 +1261,7 @@ function syMergeIn(obj){
   Object.keys(data).forEach(k=>delete data[k]);Object.assign(data,m);
   if(live&&Array.isArray(data.docs)){const i=data.docs.findIndex(x=>x.id===live.id);if(i>=0)data.docs[i]=live;else data.docs.push(live)}
   fixData();
+  if(lpd){const np=data.fin.proj.find(x=>x.id===ui.editing);if(np)np.doc=lpd}
   try{store.set(JSON.stringify(data))}catch(e){}
   SY.rr=true;
   return true;
@@ -1444,7 +1446,7 @@ function fixData(){
   if(!Array.isArray(data.fin.proj))data.fin.proj=[];
   data.fin.tx=data.fin.tx.filter(x=>x&&x.id&&+x.a>0&&typeof x.d==='string');
   data.fin.proj=data.fin.proj.filter(x=>x&&x.id);
-  data.fin.proj.forEach(p=>{if(!Array.isArray(p.t))p.t=[];p.n=String(p.n||'');p.d=p.d||''});
+  data.fin.proj.forEach(p=>{if(!Array.isArray(p.t))p.t=[];p.n=String(p.n||'');p.d=p.d||'';if(p.doc&&!Array.isArray(p.doc.blocks))delete p.doc});
   if(!data.quran||typeof data.quran!=='object'||Array.isArray(data.quran))data.quran={};
   if(!/^#[0-9a-f]{6}$/i.test(data.hcol||''))data.hcol='#4FC48B';
   if(!/^#[0-9a-f]{6}$/i.test(data.hbad||''))data.hbad='#F2726C';
@@ -2503,7 +2505,7 @@ function render(){
 function handle(a,D){
   if(a!=='del')ui.confirm=null;
   switch(a){
-    case 'mtab':case 'mshift':case 'txnew':case 'txopen':case 'txsave':case 'txdel':case 'pjnew':case 'pjedit':case 'pjopen':case 'pjsave':case 'pjdel':case 'tkadd':case 'tktog':case 'tkdel':if(moneyAct(a,D)===2)return false;break;
+    case 'mtab':case 'mshift':case 'txnew':case 'txopen':case 'txsave':case 'txdel':case 'pjnew':case 'pjopen':case 'pjsave':if(moneyAct(a,D)===2)return false;break;
     case 'netcfg':netManual(confirm('تعديل حجم الباقة الكلي؟\n(إلغاء = إدخال قراءة يدوية)')?'tot':'rem');return;
     case 'netadd':netManual('rem');return;
     case 'tab':ui.tab=D.v;try{localStorage.setItem('hayati-tab',D.v)}catch(e){}if(D.v==='home'&&ui.period==='year')ui.period='month';window.scrollTo(0,0);break;
@@ -3497,15 +3499,48 @@ function viewCash(){
   const lst=mo.length?`<div class="h2">العمليات</div><div class="card">${mo.map(x=>`<button class="tx" data-act="txopen" data-id="${x.id}"><span>${esc(x.c)}${x.n?` · ${esc(x.n)}`:''}<small>${x.d}</small></span><span class="amt ${x.k==='in'?'pos':'neg'}">${x.k==='in'?'+':'−'}${money(x.a)}</span></button>`).join('')}</div>`:`<div class="card muted" style="text-align:center">لا توجد عمليات في هذا الشهر</div>`;
   return hero+nav+sum+add+cat+lst;
 }
+function pjProg(p){
+  if(p.doc&&Array.isArray(p.doc.blocks)){
+    const c=p.doc.blocks.filter(x=>x.type==='check'&&stripHtml(x.html));
+    return[c.filter(x=>x.done).length,c.length];
+  }
+  return[p.t.filter(x=>x.o).length,p.t.length];
+}
 function viewProj(){
   const P=data.fin.proj;
   const add=`<div class="acts" style="margin-top:12px"><button class="btn" data-act="pjnew">+ مشروع جديد</button></div>`;
-  if(!P.length)return add+`<div class="card muted" style="text-align:center">لا توجد مشاريع بعد. أضف أول مشروع وقسّمه إلى مهام صغيرة.</div>`;
+  if(!P.length)return add+`<div class="card muted" style="text-align:center">لا توجد مشاريع بعد. أنشئ مشروعاً ثم ادخل إليه واكتب فيه كما في الصفحة الرئيسية.</div>`;
   return add+P.map(p=>{
-    const n=p.t.length,d=p.t.filter(x=>x.o).length,pc=n?Math.round(d/n*100):0,open=ui.pj===p.id;
-    const late=p.d&&p.d<today()&&pc<100;
-    return`<div class="card"><button class="phead" data-act="pjopen" data-id="${p.id}"><div><b>${esc(p.n)}</b><small>${d} من ${n} مهام${p.d?` · ${p.d}`:''}${late?' <span class="tag late">متأخر</span>':''}</small></div><span class="pct">${pc}%</span></button><div class="mbar big"><i style="width:${pc}%"></i></div>${open?`<div class="tasks">${p.t.map(x=>`<div class="task"><button class="chk ${x.o?'on':''}" data-act="tktog" data-p="${p.id}" data-id="${x.id}">${x.o?'✓':''}</button><span class="${x.o?'done':''}">${esc(x.x)}</span><button class="chip" data-act="tkdel" data-p="${p.id}" data-id="${x.id}">✕</button></div>`).join('')}<div style="display:flex;gap:8px;margin-top:8px"><input id="tk-${p.id}" data-enter="tkadd" data-id="${p.id}" placeholder="مهمة جديدة" autocomplete="off"><button class="btn" data-act="tkadd" data-id="${p.id}">إضافة</button></div><div class="acts"><button class="btn ghost" data-act="pjedit" data-id="${p.id}">تعديل المشروع</button></div></div>`:''}</div>`;
+    const[d,n]=pjProg(p),pc=n?Math.round(d/n*100):0;
+    const late=p.d&&p.d<today()&&(!n||pc<100);
+    return`<div class="card"><button class="phead" data-act="pjopen" data-id="${p.id}"><div><b>${esc(p.n)}</b><small>${n?`${d} من ${n} مهام`:'اضغط للدخول والكتابة'}${p.d?` · ${p.d}`:''}${late?' <span class="tag late">متأخر</span>':''}</small></div><span class="pct">${pc}%</span></button><div class="mbar big"><i style="width:${pc}%"></i></div></div>`;
   }).join('');
+}
+function openProject(id){
+  const p=data.fin.proj.find(x=>x.id===id);if(!p)return;
+  if(!p.doc||!Array.isArray(p.doc.blocks)){
+    const bl=p.t.map(x=>({id:uid(),type:'check',html:esc(x.x),done:!!x.o}));
+    p.doc={title:p.n,blocks:bl.length?bl:[{id:uid(),type:'text',html:'',done:false}],updated:Date.now()};
+  }
+  ui.editing=id;
+  $('#editor').innerHTML=`<div class="ed"><div class="ed-in edroot"><div class="ed-head"><div class="ed-top"><button type="button" class="ed-back">→ رجوع</button><button type="button" class="danger ed-del">حذف المشروع</button></div>${toolsBar()}</div>
+<div class="ed-body"><input class="ed-title" placeholder="اسم المشروع" value="${esc(p.n)}" autocomplete="off"><div style="display:flex;align-items:center;gap:10px;margin:2px 0 8px"><span class="muted">الموعد النهائي</span><input class="pj-d" type="date" value="${esc(p.d||'')}" style="width:auto"></div><div class="ed-blocks"></div><div class="ed-tail" style="min-height:140px"></div><div class="slash" hidden></div></div></div></div>`;
+  const root=$('#editor .edroot');
+  mountEditor(root,()=>p.doc,()=>p.doc);
+  root.querySelector('.pj-d').addEventListener('change',e=>{p.d=e.target.value;save()});
+  let armed=false;
+  root.querySelector('.ed-back').addEventListener('click',closeProject);
+  root.querySelector('.ed-del').addEventListener('click',e=>{
+    if(!armed){armed=true;e.target.textContent='تأكيد الحذف؟';return}
+    data.fin.proj=data.fin.proj.filter(x=>x.id!==id);save();ui.editing=null;$('#editor').innerHTML='';render();
+  });
+}
+function closeProject(){
+  const root=$('#editor .edroot');if(root)CR=root;
+  collect();
+  const p=data.fin.proj.find(x=>x.id===ui.editing);
+  if(p&&p.doc){const t=(p.doc.title||'').trim();if(t)p.n=t}
+  save();ui.editing=null;$('#editor').innerHTML='';render();
 }
 function txModal(){
   const x=ui.tx?data.fin.tx.find(y=>y.id===ui.tx):null,k=x?x.k:ui.txk||'out';
@@ -3518,11 +3553,10 @@ function txModal(){
 <div class="err" id="err"></div><div class="acts"><button class="btn" data-act="txsave" data-k="${k}">حفظ</button>${x?'<button class="btn ghost" data-act="txdel">حذف</button>':''}<button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
 }
 function pjModal(){
-  const p=ui.pid?data.fin.proj.find(y=>y.id===ui.pid):null;
-  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>${p?'تعديل المشروع':'مشروع جديد'}</h3>
-<input id="pjn" data-enter="pjsave" value="${esc(p?p.n:'')}" placeholder="اسم المشروع" autocomplete="off">
-<label class="fl">الموعد النهائي (اختياري)</label><input id="pjd" type="date" value="${p?p.d||'':''}">
-<div class="err" id="err"></div><div class="acts"><button class="btn" data-act="pjsave">حفظ</button>${p?'<button class="btn ghost" data-act="pjdel">حذف</button>':''}<button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
+  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>مشروع جديد</h3>
+<input id="pjn" data-enter="pjsave" placeholder="اسم المشروع" autocomplete="off">
+<label class="fl">الموعد النهائي (اختياري)</label><input id="pjd" type="date">
+<div class="err" id="err"></div><div class="acts"><button class="btn" data-act="pjsave">إنشاء ودخول</button><button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
 }
 function moneyAct(a,D){
   const F=data.fin;
@@ -3538,19 +3572,11 @@ function moneyAct(a,D){
       if(x)Object.assign(x,o);else F.tx.push({id:uid(),k:D.k||ui.txk||'out',...o});
       ui.mm=d.slice(0,7);ui.modal=null;ui.tx=null;save();return 1}
     case 'txdel':F.tx=F.tx.filter(y=>y.id!==ui.tx);ui.modal=null;ui.tx=null;save();return 1;
-    case 'pjnew':ui.modal='pj';ui.pid=null;ui.focus='#pjn';return 1;
-    case 'pjedit':ui.modal='pj';ui.pid=D.id;return 1;
-    case 'pjopen':ui.pj=ui.pj===D.id?null:D.id;return 1;
+    case 'pjnew':ui.modal='pj';ui.focus='#pjn';return 1;
+    case 'pjopen':openProject(D.id);return 2;
     case 'pjsave':{const n=($('#pjn').value||'').trim();if(!n){$('#err').textContent='اكتب اسم المشروع.';return 2}
-      const d=$('#pjd').value||'',p=ui.pid?F.proj.find(y=>y.id===ui.pid):null;
-      if(p){p.n=n;p.d=d}else{const o={id:uid(),n,d,t:[]};F.proj.unshift(o);ui.pj=o.id}
-      ui.modal=null;ui.pid=null;save();return 1}
-    case 'pjdel':{const p=F.proj.find(y=>y.id===ui.pid);if(!p)return 1;if(!confirm('حذف المشروع «'+p.n+'» مع مهامه؟'))return 2;
-      F.proj=F.proj.filter(y=>y.id!==p.id);ui.modal=null;ui.pid=null;save();return 1}
-    case 'tkadd':{const p=F.proj.find(y=>y.id===D.id),i=$('#tk-'+D.id),v=i?i.value.trim():'';if(!p||!v)return 2;
-      p.t.push({id:uid(),x:v,o:0});ui.focus='#tk-'+D.id;save();return 1}
-    case 'tktog':{const p=F.proj.find(y=>y.id===D.p),t=p&&p.t.find(y=>y.id===D.id);if(t){t.o=t.o?0:1;save();hVib(8)}return 1}
-    case 'tkdel':{const p=F.proj.find(y=>y.id===D.p);if(p){p.t=p.t.filter(y=>y.id!==D.id);save()}return 1}
+      const o={id:uid(),n,d:$('#pjd').value||'',t:[]};F.proj.unshift(o);
+      ui.modal=null;save();render();openProject(o.id);return 2}
   }
   return 0;
 }
