@@ -16,6 +16,8 @@
 :root{color-scheme:dark;
 --bg:#0B0D10;--surface:#14181E;--soft:#1D222B;--line:#262C36;--ink:#ECEFF4;--muted:#8B94A5;
 --accent:#F5B544;--accent-ink:#1B1304;--good:#4FC48B;--bad:#F2726C;--warn:#E9A83B;}
+html{overflow-x:clip;touch-action:pan-y}
+body{overflow-x:clip;max-width:100vw}
 *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--ink);font:15px/1.6 -apple-system,"Segoe UI","Noto Sans Arabic","Noto Naskh Arabic",Tahoma,sans-serif;min-height:100vh}
 #app{max-width:520px;margin:0 auto;padding:0 14px 100px}
@@ -213,8 +215,8 @@ button:active:not(:disabled){transform:scale(.95)}
 /* dock */
 .dock{position:fixed;bottom:0;left:0;right:0;z-index:5;background:rgba(16,19,24,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
 body.kb .dock{transform:translateY(110%)}
-.dk-in{position:relative;max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(9,1fr);padding:6px 4px}
-.dk-ind{position:absolute;top:6px;bottom:6px;inset-inline-start:calc(var(--i,0)*100%/9);width:calc(100%/9);padding:0 3px;transition:inset-inline-start .38s cubic-bezier(.3,1.25,.4,1);pointer-events:none}
+.dk-in{position:relative;max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(7,1fr);padding:6px 4px}
+.dk-ind{position:absolute;top:6px;bottom:6px;inset-inline-start:calc(var(--i,0)*100%/7);width:calc(100%/7);padding:0 3px;transition:inset-inline-start .38s cubic-bezier(.3,1.25,.4,1);pointer-events:none}
 .dk-ind::before{content:"";display:block;height:100%;border-radius:14px;background:color-mix(in srgb,var(--accent) 16%,transparent)}
 .dk-b{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 6px;color:var(--muted);font-size:10.5px;font-weight:600;min-width:0}
 .dk-b span{white-space:nowrap;transition:color .25s}
@@ -1207,6 +1209,8 @@ input:focus,textarea:focus{box-shadow:none}
 .bv-edit[hidden]{display:none}
 .bv-es{background:var(--surface);width:100%;max-width:520px;border-radius:20px 20px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom))}
 .bv-es textarea{font-size:16px;resize:none}
+.page>.seg,.page>.nav,.page .hbw>.seg,.page .study>.seg,.page .soc>.seg,.page .mp>.seg,.page .edroot.day>.ed-tools,.page .edroot.vid>.ed-tools{position:sticky;z-index:5;background:var(--bg)}
+.page>.seg,.page .hbw>.seg,.page .study>.seg,.page .soc>.seg,.page .mp>.seg{background:color-mix(in srgb,var(--soft) 80%,#000);box-shadow:0 -10px 0 var(--bg)}
 </style>
 </head>
 <body>
@@ -1235,7 +1239,7 @@ const monthName=d=>parse(d).toLocaleDateString(LOC,{month:'long'});
 const monthsOfYear=y=>[...Array(12)].map((_,m)=>daysBetween(new Date(y,m,1),new Date(y,m+1,0)));
 
 const PR=[['fajr','الفجر'],['dhuhr','الظهر'],['asr','العصر'],['maghrib','المغرب'],['isha','العشاء']];
-const TABS=[['home','الرئيسية'],['prayers','الصلوات'],['habit','العادة'],['sleep','Sleeping'],['money','الأموال'],['board','اللوحة'],['study','الدراسة'],['eyes','Eyes'],['social','السوشل']];
+const TABS=[['home','الرئيسية'],['prayers','الصلوات'],['habit','العادة'],['money','الأموال'],['study','الدراسة'],['eyes','Eyes'],['social','السوشل']];
 
 let data={prayers:{},habit:{},notes:{},docs:[],days:{},hnotes:{},hgoal:0,quran:{},hcol:'#4FC48B',hbad:'#F2726C'};
 let ui={tab:'home',period:'day',anchor:today(),modal:null,confirm:null,focus:null,editing:null,anim:false,pop:null};
@@ -1794,7 +1798,7 @@ function soSpark(p){
 }
 function viewSocial(){
   const t=ui.sot||'gr';
-  return`<div class="soc"><div class="seg">${[['gr','النمو'],['ct','المحتوى'],['ln','الربط']].map(([k,n])=>`<button data-act="sosub" data-v="${k}" class="${t===k?'on':''}">${n}</button>`).join('')}</div>${t==='gr'?soGrowth():t==='ct'?soContent():soLink()}</div>`;
+  return`<div class="soc"><div class="seg">${[['gr','النمو'],['ct','المحتوى'],['ln','الربط']].map(([k,n])=>`<button data-act="sosub" data-v="${k}" class="${t===k?'on':''}">${n}</button>`).join('')}</div>${t==='gr'?soGrowth():t==='ct'?soPage():soLink()}</div>`;
 }
 function soGrowth(){
   const S=data.soc,have=SP.some(([p])=>soLast(p)!==null);
@@ -1819,6 +1823,8 @@ function soStreak(set){
   while(set.has(fmt(d))){cur++;d=addDays(d,-1)}
   return cur;
 }
+function soPage(){return`<div class="edroot vid">${toolsBar()}<div class="ed-blocks"></div><div class="ed-tail" style="min-height:62vh"></div><div class="slash" hidden></div></div>`}
+function mountVid(){const root=document.querySelector('.edroot.vid');if(!root)return;const P=()=>data.soc.page&&Array.isArray(data.soc.page.blocks)?data.soc.page:(data.soc.page={title:'',blocks:[],updated:0});mountEditor(root,P,P)}
 function soContent(){
   const S=data.soc,t=today(),by=soVBy(),vd=S.vday,set=new Set([...S.vids.map(v=>v.d),...Object.keys(vd)].filter(soEff));
   const cur=soStreak(set),td=set.has(t);
@@ -2048,6 +2054,10 @@ function streaks(){
   return{cur,best,since};
 }
 function viewHabit(){
+  const k=ui.hb==='sl'?'sl':'h';
+  return`<div class="hbw"><div class="seg">${[['h','العادة'],['sl','Sleeping']].map(([v,n])=>`<button data-act="hbtab" data-v="${v}" class="${k===v?'on':''}">${n}</button>`).join('')}</div>${k==='sl'?viewSleep():viewHabit0()}</div>`;
+}
+function viewHabit0(){
   const t=today(),st=streaks();ui.hm=ui.hm||t;
   const ms=ui.ms||0;ui.ms=0;
   const a=parse(ui.hm),days=daysBetween(new Date(a.getFullYear(),a.getMonth(),1),new Date(a.getFullYear(),a.getMonth()+1,0));
@@ -2542,19 +2552,29 @@ function updateNav(){
   document.querySelectorAll('.dk-b').forEach(b=>{const on=b.dataset.t===ui.tab;b.classList.toggle('on',on);b.setAttribute('aria-current',on?'page':'false')});
 }
 
+/* ---------- sticky options ---------- */
+function stickyFix(){
+  const tb=document.querySelector('.topbar');let y=tb?Math.round(tb.getBoundingClientRect().height):0;
+  document.documentElement.style.setProperty('--tbh',y+'px');
+  document.querySelectorAll('.page>.seg,.page>.nav,.page .hbw>.seg,.page .study>.seg,.page .soc>.seg,.page .mp>.seg,.page .edroot.day>.ed-tools,.page .edroot.vid>.ed-tools').forEach(e=>{
+    e.style.top=y+'px';y+=Math.round(e.getBoundingClientRect().height)+(e.matches('.ed-tools')?0:2);
+  });
+}
+addEventListener('resize',()=>{try{stickyFix()}catch(e){}});
 /* ---------- render ---------- */
 function render(){
-  const V={home:()=>netCard()+viewHome(),prayers:viewPrayers,habit:viewHabit,study:viewStudy,eyes:viewEyes,social:viewSocial,sleep:viewSleep,money:viewMoney,board:viewBoards};
+  const V={home:viewHome,prayers:viewPrayers,habit:viewHabit,study:viewStudy,eyes:viewEyes,social:viewSocial,money:viewMoney};
   const anim=ui.anim;ui.anim=false;
   const title=ui.tab==='home'?'':`<h1 class="ptitle">${TABS.find(t=>t[0]===ui.tab)[1]}</h1>`;
-  $('#app').innerHTML=`<div class="page ${anim?'enter':''}"${ui.tab==='habit'?' style="--accent:var(--hcol);--accent-ink:var(--hink);--bad:var(--hbadc)"':ui.tab==='sleep'?sleepAccent():''}>${title}${bkBanner()}${V[ui.tab]()}</div>`;
+  $('#app').innerHTML=`<div class="page ${anim?'enter':''}"${ui.tab==='habit'?(ui.hb==='sl'?sleepAccent():' style="--accent:var(--hcol);--accent-ink:var(--hink);--bad:var(--hbadc)"'):''}>${title}${bkBanner()}${V[ui.tab]()}</div>`;
   updateNav();
   if(ui.tab==='home')mountHome();
-  if(ui.tab==='habit')mountHabit();
+  if(ui.tab==='habit'){if(ui.hb==='sl')mountSleep();else mountHabit()}
   if(ui.tab==='prayers')mountPrayers();
   if(ui.tab==='social')mountSocial();
   if(ui.tab==='study'||ui.tab==='eyes')mountStudy();
-  if(ui.tab==='sleep')mountSleep();
+  if(ui.tab==='social')mountVid();
+  stickyFix();
   $('#modal').innerHTML=ui.modal?modalHtml():'';
   if(ui.focus){const el=$(ui.focus);if(el)el.focus();ui.focus=null}
   if(ui.pop){const el=document.querySelector(ui.pop);if(el)el.classList.add('pop');ui.pop=null}
@@ -2613,6 +2633,7 @@ function handle(a,D){
       ui.bf=o.status;ui.modal=null;save();break}
     case 'bkdel':{if(!confirm('حذف الكتاب مع ملخصه ونقاطه وملفه وكل تظليلاتك عليه؟'))return false;FDB.del(ui.bid).catch(()=>{});data.eyes.books=data.eyes.books.filter(x=>x.id!==ui.bid);ui.modal=null;save();break}
     case 'stab':ui.st=D.v;break;
+    case 'hbtab':ui.hb=D.v;break;
     case 'sjopen':ui.sj=D.id;ui.ssel=false;ui.sels=[];window.scrollTo(0,0);break;
     case 'sjback':ui.sj=null;ui.ssel=false;ui.sels=[];break;
     case 'sjsel':ui.ssel=!ui.ssel;ui.sels=[];break;
@@ -2801,7 +2822,7 @@ document.addEventListener('click',e=>{
   const t=e.target.closest('[data-act]');if(!t)return;
   const a=t.dataset.act;
   if(a==='ovclose'){if(e.target!==t)return;ui.modal=null;render();return}
-  if(['tab','period','shift','today','openday','openmonth','hshift','stab','sday','etab','bfil','sosub','soflt','mtab','mshift'].includes(a))ui.anim=true;
+  if(['tab','period','shift','today','openday','openmonth','hshift','stab','hbtab','sday','etab','bfil','sosub','soflt','mtab','mshift'].includes(a))ui.anim=true;
   if(['pset','pcycle','qset','hset','hcycle','abadd','absub','etog'].includes(a))
     ui.pop=`[data-act="${a}"]`+['d','k','v','id','p','n'].filter(x=>t.dataset[x]!==undefined).map(x=>`[data-${x}="${t.dataset[x]}"]`).join('');
   if(handle(a,t.dataset)!==false)render();
@@ -2878,7 +2899,7 @@ const stType=t=>{t=(t||'').trim();if(!t||t==='/')return'';return/^TD\b/i.test(t)
 const stTag={td:'TD',tp:'TP',cr:'محاضرة'};
 function viewStudy(){
   const tab=ui.st||'tt';
-  return`<div class="study"><div class="seg">${[['tt','الجدول'],['sj','الدروس'],['ex','الامتحانات'],['ab','الغيابات']].map(([k,n])=>`<button data-act="stab" data-v="${k}" class="${tab===k?'on':''}">${n}</button>`).join('')}</div>${tab==='tt'?stTT():tab==='sj'?stSJ():tab==='ex'?stEX():stAB()}</div>`;
+  return`<div class="study"><div class="seg">${[['tt','الجدول'],['sj','الدروس'],['ex','الامتحانات'],['ab','الغيابات'],['bd','اللوحة']].map(([k,n])=>`<button data-act="stab" data-v="${k}" class="${tab===k?'on':''}">${n}</button>`).join('')}</div>${tab==='tt'?stTT():tab==='sj'?stSJ():tab==='ex'?stEX():tab==='bd'?viewBoards():stAB()}</div>`;
 }
 function stTT(){
   const u=data.uni,td=new Date().getDay(),sd=ui.sd??(td<5?td:0);
