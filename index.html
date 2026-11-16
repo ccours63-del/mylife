@@ -1209,8 +1209,9 @@ input:focus,textarea:focus{box-shadow:none}
 .bv-edit[hidden]{display:none}
 .bv-es{background:var(--surface);width:100%;max-width:520px;border-radius:20px 20px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom))}
 .bv-es textarea{font-size:16px;resize:none}
-.page>.seg,.page>.nav,.page .hbw>.seg,.page .study>.seg,.page .soc>.seg,.page .mp>.seg,.page .edroot.day>.ed-tools,.page .edroot.vid>.ed-tools{position:sticky;z-index:5;background:var(--bg)}
-.page>.seg,.page .hbw>.seg,.page .study>.seg,.page .soc>.seg,.page .mp>.seg{background:color-mix(in srgb,var(--soft) 80%,#000);box-shadow:0 -10px 0 var(--bg)}
+.page>.seg,.page>.nav,.page .hbw>.seg,.page .study>.seg,.page .soc>.seg,.page .mp>.seg,.page .edroot.vid>.ed-tools{position:sticky;z-index:5;background:var(--bg)}
+.page>.seg,.page .hbw>.seg,.page .study>.seg,.page .soc>.seg,.page .mp>.seg{background:color-mix(in srgb,var(--soft) 80%,#000);box-shadow:0 -10px 0 var(--bg),0 10px 0 var(--bg)}
+.page>.nav{box-shadow:0 4px 0 var(--bg)}
 </style>
 </head>
 <body>
@@ -2556,7 +2557,7 @@ function updateNav(){
 function stickyFix(){
   const tb=document.querySelector('.topbar');let y=tb?Math.round(tb.getBoundingClientRect().height):0;
   document.documentElement.style.setProperty('--tbh',y+'px');
-  document.querySelectorAll('.page>.seg,.page>.nav,.page .hbw>.seg,.page .study>.seg,.page .soc>.seg,.page .mp>.seg,.page .edroot.day>.ed-tools,.page .edroot.vid>.ed-tools').forEach(e=>{
+  document.querySelectorAll('.page>.seg,.page>.nav,.page .hbw>.seg,.page .study>.seg,.page .soc>.seg,.page .mp>.seg,.page .edroot.vid>.ed-tools').forEach(e=>{
     e.style.top=y+'px';y+=Math.round(e.getBoundingClientRect().height)+(e.matches('.ed-tools')?0:2);
   });
 }
