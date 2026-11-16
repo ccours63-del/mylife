@@ -707,6 +707,31 @@ body.rd-open{overflow:hidden}body.rd-open #app,body.rd-open .topbar,body.rd-open
 .pv-cap{padding:10px 14px calc(12px + env(safe-area-inset-bottom));background:#0f1216}
 .pv-cap small{display:block;color:var(--muted);margin-bottom:6px}
 body.locked #pview{visibility:hidden}
+/* ===== study: subject files, folders, notes ===== */
+.sjw{position:relative}
+.sjw .sjc{width:100%;display:block}
+.sjx{position:absolute;top:-7px;inset-inline-start:-7px;width:32px;height:32px;border-radius:50%;background:var(--bad);color:#fff;font-weight:800;font-size:15px;z-index:2;box-shadow:0 2px 10px rgba(0,0,0,.5);display:grid;place-items:center}
+.sjtabs{margin:12px 0 4px}
+.sjadd3{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:8px;margin:12px 0}
+.sjadd3 .btn{padding:10px 4px;font-size:13px}
+.crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:10px 0 0;font-size:13px;color:var(--muted)}
+.crumbs button{padding:5px 10px;border-radius:9px;background:var(--soft);font-weight:700;color:var(--ink);max-width:46vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sil{display:grid;gap:8px;margin-top:6px}
+.sir{display:flex;gap:6px;align-items:stretch;animation:stIn .35s both}
+.sib{flex:1;min-width:0;display:flex;align-items:center;gap:12px;text-align:start;padding:11px 12px;background:var(--surface);border:1px solid var(--line);border-radius:16px}
+.sii{font-size:26px;flex:none;width:34px;text-align:center}
+.sit{min-width:0;flex:1}
+.sit b{display:block;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sit small{display:block;color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sim{width:44px;border-radius:14px;background:var(--surface);border:1px solid var(--line);font-size:20px;font-weight:800;color:var(--muted)}
+#nview{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;flex-direction:column;padding:0 16px;max-width:560px;margin:0 auto}
+.nv-top{display:flex;justify-content:space-between;align-items:center;padding-top:max(8px,env(safe-area-inset-top))}
+.nv-top button{width:42px;height:42px;border-radius:12px;background:var(--soft);font-size:22px}
+.nv-title{font-size:26px;font-weight:800;border:0;background:none;padding:12px 0 6px;border-radius:0}
+.nv-title:focus,.nv-body:focus{outline:none}
+.nv-body{flex:1;min-height:0;resize:none;border:0;background:none;padding:6px 0 24px;font-size:17px;line-height:1.8;border-radius:0}
+body.locked #nview{visibility:hidden}
+
 .pv-mv{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
 .pv-mv button{padding:10px 0;border-radius:12px;background:rgba(255,255,255,.12);color:#fff;font-weight:700;font-size:13px}
 .pv-mv button:disabled{opacity:.3}
@@ -1516,8 +1541,8 @@ function fixData(){
   if(!Array.isArray(u.tt)||u.tt.length!==5)u.tt=DEF_TT.map(r=>r.slice());
   if(!Array.isArray(u.slots))u.slots=DEF_SLOTS.slice();
   if(!Array.isArray(u.exams))u.exams=[];
-  if(!Array.isArray(u.subj)||!u.subj.length)u.subj=MODS.map(m=>({id:uid(),name:m[0],ph:[]}));
-  u.subj.forEach(x=>{if(!Array.isArray(x.ph))x.ph=[]});
+  if(!Array.isArray(u.subj))u.subj=MODS.map(m=>({id:uid(),name:m[0],ph:[],items:[]}));
+  u.subj.forEach(x=>{if(!Array.isArray(x.ph))x.ph=[];if(!Array.isArray(x.items))x.items=[];x.items=x.items.filter(i=>i&&i.id&&['folder','file','note'].includes(i.t));x.items.forEach(i=>{i.name=String(i.name||'');i.parent=i.parent&&x.items.some(f=>f.id===i.parent&&f.t==='folder')?i.parent:null})});
   if(!u.phord){u.subj.forEach(x=>x.ph.sort((a,b)=>b.ts-a.ts));u.phord=1}
   if(!u.abs||typeof u.abs!=='object')u.abs={};
   u.lim=+u.lim||3;
@@ -2520,12 +2545,13 @@ function modalHtml(){
   if(ui.modal==='slots')return slotsModal();
   if(ui.modal==='exam')return examModal();
   if(ui.modal==='subj')return subjModal();
+  if(ui.modal==='sitem')return sitemModal();
   if(ui.modal==='tx')return txModal();
   if(ui.modal==='pj')return pjModal();
   if(ui.modal==='bd')return bdModal();
   if(ui.modal==='doc')return docModal();
   if(ui.modal==='book')return bookModal();
-  const body=`<h3>نسخة احتياطية</h3><p class="muted">انسخ هذا النص واحفظه في مكان آمن. للاستعادة الصقه هنا ثم اضغط «استيراد».<br>ملاحظة: ملفات الكتب (PDF) تبقى على هذا الجهاز ولا تدخل في النسخة، أما تظليلاتك وملاحظاتك فتدخل.</p>
+  const body=`<h3>نسخة احتياطية</h3><p class="muted">انسخ هذا النص واحفظه في مكان آمن. للاستعادة الصقه هنا ثم اضغط «استيراد».<br>ملاحظة: ملفات الكتب (PDF) وملفات المواد وصورها تبقى على هذا الجهاز ولا تدخل في النسخة، أما تظليلاتك وملاحظاتك فتدخل.</p>
 <textarea id="bk" style="margin-top:10px;min-height:160px;direction:ltr;font-size:12px">${esc(JSON.stringify(data))}</textarea>
 ${syBlock()}
 <div class="err" id="err"></div><div class="acts"><button class="btn" data-act="copybk">نسخ</button><button class="btn ghost" data-act="importbk">استيراد</button><button class="btn ghost" data-act="close">إغلاق</button></div>
@@ -2578,6 +2604,7 @@ function render(){
   if(ui.tab==='social')mountVid();
   stickyFix();
   $('#modal').innerHTML=ui.modal?modalHtml():'';
+  if(ui.modal==='sitem')sitemMount();
   if(ui.focus){const el=$(ui.focus);if(el)el.focus();ui.focus=null}
   if(ui.pop){const el=document.querySelector(ui.pop);if(el)el.classList.add('pop');ui.pop=null}
   if(ui.burst){hBurst(ui.burst);ui.burst=null}
@@ -2636,8 +2663,32 @@ function handle(a,D){
     case 'bkdel':{if(!confirm('حذف الكتاب مع ملخصه ونقاطه وملفه وكل تظليلاتك عليه؟'))return false;FDB.del(ui.bid).catch(()=>{});data.eyes.books=data.eyes.books.filter(x=>x.id!==ui.bid);ui.modal=null;save();break}
     case 'stab':ui.st=D.v;break;
     case 'hbtab':ui.hb=D.v;break;
-    case 'sjopen':ui.sj=D.id;ui.ssel=false;ui.sels=[];window.scrollTo(0,0);break;
-    case 'sjback':ui.sj=null;ui.ssel=false;ui.sels=[];break;
+    case 'sjopen':ui.sj=D.id;ui.ssel=false;ui.sels=[];ui.sjv='ph';ui.fp=null;ui.sjm=false;window.scrollTo(0,0);break;
+    case 'sjback':ui.sj=null;ui.ssel=false;ui.sels=[];ui.fp=null;break;
+    case 'sjmg':ui.sjm=!ui.sjm;break;
+    case 'sjrm':{const x=data.uni.subj.find(y=>y.id===D.id);if(!x)return false;
+      if(!confirm('حذف المادة «'+x.name+'» مع كل صورها وملفاتها؟'))return false;
+      sjPurge(x);data.uni.subj=data.uni.subj.filter(y=>y!==x);if(!data.uni.subj.length)ui.sjm=false;save();break}
+    case 'sjv':ui.sjv=D.v==='fl'?'fl':'ph';ui.ssel=false;ui.sels=[];break;
+    case 'sifp':ui.fp=D.id||null;break;
+    case 'siopen':{const s=sjCur(),x=s&&s.items.find(i=>i.id===D.id);if(!x)break;
+      if(x.t==='folder')ui.fp=x.id;else if(x.t==='note'){noteOpen(x.id);return false}else{ui.modal='sitem';ui.iid=x.id}break}
+    case 'siedit':ui.modal='sitem';ui.iid=D.id;break;
+    case 'sinewf':ui.modal='sitem';ui.iid=null;ui.focus='#sin';break;
+    case 'sinote':{const s=sjCur();if(!s)break;const n={id:uid(),t:'note',name:'ملاحظة جديدة',parent:ui.fp||null,ts:Date.now(),text:''};s.items.push(n);save();noteOpen(n.id,true);return false}
+    case 'sinopen':{const id=ui.iid;ui.modal=null;ui.iid=null;render();noteOpen(id);return false}
+    case 'sipick':{const i=$('#sjfl');if(i)i.click();return false}
+    case 'sisave':{const s=sjCur();if(!s)break;const nm=($('#sin').value||'').trim();if(!nm){$('#err').textContent='اكتب اسماً.';return false}
+      const x=s.items.find(i=>i.id===ui.iid);
+      if(x){x.name=nm;if(x.t==='file'){const t=$('#sit');if(t)x.text=t.value}}
+      else s.items.push({id:uid(),t:'folder',name:nm,parent:ui.fp||null,ts:Date.now()});
+      ui.modal=null;ui.iid=null;save();break}
+    case 'sidel':{const s=sjCur(),x=s&&s.items.find(i=>i.id===ui.iid);if(!x)break;
+      if(!confirm(x.t==='folder'?'حذف المجلد «'+x.name+'» مع كل ما بداخله؟':'حذف «'+x.name+'»؟'))return false;
+      siRemove(s,x.id);ui.modal=null;ui.iid=null;save();break}
+    case 'siopenf':siFile('open');return false;
+    case 'sidl':siFile('dl');return false;
+    case 'sishare':siFile('share');return false;
     case 'sjsel':ui.ssel=!ui.ssel;ui.sels=[];break;
     case 'sjtog':{const L=ui.sels=ui.sels||[],i=L.indexOf(D.id);if(i>=0)L.splice(i,1);else L.push(D.id);hVib(8);break}
     case 'sjall':{const s=data.uni.subj.find(x=>x.id===ui.sj);if(s)ui.sels=(ui.sels||[]).length===s.ph.length?[]:s.ph.map(p=>p.id);break}
@@ -2656,10 +2707,10 @@ function handle(a,D){
     case 'sjnew':ui.modal='subj';ui.sid=null;ui.focus='#sjn';break;
     case 'sjedit':ui.modal='subj';ui.sid=ui.sj;ui.focus='#sjn';break;
     case 'sjsave':{const n=($('#sjn').value||'').trim();if(!n){$('#err').textContent='اكتب اسم المادة.';return false}
-      const L=data.uni.subj,x=L.find(y=>y.id===ui.sid);if(x)x.name=n;else{const o={id:uid(),name:n,ph:[]};L.push(o)}ui.modal=null;save();break}
+      const L=data.uni.subj,x=L.find(y=>y.id===ui.sid);if(x)x.name=n;else{const o={id:uid(),name:n,ph:[],items:[]};L.push(o)}ui.modal=null;save();break}
     case 'sjdel':{const x=data.uni.subj.find(y=>y.id===ui.sid);if(!x)break;
-      if(!confirm('حذف المادة «'+x.name+'» مع كل صورها ('+x.ph.length+')؟'))return false;
-      x.ph.forEach(p=>{FDB.del('ph-'+p.id).catch(()=>{});FDB.del('th-'+p.id).catch(()=>{})});
+      if(!confirm('حذف المادة «'+x.name+'» مع كل صورها وملفاتها؟'))return false;
+      sjPurge(x);
       data.uni.subj=data.uni.subj.filter(y=>y!==x);ui.sj=null;ui.modal=null;save();break}
     case 'sjview':pvOpen(D.id);return false;
     case 'sday':ui.sd=+D.v;hVib(8);break;
@@ -2829,7 +2880,7 @@ document.addEventListener('click',e=>{
     ui.pop=`[data-act="${a}"]`+['d','k','v','id','p','n'].filter(x=>t.dataset[x]!==undefined).map(x=>`[data-${x}="${t.dataset[x]}"]`).join('');
   if(handle(a,t.dataset)!==false)render();
 });
-document.addEventListener('change',e=>{if(e.target.id==='sjf'||e.target.id==='sjc'){const fs=[...e.target.files];e.target.value='';sjImport(fs);return}if(e.target.id==='bkpdf'){const f=e.target.files[0];e.target.value='';bkImport(f);return}if(e.target.id==='lkd'&&lk.cfg){lk.cfg.delay=+e.target.value;lkSave();return}if(e.target.id!=='bkf'||!e.target.files[0])return;const r=new FileReader();r.onload=()=>{$('#bk').value=String(r.result);$('#err').textContent='تم تحميل الملف. اضغط «استيراد» للتأكيد.';$('#err').style.color='var(--good)'};r.readAsText(e.target.files[0])});
+document.addEventListener('change',e=>{if(e.target.id==='sjfl'){const fs=[...e.target.files];e.target.value='';siImport(fs);return}if(e.target.id==='sjf'||e.target.id==='sjc'){const fs=[...e.target.files];e.target.value='';sjImport(fs);return}if(e.target.id==='bkpdf'){const f=e.target.files[0];e.target.value='';bkImport(f);return}if(e.target.id==='lkd'&&lk.cfg){lk.cfg.delay=+e.target.value;lkSave();return}if(e.target.id!=='bkf'||!e.target.files[0])return;const r=new FileReader();r.onload=()=>{$('#bk').value=String(r.result);$('#err').textContent='تم تحميل الملف. اضغط «استيراد» للتأكيد.';$('#err').style.color='var(--good)'};r.readAsText(e.target.files[0])});
 document.addEventListener('mousedown',e=>{if(e.target.closest('.nav button,.seg button'))e.preventDefault()});
 document.addEventListener('keydown',e=>{
   if(e.key!=='Enter'||!e.target.dataset||!e.target.dataset.enter)return;
@@ -3012,15 +3063,21 @@ function bookModal(){
 function stSJ(){
   const S=data.uni.subj;
   if(ui.sj){const s=S.find(x=>x.id===ui.sj);if(s)return sjDetail(s);ui.sj=null}
-  const tot=S.reduce((a,s)=>a+s.ph.length,0);
-  return`<div class="hn-h" style="margin-top:12px"><b>موادي</b><span class="muted">${tot} صورة</span></div><div class="sjg">${S.map((s,k)=>{const n=s.ph.length,l=s.ph[n-1];return`<button class="sjc" style="--i:${k}" data-act="sjopen" data-id="${s.id}"><div class="sjt">${l?`<img data-th="${l.id}" alt="">`:'<span>📚</span>'}</div><b>${esc(s.name)}</b><small>${n?n+' صورة':'لا صور بعد'}</small></button>`}).join('')}</div><button class="btn ghost addb" data-act="sjnew">+ إضافة مادة</button>`;
+  const tot=S.reduce((a,s)=>a+s.ph.length,0),mg=!!ui.sjm&&S.length>0;
+  return`<div class="hn-h" style="margin-top:12px"><b>موادي</b><span class="muted">${S.length} مادة · ${tot} صورة</span></div>
+<div class="sjadd"><button class="btn" data-act="sjnew">+ إضافة مادة</button><button class="btn ghost" data-act="sjmg" ${S.length?'':'disabled'}>${mg?'✓ تم':'🗑 حذف مواد'}</button></div>`
+  +(S.length?`<div class="sjg">${S.map((s,k)=>{const n=s.ph.length,nf=s.items.filter(i=>i.t!=='folder').length,l=s.ph[n-1];return`<div class="sjw"><button class="sjc" style="--i:${k}" data-act="sjopen" data-id="${s.id}"><div class="sjt">${l?`<img data-th="${l.id}" alt="">`:'<span>📚</span>'}</div><b>${esc(s.name)}</b><small>${n?n+' صورة':'لا صور بعد'}${nf?' · '+nf+' ملف':''}</small></button>${mg?`<button class="sjx" data-act="sjrm" data-id="${s.id}" aria-label="حذف المادة">✕</button>`:''}</div>`}).join('')}</div>`:empty('لا توجد مواد.<br>اضغط «+ إضافة مادة» لإنشاء أول مادة 📚'));
 }
 function sjDetail(s){
+  const v=ui.sjv==='fl'?'fl':'ph',nf=s.items.filter(i=>i.t!=='folder').length;
+  return`<div class="hn-h" style="margin-top:12px"><button class="chip" data-act="sjback">› المواد</button><button class="chip" data-act="sjedit">✎ ${esc(s.name)}</button></div>
+<div class="seg sjtabs"><button class="${v==='ph'?'on':''}" data-act="sjv" data-v="ph">🖼 الصور · ${s.ph.length}</button><button class="${v==='fl'?'on':''}" data-act="sjv" data-v="fl">📁 الملفات · ${nf}</button></div>`+(v==='fl'?sjFiles(s):sjPhotos(s));
+}
+function sjPhotos(s){
   const t=today(),sel=!!ui.ssel,L=ui.sels||[];
   const groups=[];s.ph.forEach(p=>{const k=fmt(new Date(p.ts)),l=groups[groups.length-1];if(l&&l.k===k)l.a.push(p);else groups.push({k,a:[p]})});
   const bar=sel?`<div class="selbar"><span class="selc">${L.length} محددة</span><button data-act="sjall">${L.length===s.ph.length?'إلغاء الكل':'تحديد الكل'}</button><button data-act="sjmvsel" data-v="-1" ${L.length?'':'disabled'}>⬆ تقديم</button><button data-act="sjmvsel" data-v="1" ${L.length?'':'disabled'}>⬇ تأخير</button><button class="selmain" data-act="sjshare" ${L.length?'':'disabled'}>↗ مشاركة</button><button class="seldel" data-act="sjdelsel" ${L.length?'':'disabled'}>🗑</button></div>`:'';
-  return`<div class="hn-h" style="margin-top:12px"><button class="chip" data-act="sjback">› المواد</button><button class="chip" data-act="sjedit">✎ ${esc(s.name)}</button></div>
-<div class="sjadd"><button class="btn" data-act="sjcam">📷 التقاط صورة</button><button class="btn ghost" data-act="sjgal">🖼 من المعرض</button></div>
+  return`<div class="sjadd"><button class="btn" data-act="sjcam">📷 التقاط صورة</button><button class="btn ghost" data-act="sjgal">🖼 من المعرض</button></div>
 <input id="sjc" type="file" accept="image/*" capture="environment" hidden><input id="sjf" type="file" accept="image/*" multiple hidden>`
   +(s.ph.length?`<div class="hn-h"><span class="muted">${s.ph.length} صورة</span><button class="chip" data-act="sjsel">${sel?'✕ إلغاء التحديد':'☑ تحديد'}</button></div>`:'')
   +(s.ph.length?groups.map(g=>`<div class="h2">${g.k===t?'اليوم':parse(g.k).toLocaleDateString(LOC,{weekday:'long',day:'numeric',month:'long',year:'numeric'})} <span class="muted">· ${g.a.length}</span></div><div class="sjp">${g.a.map(p=>`<button class="${sel&&L.includes(p.id)?'picked':''}" data-act="${sel?'sjtog':'sjview'}" data-id="${p.id}"><img data-th="${p.id}" alt="">${p.cap?'<i>📝</i>':''}${sel?`<b class="pk">${L.includes(p.id)?'✓':''}</b>`:''}</button>`).join('')}</div>`).join(''):empty('لا توجد صور بعد.<br>صوّر درسك وسيُحفظ هنا في «'+esc(s.name)+'» 📸'))+bar+(sel?'<div style="height:70px"></div>':'');
@@ -3064,6 +3121,89 @@ async function sjImport(files){
   }
   if(n){hToast('✓ أُضيفت '+n+(n===1?' صورة':' صور'));render()}
 }
+const sjCur=()=>data.uni.subj.find(x=>x.id===ui.sj);
+function fIcon(n,t){const e=(String(n).split('.').pop()||'').toLowerCase();t=t||'';
+  if(/^image/.test(t))return'🖼';if(/^video/.test(t))return'🎞';if(/^audio/.test(t))return'🎵';
+  if(e==='pdf')return'📕';if(/^(docx?|odt|rtf)$/.test(e))return'📘';if(/^(xlsx?|csv|ods)$/.test(e))return'📗';
+  if(/^(pptx?|odp)$/.test(e))return'📙';if(/^(zip|rar|7z|tar|gz)$/.test(e))return'🗜';if(/^(txt|md)$/.test(e))return'📄';return'📎'}
+function fSize(b){b=+b||0;return b<1024?b+' B':b<1048576?Math.round(b/1024)+' KB':(b/1048576).toFixed(1)+' MB'}
+function sjPurge(x){x.ph.forEach(p=>{FDB.del('ph-'+p.id).catch(()=>{});FDB.del('th-'+p.id).catch(()=>{})});(x.items||[]).forEach(i=>{if(i.t==='file')FDB.del('fl-'+i.id).catch(()=>{})})}
+function siRemove(s,id){
+  const all=new Set([id]);let ch=true;
+  while(ch){ch=false;s.items.forEach(i=>{if(i.parent&&all.has(i.parent)&&!all.has(i.id)){all.add(i.id);ch=true}})}
+  s.items.forEach(i=>{if(all.has(i.id)&&i.t==='file')FDB.del('fl-'+i.id).catch(()=>{})});
+  s.items=s.items.filter(i=>!all.has(i.id));
+}
+function sjFiles(s){
+  const I=s.items,fp=ui.fp&&I.some(i=>i.id===ui.fp&&i.t==='folder')?ui.fp:null;ui.fp=fp;
+  const path=[];let c=fp;while(c){const f=I.find(i=>i.id===c);if(!f)break;path.unshift(f);c=f.parent}
+  const crumbs=`<div class="crumbs"><button data-act="sifp" data-id="">📚 ${esc(s.name)}</button>${path.map(f=>`<span>‹</span><button data-act="sifp" data-id="${f.id}">📁 ${esc(f.name)}</button>`).join('')}</div>`;
+  const L=I.filter(i=>(i.parent||null)===fp).sort((a,b)=>(a.t==='folder'?0:1)-(b.t==='folder'?0:1)||(a.t==='folder'?a.name.localeCompare(b.name):(b.ts||0)-(a.ts||0)));
+  const row=(i,k)=>{let ic,meta;
+    if(i.t==='folder'){ic='📁';const n=I.filter(x=>x.parent===i.id).length;meta=n?n+' عنصر':'فارغ'}
+    else if(i.t==='note'){ic='📝';meta=esc((i.text||'').replace(/\s+/g,' ').trim().slice(0,50))||'ملاحظة فارغة'}
+    else{ic=fIcon(i.name,i.type);meta=fSize(i.size)+' · '+new Date(i.ts).toLocaleDateString(LOC,{day:'numeric',month:'short'})+(i.text?' · 📝':'')}
+    return`<div class="sir" style="animation-delay:${Math.min(k,12)*30}ms"><button class="sib" data-act="siopen" data-id="${i.id}"><span class="sii">${ic}</span><span class="sit"><b>${esc(i.name||'بدون اسم')}</b><small>${meta}</small></span></button><button class="sim" data-act="siedit" data-id="${i.id}" aria-label="خيارات">⋯</button></div>`};
+  return crumbs+`<div class="sjadd3"><button class="btn ghost" data-act="sinewf">📁 مجلد</button><button class="btn ghost" data-act="sinote">📝 ملاحظة</button><button class="btn" data-act="sipick">⬆ رفع ملف</button></div><input id="sjfl" type="file" multiple hidden>`
+    +(L.length?`<div class="sil">${L.map(row).join('')}</div>`:empty(fp?'هذا المجلد فارغ.<br>أضف ملفات أو ملاحظات أو مجلدات داخله.':'لا ملفات بعد.<br>أنشئ مجلداً أو ملاحظة، أو ارفع أي ملف (PDF، Word، صور…) 📎'));
+}
+function sitemModal(){
+  const s=sjCur();if(!s)return'';
+  const x=s.items.find(i=>i.id===ui.iid);
+  const h=x?(x.t==='folder'?'المجلد':x.t==='note'?'الملاحظة':'الملف'):'مجلد جديد';
+  const nt=x&&x.t==='note'?`<div class="sjadd" style="grid-template-columns:1fr"><button class="btn" data-act="sinopen">✎ فتح للكتابة</button></div>`:'';
+  const fl=x&&x.t==='file'?`<p class="muted" style="margin:8px 0">${fIcon(x.name,x.type)} ${fSize(x.size)}${x.type?' · <bdi>'+esc(x.type)+'</bdi>':''}</p><div id="sipv"></div><div class="sjadd3"><button class="btn" data-act="siopenf">فتح</button><button class="btn ghost" data-act="sidl">تنزيل</button><button class="btn ghost" data-act="sishare">مشاركة</button></div><label class="f">ملاحظاتك على الملف</label><textarea id="sit" dir="auto" placeholder="اكتب ملاحظاتك هنا…" style="min-height:110px">\n${esc(x.text||'')}</textarea>`:'';
+  return`<div class="ov" data-act="ovclose"><div class="sheet" role="dialog" aria-modal="true"><h3>${h}</h3><input id="sin" data-enter="sisave" value="${esc(x?x.name:'')}" placeholder="الاسم" autocomplete="off">${nt}${fl}<div class="err" id="err"></div><div class="acts"><button class="btn" data-act="sisave">حفظ</button>${x?'<button class="btn ghost" data-act="sidel">حذف</button>':''}<button class="btn ghost" data-act="close">إغلاق</button></div></div></div>`;
+}
+async function sitemMount(){
+  const s=sjCur(),x=s&&s.items.find(i=>i.id===ui.iid),el=$('#sipv');
+  if(!x||x.t!=='file'||!el||!/^image\//.test(x.type||''))return;
+  try{const b=await FDB.get('fl-'+x.id);if(b&&$('#sipv')===el){const u=URL.createObjectURL(b);el.innerHTML=`<img src="${u}" alt="" style="width:100%;max-height:260px;object-fit:contain;border-radius:12px;background:var(--soft);margin-bottom:10px">`}}catch(e){}
+}
+async function siImport(files){
+  const s=sjCur();if(!s||!files.length)return;let n=0;
+  for(const f of files){
+    hToast(`جاري الحفظ ${n+1}/${files.length}…`);
+    try{const id=uid();await FDB.put('fl-'+id,f);s.items.push({id,t:'file',name:f.name||'ملف',parent:ui.fp||null,ts:Date.now(),size:f.size,type:f.type||'',text:''});n++;save()}
+    catch(e){hToast('تعذّر حفظ الملف: المساحة غير كافية؟');break}
+  }
+  if(n){hToast('✓ أُضيف '+n+(n===1?' ملف':' ملفات'));render()}
+}
+async function siFile(m){
+  const s=sjCur(),x=s&&s.items.find(i=>i.id===ui.iid);if(!x)return;
+  try{
+    const b=await FDB.get('fl-'+x.id);if(!b){hToast('الملف غير موجود على هذا الجهاز');return}
+    const f=new File([b],x.name,{type:x.type||b.type||'application/octet-stream'});
+    if(m==='share'){if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]})}else hToast('المشاركة غير مدعومة هنا، جرّب «تنزيل»');return}
+    const u=URL.createObjectURL(f);
+    if(m==='open'){const w=window.open(u,'_blank');if(w){setTimeout(()=>URL.revokeObjectURL(u),60000);return}}
+    const a=document.createElement('a');a.href=u;a.download=x.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),3000);
+  }catch(e){if(!e||e.name!=='AbortError')hToast('تعذّر فتح الملف')}
+}
+/* note editor (full screen) */
+const NV={id:null};
+function noteOpen(id,isNew){
+  const s=sjCur(),x=s&&s.items.find(i=>i.id===id);if(!x)return;NV.id=id;
+  let o=document.getElementById('nview');if(!o){o=document.createElement('div');o.id='nview';document.body.appendChild(o)}
+  document.body.classList.add('rd-open');
+  o.innerHTML=`<div class="nv-top"><button data-n="close" aria-label="رجوع">›</button><span class="muted" id="nvst">محفوظ</span><button data-n="del" aria-label="حذف">🗑</button></div><input id="nvt" class="nv-title" dir="auto" value="${esc(x.name)}" placeholder="العنوان" autocomplete="off"><textarea id="nvb" class="nv-body" dir="auto" placeholder="اكتب هنا…">\n${esc(x.text||'')}</textarea>`;
+  const t=$('#nvt');if(isNew){t.focus();t.select()}
+}
+function noteClose(){
+  const s=sjCur(),x=s&&s.items.find(i=>i.id===NV.id);if(x&&!x.name.trim()){x.name='بدون عنوان';save()}
+  const o=document.getElementById('nview');if(o)o.remove();document.body.classList.remove('rd-open');NV.id=null;render();
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest&&e.target.closest('#nview [data-n]');if(!b)return;
+  if(b.dataset.n==='close')noteClose();
+  else if(b.dataset.n==='del'){const s=sjCur();if(!s||!confirm('حذف هذه الملاحظة؟'))return;siRemove(s,NV.id);save();noteClose()}
+});
+document.addEventListener('input',e=>{
+  const id=e.target.id;if(id!=='nvt'&&id!=='nvb')return;
+  const s=sjCur(),x=s&&s.items.find(i=>i.id===NV.id);if(!x)return;
+  if(id==='nvt')x.name=e.target.value;else x.text=e.target.value;
+  x.ts=Date.now();save();const st=$('#nvst');if(st)st.textContent='تم الحفظ ✓';
+});
 const PV={s:null,i:0,list:[],x0:0};
 function pvOpen(id){
   const s=data.uni.subj.find(x=>x.id===ui.sj);if(!s)return;
