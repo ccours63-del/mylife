@@ -638,6 +638,14 @@ body.locked #app,body.locked .topbar,body.locked .dock,body.locked #modal,body.l
 .rd-rb{width:38px;border-radius:12px;background:var(--bg);flex:none}
 body.rd-open{overflow:hidden}body.rd-open #app,body.rd-open .topbar,body.rd-open .dock{visibility:hidden}
 
+/* ===== reason line under tasks ===== */
+.bw{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.bn{min-height:1.5em;padding:1px 0 3px;font-size:13px;line-height:1.5;color:var(--muted);outline:none;word-break:break-word}
+.bn:empty::before{content:attr(data-ph);opacity:.5}
+.bn:focus{color:var(--ink)}
+.bn:focus:empty::before{opacity:.35}
+.blk[data-done="1"] .bn:empty{display:none}
+.wn{display:block;font-size:12px;color:var(--muted)}
 /* ===== v6: pro tasks, week/month, eyes missing, study photos ===== */
 .blk[data-type=check]{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:5px 10px 5px 10px;margin:5px 0;gap:9px;align-items:center;transition:background-color .2s,border-color .2s,opacity .25s}
 .blk[data-type=check]:focus-within{border-color:color-mix(in srgb,var(--accent) 55%,var(--line));background:color-mix(in srgb,var(--accent) 5%,var(--surface))}
@@ -2115,7 +2123,7 @@ const tbRows=()=>{const o=tbOrder()||tbAll(),hid=tbHid();
 function tbModal(){return`<div class="ov" data-act="ovclose"><div class="sheet tbs" role="dialog" aria-modal="true"><h3>ترتيب الأدوات</h3><p class="muted" style="font-size:13px;margin:4px 0 10px">الأعلى = أول الشريط. ↑ للتقديم و↓ للتأخير، ويمكنك إخفاء ما لا تستعمله.</p><div class="tbl">${tbRows()}</div><div class="acts"><button class="btn" data-act="close">تم</button><button class="btn ghost" data-act="tbrs">الترتيب الافتراضي</button></div></div></div>`}
 const tbRefresh=()=>{const el=document.querySelector('.tbl');if(el)el.innerHTML=tbRows()};
 const HK=['day','week','month'];
-const dayLines=d=>{const doc=data.days[d];return doc?doc.blocks.filter(b=>b.type!=='divider').map(b=>({t:stripHtml(b.html),c:b.type==='check',x:b.done,h:/^h\d$/.test(b.type),i:b.type==='bullet'||b.type==='number'})).filter(l=>l.t):[]};
+const dayLines=d=>{const doc=data.days[d];return doc?doc.blocks.filter(b=>b.type!=='divider').map(b=>({t:stripHtml(b.html),c:b.type==='check',x:b.done,n:b.type==='check'?stripHtml(b.note):'',h:/^h\d$/.test(b.type),i:b.type==='bullet'||b.type==='number'})).filter(l=>l.t):[]};
 const dayHas=d=>{const doc=data.days[d];return !!doc&&(!!(doc.title||'').trim()||dayLines(d).length>0)};
 const dayProg=d=>{const L=dayLines(d).filter(l=>l.c);return{t:L.length,d:L.filter(l=>l.x).length}};
 function homeWeek(){
@@ -2124,7 +2132,7 @@ function homeWeek(){
   const head=`<div class="wsum"><div><b>${D}<small>/${T}</small></b><span>مهام منجزة</span></div><div><b>${W}<small>/7</small></b><span>أيام فيها كتابة</span></div><div class="wbar"><i style="width:${T?D/T*100:0}%"></i></div></div>`;
   return head+days.map(d=>{
     const L=dayLines(d),dt=parse(d),doc=data.days[d],p=dayProg(d),ttl=doc&&(doc.title||'').trim();
-    const rows=L.slice(0,9).map(l=>l.c?`<div class="wl ck ${l.x?'dn':''}"><i class="wk">${l.x?'✓':''}</i><span>${esc(l.t)}</span></div>`:l.h?`<div class="wl hd"><span>${esc(l.t)}</span></div>`:`<div class="wl"><i class="bl"></i><span>${esc(l.t)}</span></div>`).join('');
+    const rows=L.slice(0,9).map(l=>l.c?`<div class="wl ck ${l.x?'dn':''}"><i class="wk">${l.x?'✓':''}</i><span>${esc(l.t)}${l.n?`<small class="wn">${esc(l.n)}</small>`:''}</span></div>`:l.h?`<div class="wl hd"><span>${esc(l.t)}</span></div>`:`<div class="wl"><i class="bl"></i><span>${esc(l.t)}</span></div>`).join('');
     return`<button class="wd ${d===t?'today':''} ${d>t?'fut':''}" data-act="openday" data-d="${d}"><div class="wd-h"><span class="wd-n"><b>${+d.slice(8)}</b><small>${dt.toLocaleDateString(LOC,{weekday:'long'})}</small></span><span class="wd-t">${ttl?esc(ttl):(d===t?'اليوم':'')}</span>${p.t?`<span class="wd-c ${p.d===p.t?'ok':''}">${p.d}/${p.t}</span>`:''}</div>${p.t?`<div class="wd-pb"><i style="width:${p.d/p.t*100}%"></i></div>`:''}${L.length?`<div class="wd-b">${rows}${L.length>9?`<div class="wl more">+${L.length-9} أخرى</div>`:''}</div>`:'<div class="wd-e">فارغ — اضغط للكتابة</div>'}</button>`;
   }).join('');
 }
@@ -2245,8 +2253,9 @@ function blockEl(b){
   d.dataset.id=b.id||uid();d.dataset.type=b.type;d.dataset.done=b.done?'1':'0';
   Object.entries(b.f||{}).forEach(([k,v])=>{if(FKEYS.includes(k))d.dataset[k]=String(v)});
   if(b.type==='divider'){d.innerHTML='<hr>';return d}
-  d.innerHTML=`<button type="button" class="tgl" tabindex="-1" aria-label="طي / فتح">${si('chev',16)}</button>`+(b.type==='check'?'<button type="button" class="cbx" aria-label="تبديل"><svg viewBox="0 0 24 24"><path d="M5.5 12.5l4.2 4.2L18.5 8"/></svg></button>':'')+'<div class="bt" contenteditable="true" dir="auto"></div>';
-  const bt=d.querySelector('.bt');bt.dataset.ph=PH[b.type]||'';bt.innerHTML=sanitize(b.html);fixDir(d);
+  d.innerHTML=`<button type="button" class="tgl" tabindex="-1" aria-label="طي / فتح">${si('chev',16)}</button>`+(b.type==='check'?'<button type="button" class="cbx" aria-label="تبديل"><svg viewBox="0 0 24 24"><path d="M5.5 12.5l4.2 4.2L18.5 8"/></svg></button>':'')+(b.type==='check'?'<div class="bw"><div class="bt" contenteditable="true" dir="auto"></div><div class="bn" contenteditable="true" dir="auto" data-ph="لماذا لم تنفّذها؟ اكتب السبب هنا…"></div></div>':'<div class="bt" contenteditable="true" dir="auto"></div>');
+  const bt=d.querySelector('.bt');bt.dataset.ph=PH[b.type]||'';bt.innerHTML=sanitize(b.html);
+  const bn=d.querySelector('.bn');if(bn)bn.innerHTML=sanitize(b.note);fixDir(d);
   return d;
 }
 function focusAt(bt,end=true){
@@ -2264,7 +2273,7 @@ function updProgress(root){
 function collect(){
   const r=CR;if(!r||!r.isConnected||!r._make)return;
   updProgress(r);renumber(r);layout(r);
-  const blocks=[...r.querySelectorAll('.blk')].map(el=>({id:el.dataset.id,type:el.dataset.type,html:el.dataset.type==='divider'?'':sanitize(el.querySelector('.bt').innerHTML),done:el.dataset.done==='1',f:getF(el)}));
+  const blocks=[...r.querySelectorAll('.blk')].map(el=>({id:el.dataset.id,type:el.dataset.type,html:el.dataset.type==='divider'?'':sanitize(el.querySelector('.bt').innerHTML),done:el.dataset.done==='1',f:getF(el),note:(el.querySelector('.bn')?sanitize(el.querySelector('.bn').innerHTML):'')}));
   const te=r.querySelector('.ed-title'),n=r._make(),title=te?te.value:(n.title||'');
   if(JSON.stringify([n.title,n.blocks])===JSON.stringify([title,blocks]))return;
   n.title=title;n.blocks=blocks;n.updated=Date.now();save();
@@ -2272,7 +2281,7 @@ function collect(){
 function newAfter(el,b){const n=blockEl(Object.assign({id:uid(),html:'',done:false},b));el.after(n);return n}
 function setType(el,type){
   const bt=el.querySelector('.bt');
-  const n=blockEl({id:el.dataset.id,type,html:bt?bt.innerHTML:'',done:el.dataset.done==='1',f:getF(el)});
+  const on=el.querySelector('.bn');const n=blockEl({id:el.dataset.id,type,html:bt?bt.innerHTML:'',note:on?on.innerHTML:'',done:el.dataset.done==='1',f:getF(el)});
   el.replaceWith(n);const nb=n.querySelector('.bt');if(nb)focusAt(nb);return n;
 }
 function insertDivider(el){
@@ -2484,6 +2493,16 @@ function mountEditor(root,peek,make){
     else if(e.inputType==='deleteContentBackward'&&!bt.textContent){e.preventDefault();doBack(bt)}
   });
   wrap.addEventListener('paste',onPaste);
+  /* reason line under tasks */
+  wrap.addEventListener('input',e=>{const bn=e.target.closest&&e.target.closest('.bn');if(!bn)return;if(bn.innerHTML==='<br>')bn.innerHTML='';collect()});
+  wrap.addEventListener('keydown',e=>{const bn=e.target.closest&&e.target.closest('.bn');if(!bn)return;
+    if(e.key==='Enter'){e.preventDefault();bn.blur()}
+    else if(e.key==='Backspace'&&!bn.textContent){e.preventDefault();focusAt(bn.closest('.blk').querySelector('.bt'))}});
+  wrap.addEventListener('beforeinput',e=>{const bn=e.target.closest&&e.target.closest('.bn');if(!bn)return;
+    if(e.inputType==='insertParagraph'||e.inputType==='insertLineBreak'){e.preventDefault();bn.blur()}
+    else if(e.inputType==='deleteContentBackward'&&!bn.textContent){e.preventDefault();focusAt(bn.closest('.blk').querySelector('.bt'))}});
+  wrap.addEventListener('paste',e=>{const bn=e.target.closest&&e.target.closest('.bn');if(!bn)return;e.stopImmediatePropagation();e.preventDefault();
+    document.execCommand('insertText',false,((e.clipboardData||window.clipboardData).getData('text/plain')||'').replace(/\s+/g,' '));collect()},true);
   tools.addEventListener('mousedown',e=>e.preventDefault());
   tools.addEventListener('click',e=>{const b=e.target.closest('button[data-c]');if(b){CR=root;command(b.dataset.c,cur())}});
   sl.addEventListener('mousedown',e=>e.preventDefault());
